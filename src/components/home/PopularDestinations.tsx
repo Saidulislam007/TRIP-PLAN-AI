@@ -206,29 +206,8 @@ export default function PopularDestinations() {
 
 function DestinationCard({ destination }: { destination: Destination }) {
   return (
-    <article
-      className="
-        group
-        min-w-[250px]
-        flex-1
-        overflow-hidden
-        rounded-xl
-        border
-        border-[#E4EBE7]
-        bg-white
-        shadow-[0_2px_10px_rgba(23,33,29,0.06)]
-        transition-all
-        duration-300
-        hover:-translate-y-1
-        hover:border-[#D5E5DE]
-        hover:shadow-[0_12px_28px_rgba(23,33,29,0.12)]
-        sm:min-w-[270px]
-        lg:min-w-0
-      "
-    >
-      {/* =====================================================
-          IMAGE
-      ====================================================== */}
+    <article className="group min-w-[250px] flex-1 overflow-hidden rounded-xl border border-[#E4EBE7] bg-white shadow-[0_2px_10px_rgba(23,33,29,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[#D5E5DE] hover:shadow-[0_12px_28px_rgba(23,33,29,0.12)] sm:min-w-[270px] lg:min-w-0">
+      {/* IMAGE */}
 
       <div className="relative h-[120px] overflow-hidden sm:h-[125px] lg:h-[120px]">
         <Image

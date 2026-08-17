@@ -102,19 +102,19 @@ export default function Navbar() {
   }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white">
+    <header className="fixed left-0 top-0 z-50 w-full bg-transparent font-sans antialiased">
       {/* ========================================================
           TOP ANNOUNCEMENT BAR
       ======================================================== */}
 
-      <div className="h-[27px] w-full bg-[#004D3C] text-white">
+      <div className="h-[27px] w-full border-b border-white/[0.08] bg-[#071A16]/70 text-white shadow-[0_4px_18px_rgba(0,0,0,0.10)] backdrop-blur-xl">
         <div className="mx-auto flex h-full max-w-[1440px] items-center px-5 sm:px-8 lg:px-10">
           {/* Center announcement */}
 
           <div className="flex flex-1 items-center justify-center gap-1.5">
             <span className="text-[10px]">✨</span>
 
-            <p className="text-[10px] font-medium tracking-[0.01em]">
+            <p className="text-[11px] font-medium tracking-[0.015em]">
               Plan Smarter. Travel Better with AI.
             </p>
           </div>
@@ -123,7 +123,7 @@ export default function Navbar() {
 
           <Link
             href="/inspiration"
-            className="hidden items-center gap-2 text-[10px] font-medium text-white/95 transition-colors hover:text-white sm:flex"
+            className="hidden items-center gap-2 text-[11px] font-medium tracking-[0.01em] text-white/95 transition-colors hover:text-white sm:flex"
           >
             <span>New traveler insights & features are here!</span>
 
@@ -140,7 +140,7 @@ export default function Navbar() {
           MAIN NAVBAR
       ======================================================== */}
 
-      <nav className="h-[74px] border-b border-[#E8ECEA] bg-white">
+      <nav className="h-[74px] border-b border-white/10 bg-[#071A16]/55 shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur-xl">
         <div className="relative mx-auto flex h-full max-w-[1440px] items-center px-5 sm:px-8 lg:px-10">
           {/* ====================================================
               LOGO
@@ -148,31 +148,27 @@ export default function Navbar() {
 
           <Link
             href="/"
-            aria-label="Trip Plan AI Home"
+            aria-label="TripPlan AI Home"
             className="group z-20 flex shrink-0 items-center"
           >
-            <div className="flex items-center gap-[9px]">
+            <div className="flex items-center gap-2.5">
               {/* Logo */}
 
-              <div className="flex h-[37px] w-[37px] items-center justify-center rounded-[6px] bg-[#087F5B] shadow-[0_2px_5px_rgba(8,127,91,0.12)]">
+              <div className="relative flex h-[38px] w-[38px] items-center justify-center rounded-full bg-gradient-to-br from-[#FFD16F] via-[#F4A934] to-[#D9861F] shadow-[0_7px_18px_rgba(217,134,31,0.30),inset_0_1px_0_rgba(255,255,255,0.45)] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:rotate-[-5deg] group-hover:shadow-[0_10px_24px_rgba(217,134,31,0.38)]">
+                <span className="pointer-events-none absolute inset-[3px] rounded-full border border-[#FFF0C2]/70" />
+
                 <Plane
-                  size={22}
-                  strokeWidth={2.4}
-                  className="rotate-[-45deg] text-white"
+                  size={20}
+                  strokeWidth={2.3}
+                  className="relative rotate-[-45deg] text-[#123B31] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 />
               </div>
 
               {/* Logo text */}
 
-              <div className="flex flex-col justify-center">
-                <span className="text-[18px] font-extrabold leading-[18px] tracking-[-0.035em] text-[#17332A]">
-                  TRIP PLAN AI
-                </span>
-
-                <span className="mt-[4px] text-[8px] font-medium leading-[9px] text-[#718079]">
-                  Plan Smarter. Travel Better.
-                </span>
-              </div>
+              <span className="text-[18px] font-extrabold leading-none tracking-[-0.035em] text-white transition-colors duration-300 group-hover:text-[#FFD078] sm:text-[20px]">
+                TripPlan <span className="text-[#D88928]">AI</span>
+              </span>
             </div>
           </Link>
 
@@ -200,12 +196,13 @@ export default function Navbar() {
                   relative flex h-full items-center
                   px-[14px]
                   text-[14px]
-                  font-semibold
+                  font-medium
+                  tracking-[-0.01em]
                   transition-colors duration-200
                   ${
                     isExploreActive || exploreOpen
-                      ? "text-[#087F5B]"
-                      : "text-[#17211D] hover:text-[#087F5B]"
+                      ? "text-[#FFD078]"
+                      : "text-white/88 hover:text-[#FFD078]"
                   }
                 `}
               >
@@ -224,7 +221,7 @@ export default function Navbar() {
                 {/* Active underline */}
 
                 {(isExploreActive || exploreOpen) && (
-                  <span className="absolute bottom-[17px] left-[14px] right-[14px] h-[2px] rounded-full bg-[#087F5B]" />
+                  <span className="absolute bottom-[17px] left-[14px] right-[14px] h-[2px] rounded-full bg-[#F4A934]" />
                 )}
               </button>
 
@@ -280,12 +277,13 @@ export default function Navbar() {
                   relative flex h-full items-center
                   px-[14px]
                   text-[14px]
-                  font-semibold
+                  font-medium
+                  tracking-[-0.01em]
                   transition-colors duration-200
                   ${
                     isInspirationActive || inspirationOpen
-                      ? "text-[#087F5B]"
-                      : "text-[#17211D] hover:text-[#087F5B]"
+                      ? "text-[#FFD078]"
+                      : "text-white/88 hover:text-[#FFD078]"
                   }
                 `}
               >
@@ -304,7 +302,7 @@ export default function Navbar() {
                 {/* Active underline */}
 
                 {(isInspirationActive || inspirationOpen) && (
-                  <span className="absolute bottom-[17px] left-[14px] right-[14px] h-[2px] rounded-full bg-[#087F5B]" />
+                  <span className="absolute bottom-[17px] left-[14px] right-[14px] h-[2px] rounded-full bg-[#F4A934]" />
                 )}
               </button>
 
@@ -337,8 +335,8 @@ export default function Navbar() {
                 transition-colors duration-200
                 ${
                   isSearchActive
-                    ? "bg-[#EDF7F3] text-[#087F5B]"
-                    : "text-[#17211D] hover:bg-[#F3F7F5] hover:text-[#087F5B]"
+                    ? "bg-[#F4A934]/15 text-[#FFD078]"
+                    : "text-white/85 hover:bg-white/10 hover:text-[#FFD078]"
                 }
               `}
             >
@@ -357,8 +355,8 @@ export default function Navbar() {
                 transition-colors duration-200
                 ${
                   isWishlistActive
-                    ? "bg-[#EDF7F3] text-[#087F5B]"
-                    : "text-[#17211D] hover:bg-[#F3F7F5] hover:text-[#087F5B]"
+                    ? "bg-[#F4A934]/15 text-[#FFD078]"
+                    : "text-white/85 hover:bg-white/10 hover:text-[#FFD078]"
                 }
               `}
             >
@@ -369,7 +367,7 @@ export default function Navbar() {
 
             <Link
               href="/login"
-              className="ml-4 flex h-[38px] items-center justify-center rounded-[5px] border border-[#8BBEAD] bg-white px-[16px] text-[14px] font-semibold text-[#087F5B] transition-all duration-200 hover:border-[#087F5B] hover:bg-[#F0F8F4]"
+              className="ml-4 flex h-[38px] items-center justify-center rounded-[7px] border border-white/35 bg-white/[0.06] px-[16px] text-[14px] font-semibold tracking-[-0.01em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.10)] transition-all duration-200 hover:border-[#FFD078]/70 hover:bg-white/10 hover:text-[#FFD078]"
             >
               Login
             </Link>
@@ -378,7 +376,7 @@ export default function Navbar() {
 
             <Link
               href="/signup"
-              className="ml-[9px] flex h-[38px] items-center justify-center rounded-[5px] bg-[#087F5B] px-[17px] text-[14px] font-semibold text-white shadow-[0_2px_5px_rgba(8,127,91,0.14)] transition-all duration-200 hover:bg-[#066B4C]"
+              className="ml-[9px] flex h-[38px] items-center justify-center rounded-[7px] border border-[#FFD078]/45 bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_8px_22px_rgba(217,134,31,0.28),inset_0_1px_0_rgba(255,255,255,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105"
             >
               Get Started
             </Link>
@@ -392,7 +390,7 @@ export default function Navbar() {
             <Link
               href="/search"
               aria-label="Search"
-              className="flex h-9 w-9 items-center justify-center rounded-full text-[#17211D]"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/10 hover:text-[#FFD078]"
             >
               <Search size={20} strokeWidth={1.8} />
             </Link>
@@ -401,7 +399,7 @@ export default function Navbar() {
               type="button"
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-[#17211D]"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/10 hover:text-[#FFD078]"
             >
               {mobileMenuOpen ? <X size={21} /> : <Menu size={21} />}
             </button>
@@ -438,9 +436,10 @@ function NavItem({ href, label, active = false }: NavItemProps) {
         group relative flex h-full items-center
         px-[14px]
         text-[14px]
-        font-semibold
+        font-medium
+        tracking-[-0.01em]
         transition-colors duration-200
-        ${active ? "text-[#087F5B]" : "text-[#17211D] hover:text-[#087F5B]"}
+        ${active ? "text-[#FFD078]" : "text-white/88 hover:text-[#FFD078]"}
       `}
     >
       <span className="relative">
@@ -456,7 +455,7 @@ function NavItem({ href, label, active = false }: NavItemProps) {
             right-0
             h-[2px]
             rounded-full
-            bg-[#087F5B]
+            bg-[#F4A934]
             transition-all duration-200
             ${
               active
@@ -503,7 +502,8 @@ function Dropdown({
                 flex items-center justify-between
                 rounded-lg px-3 py-3
                 text-[14px]
-                font-semibold
+                font-medium
+                tracking-[-0.005em]
                 transition-colors
                 ${
                   active
@@ -567,7 +567,7 @@ function MobileMenu({
   ];
 
   return (
-    <div className="border-t border-[#E8ECEA] bg-white px-5 pb-5 pt-3 shadow-[0_10px_25px_rgba(23,33,29,0.08)] lg:hidden">
+    <div className="border-t border-white/10 bg-[#071A16]/95 px-5 pb-5 pt-3 shadow-[0_14px_32px_rgba(0,0,0,0.25)] backdrop-blur-2xl lg:hidden">
       <div className="space-y-1">
         {mobileItems.map((item) => (
           <Link
@@ -577,12 +577,13 @@ function MobileMenu({
             className={`
               relative flex h-11 items-center
               rounded-lg px-4
-              text-[14px]
-              font-semibold
+              text-[15px]
+              font-medium
+              tracking-[-0.01em]
               ${
                 item.active
-                  ? "bg-[#EDF7F3] text-[#087F5B]"
-                  : "text-[#26342E] hover:bg-[#F4F8F6]"
+                  ? "bg-[#F4A934]/15 text-[#FFD078]"
+                  : "text-white/85 hover:bg-white/[0.08] hover:text-[#FFD078]"
               }
             `}
           >
@@ -590,7 +591,7 @@ function MobileMenu({
               {item.label}
 
               {item.active && (
-                <span className="absolute -bottom-[5px] left-0 right-0 h-[2px] rounded-full bg-[#087F5B]" />
+                <span className="absolute -bottom-[5px] left-0 right-0 h-[2px] rounded-full bg-[#F4A934]" />
               )}
             </span>
           </Link>
@@ -599,11 +600,11 @@ function MobileMenu({
 
       {/* Mobile buttons */}
 
-      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[#EDF1EF] pt-4">
+      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-white/10 pt-4">
         <Link
           href="/login"
           onClick={onClose}
-          className="flex h-10 items-center justify-center rounded-md border border-[#8BBEAD] text-[14px] font-semibold text-[#087F5B]"
+          className="flex h-10 items-center justify-center rounded-md border border-white/35 bg-white/[0.05] text-[14px] font-semibold tracking-[-0.01em] text-white transition-colors hover:border-[#FFD078]/70 hover:text-[#FFD078]"
         >
           Login
         </Link>
@@ -611,7 +612,7 @@ function MobileMenu({
         <Link
           href="/signup"
           onClick={onClose}
-          className="flex h-10 items-center justify-center rounded-md bg-[#087F5B] text-[14px] font-semibold text-white"
+          className="flex h-10 items-center justify-center rounded-md bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_7px_18px_rgba(217,134,31,0.25)]"
         >
           Get Started
         </Link>

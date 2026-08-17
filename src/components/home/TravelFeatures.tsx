@@ -60,21 +60,13 @@ export default function TravelFeatures() {
             FEATURES
         ====================================================== */}
 
-        <div
-          className="
-            mt-7
-            grid
-            grid-cols-1
-            gap-7
-            sm:grid-cols-2
-            lg:grid-cols-5
-            lg:gap-4
-          "
-        >
-          {features.map((feature) => (
-            <FeatureItem key={feature.title} feature={feature} />
-          ))}
-        </div>
+        {/* FEATURES */}
+
+<div className="mt-7 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-5 lg:gap-4">
+  {features.map((feature) => (
+    <FeatureItem key={feature.title} feature={feature} />
+  ))}
+</div>
       </div>
     </section>
   );

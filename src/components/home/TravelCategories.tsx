@@ -114,7 +114,6 @@ export default function TravelCategories() {
     <section className="relative bg-gradient-to-b from-white via-[#FBFCFA] to-[#F4F8F5]">
       <div className="pointer-events-none absolute -left-28 top-36 h-72 w-72 rounded-full bg-[#087F5B]/[0.06] blur-[100px]" />
       <div className="pointer-events-none absolute -right-24 top-64 h-72 w-72 rounded-full bg-[#F4B942]/[0.08] blur-[110px]" />
-
       <div className="mx-auto max-w-[1440px] px-5 pb-12 sm:px-8 lg:px-12 xl:px-16">
         {/* TRUST / VALUE BAR */}
 

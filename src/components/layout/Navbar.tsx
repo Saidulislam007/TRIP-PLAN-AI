@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Heart, Menu, Plane, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -103,13 +104,18 @@ export default function Navbar() {
   }, [pathname]);
 
   return (
-    <header className="fixed left-0 top-0 z-50 w-full bg-transparent font-sans antialiased">
+    <header className="fixed inset-x-0 top-0 z-50 w-full bg-transparent px-3 pt-2 font-sans antialiased sm:px-5 sm:pt-3">
       {/* ========================================================
           MAIN NAVBAR
       ======================================================== */}
 
-      <nav className="h-[74px] border-b border-white/10 bg-[#071A16]/55 shadow-[0_10px_30px_rgba(0,0,0,0.18)] backdrop-blur-xl">
-        <div className="relative mx-auto flex h-full max-w-[1440px] items-center px-5 sm:px-8 lg:px-10">
+      <motion.nav
+        initial={{ opacity: 0, y: -22, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto h-[64px] w-full max-w-[1420px] rounded-[22px] border border-white/65 bg-white/[0.74] shadow-[0_14px_40px_rgba(7,26,22,0.14),0_3px_10px_rgba(7,26,22,0.06),inset_0_1px_0_rgba(255,255,255,0.88)] backdrop-blur-2xl sm:rounded-full"
+      >
+        <div className="relative mx-auto flex h-full w-full items-center px-3 sm:px-5 lg:px-7">
           {/* ====================================================
               LOGO
           ==================================================== */}
@@ -134,7 +140,7 @@ export default function Navbar() {
 
               {/* Logo text */}
 
-              <span className="text-[18px] font-extrabold leading-none tracking-[-0.035em] text-white transition-colors duration-300 group-hover:text-[#FFD078] sm:text-[20px]">
+              <span className="text-[18px] font-extrabold leading-none tracking-[-0.035em] text-[#17332A] transition-colors duration-300 group-hover:text-[#087F5B] sm:text-[20px]">
                 TripPlan <span className="text-[#D88928]">AI</span>
               </span>
             </div>
@@ -170,8 +176,8 @@ export default function Navbar() {
                   transition-colors duration-200
                   ${
                     isExploreActive || exploreOpen
-                      ? "text-[#FFD078]"
-                      : "text-white/88 hover:text-[#FFD078]"
+                      ? "text-[#087F5B]"
+                      : "text-[#30483F] hover:text-[#B86D1B]"
                   }
                 `}
               >
@@ -251,8 +257,8 @@ export default function Navbar() {
                   transition-colors duration-200
                   ${
                     isInspirationActive || inspirationOpen
-                      ? "text-[#FFD078]"
-                      : "text-white/88 hover:text-[#FFD078]"
+                      ? "text-[#087F5B]"
+                      : "text-[#30483F] hover:text-[#B86D1B]"
                   }
                 `}
               >
@@ -283,6 +289,12 @@ export default function Navbar() {
                 />
               )}
             </div>
+
+            <NavItem
+              href="/about"
+              label="About"
+              active={pathname === "/about" || pathname.startsWith("/about/")}
+            />
           </div>
 
           {/* ====================================================
@@ -304,8 +316,8 @@ export default function Navbar() {
                 transition-colors duration-200
                 ${
                   isSearchActive
-                    ? "bg-[#F4A934]/15 text-[#FFD078]"
-                    : "text-white/85 hover:bg-white/10 hover:text-[#FFD078]"
+                    ? "bg-[#087F5B]/10 text-[#087F5B]"
+                    : "text-[#476057] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
                 }
               `}
             >
@@ -324,8 +336,8 @@ export default function Navbar() {
                 transition-colors duration-200
                 ${
                   isWishlistActive
-                    ? "bg-[#F4A934]/15 text-[#FFD078]"
-                    : "text-white/85 hover:bg-white/10 hover:text-[#FFD078]"
+                    ? "bg-[#087F5B]/10 text-[#087F5B]"
+                    : "text-[#476057] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
                 }
               `}
             >
@@ -336,7 +348,7 @@ export default function Navbar() {
 
             <Link
               href="/login"
-              className="ml-4 flex h-[38px] items-center justify-center rounded-[7px] border border-white/35 bg-white/[0.06] px-[16px] text-[14px] font-semibold tracking-[-0.01em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.10)] transition-all duration-200 hover:border-[#FFD078]/70 hover:bg-white/10 hover:text-[#FFD078]"
+              className="ml-4 flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
             >
               Login
             </Link>
@@ -345,7 +357,7 @@ export default function Navbar() {
 
             <Link
               href="/signup"
-              className="ml-[9px] flex h-[38px] items-center justify-center rounded-[7px] border border-[#FFD078]/45 bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_8px_22px_rgba(217,134,31,0.28),inset_0_1px_0_rgba(255,255,255,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105"
+              className="ml-[9px] flex h-[38px] items-center justify-center rounded-full border border-[#FFD078]/55 bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] px-[18px] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_8px_22px_rgba(217,134,31,0.28),inset_0_1px_0_rgba(255,255,255,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_11px_28px_rgba(217,134,31,0.36)]"
             >
               Get Started
             </Link>
@@ -359,7 +371,7 @@ export default function Navbar() {
             <Link
               href="/search"
               aria-label="Search"
-              className="flex h-9 w-9 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/10 hover:text-[#FFD078]"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-[#385047] transition-colors hover:bg-[#087F5B]/10 hover:text-[#087F5B]"
             >
               <Search size={20} strokeWidth={1.8} />
             </Link>
@@ -368,24 +380,26 @@ export default function Navbar() {
               type="button"
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               onClick={() => setMobileMenuOpen((prev) => !prev)}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-white/90 transition-colors hover:bg-white/10 hover:text-[#FFD078]"
+              className="flex h-9 w-9 items-center justify-center rounded-full text-[#385047] transition-colors hover:bg-[#087F5B]/10 hover:text-[#087F5B]"
             >
               {mobileMenuOpen ? <X size={21} /> : <Menu size={21} />}
             </button>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* ========================================================
           MOBILE MENU
       ======================================================== */}
 
-      {mobileMenuOpen && (
-        <MobileMenu
-          pathname={pathname}
-          onClose={() => setMobileMenuOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <MobileMenu
+            pathname={pathname}
+            onClose={() => setMobileMenuOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </header>
   );
 }
@@ -408,7 +422,7 @@ function NavItem({ href, label, active = false }: NavItemProps) {
         font-medium
         tracking-[-0.01em]
         transition-colors duration-200
-        ${active ? "text-[#FFD078]" : "text-white/88 hover:text-[#FFD078]"}
+        ${active ? "text-[#087F5B]" : "text-[#30483F] hover:text-[#B86D1B]"}
       `}
     >
       <span className="relative">
@@ -424,7 +438,7 @@ function NavItem({ href, label, active = false }: NavItemProps) {
             right-0
             h-[2px]
             rounded-full
-            bg-[#F4A934]
+            bg-gradient-to-r from-[#087F5B] to-[#F4A934]
             transition-all duration-200
             ${
               active
@@ -452,7 +466,12 @@ function Dropdown({
   onClose: () => void;
 }) {
   return (
-    <div className="absolute left-1/2 top-[61px] z-[100] w-[275px] -translate-x-1/2 rounded-xl border border-[#E2EAE6] bg-white p-2 shadow-[0_16px_40px_rgba(23,33,29,0.14)]">
+    <motion.div
+      initial={{ opacity: 0, y: -8, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+      className="absolute left-1/2 top-[57px] z-[100] w-[275px] -translate-x-1/2 rounded-2xl border border-white/80 bg-white/[0.94] p-2 shadow-[0_18px_45px_rgba(7,26,22,0.17),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-2xl"
+    >
       {/* Top accent */}
 
       <div className="absolute left-1/2 top-0 h-[2px] w-[40px] -translate-x-1/2 rounded-b-full bg-[#087F5B]" />
@@ -490,7 +509,7 @@ function Dropdown({
           );
         })}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -533,10 +552,21 @@ function MobileMenu({
       active:
         pathname === "/inspiration" || pathname.startsWith("/inspiration/"),
     },
+    {
+      label: "About",
+      href: "/about",
+      active: pathname === "/about" || pathname.startsWith("/about/"),
+    },
   ];
 
   return (
-    <div className="border-t border-white/10 bg-[#071A16]/95 px-5 pb-5 pt-3 shadow-[0_14px_32px_rgba(0,0,0,0.25)] backdrop-blur-2xl lg:hidden">
+    <motion.div
+      initial={{ opacity: 0, y: -12, scale: 0.985 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: -10, scale: 0.985 }}
+      transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      className="mx-auto mt-2 w-full max-w-[1420px] overflow-hidden rounded-[22px] border border-white/80 bg-white/[0.94] px-4 pb-4 pt-3 shadow-[0_18px_45px_rgba(7,26,22,0.18),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-2xl lg:hidden"
+    >
       <div className="space-y-1">
         {mobileItems.map((item) => (
           <Link
@@ -551,8 +581,8 @@ function MobileMenu({
               tracking-[-0.01em]
               ${
                 item.active
-                  ? "bg-[#F4A934]/15 text-[#FFD078]"
-                  : "text-white/85 hover:bg-white/[0.08] hover:text-[#FFD078]"
+                  ? "bg-[#087F5B]/10 text-[#087F5B]"
+                  : "text-[#30483F] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
               }
             `}
           >
@@ -569,11 +599,11 @@ function MobileMenu({
 
       {/* Mobile buttons */}
 
-      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-white/10 pt-4">
+      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[#DDE9E3] pt-4">
         <Link
           href="/login"
           onClick={onClose}
-          className="flex h-10 items-center justify-center rounded-md border border-white/35 bg-white/[0.05] text-[14px] font-semibold tracking-[-0.01em] text-white transition-colors hover:border-[#FFD078]/70 hover:text-[#FFD078]"
+          className="flex h-10 items-center justify-center rounded-full border border-[#B9CEC5] bg-white/70 text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] transition-colors hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
         >
           Login
         </Link>
@@ -581,11 +611,11 @@ function MobileMenu({
         <Link
           href="/signup"
           onClick={onClose}
-          className="flex h-10 items-center justify-center rounded-md bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_7px_18px_rgba(217,134,31,0.25)]"
+          className="flex h-10 items-center justify-center rounded-full bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_7px_18px_rgba(217,134,31,0.25)]"
         >
           Get Started
         </Link>
       </div>
-    </div>
+    </motion.div>
   );
 }

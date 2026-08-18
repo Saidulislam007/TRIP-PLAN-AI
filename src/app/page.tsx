@@ -1,3 +1,4 @@
+import AboutSection from "@/components/home/AboutSection";
 import HeroSection from "@/components/home/HeroSection";
 import PopularDestinations from "@/components/home/PopularDestinations";
 import TravelCategories from "@/components/home/TravelCategories";
@@ -14,6 +15,7 @@ export default function Home() {
       <TravelInsights />
       <TravelFeatures />
       <TravelJourney />
+      <AboutSection/>
     </div>
   );
 }

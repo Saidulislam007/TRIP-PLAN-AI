@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   Backpack,
@@ -52,7 +53,7 @@ const travelCategories: TravelCategory[] = [
     title: "Adventure",
     description: "For thrill seekers",
     slug: "adventure",
-    image: "/images/travel-hero.jpg",
+    image: "/images/categories/adventure.jpg",
     icon: <Compass size={18} strokeWidth={2.2} />,
     destinations: 24,
   },
@@ -60,7 +61,7 @@ const travelCategories: TravelCategory[] = [
     title: "Beach",
     description: "Sun, sea & relaxation",
     slug: "beach",
-    image: "/images/travel-hero.jpg",
+    image: "/images/categories/beach.jpg",
     icon: <Waves size={18} strokeWidth={2.2} />,
     destinations: 18,
   },
@@ -68,7 +69,7 @@ const travelCategories: TravelCategory[] = [
     title: "Family",
     description: "Trips everyone can enjoy",
     slug: "family",
-    image: "/images/travel-hero.jpg",
+    image: "/images/categories/family.jpg",
     icon: <Users size={18} strokeWidth={2.2} />,
     destinations: 15,
   },
@@ -76,7 +77,7 @@ const travelCategories: TravelCategory[] = [
     title: "Romantic",
     description: "Beautiful escapes for two",
     slug: "romantic",
-    image: "/images/travel-hero.jpg",
+    image: "/images/categories/romantic.jpg",
     icon: <Heart size={18} strokeWidth={2.2} />,
     destinations: 12,
   },
@@ -84,7 +85,7 @@ const travelCategories: TravelCategory[] = [
     title: "Backpacking",
     description: "Travel freely & independently",
     slug: "backpacking",
-    image: "/images/travel-hero.jpg",
+    image: "/images/categories/backpacking.jpg",
     icon: <Backpack size={18} strokeWidth={2.2} />,
     destinations: 20,
   },
@@ -92,28 +93,47 @@ const travelCategories: TravelCategory[] = [
     title: "Nature",
     description: "Green landscapes & peaceful places",
     slug: "nature",
-    image: "/images/travel-hero.jpg",
+    image: "/images/categories/nature.jpg",
     icon: <Leaf size={18} strokeWidth={2.2} />,
     destinations: 16,
   },
 ];
 
-const categoryLayoutClasses = [
-  "md:col-span-2 lg:col-span-2 lg:row-span-2",
-  "lg:col-start-3 lg:row-start-1",
-  "lg:col-start-3 lg:row-start-2",
-  "lg:col-start-1 lg:row-start-3",
-  "lg:col-start-2 lg:row-start-3",
-  "md:col-span-2 lg:col-span-1 lg:col-start-3 lg:row-start-3",
-];
-
 const revealEase = [0.22, 1, 0.36, 1] as const;
 
 export default function TravelCategories() {
+  const [activeCategory, setActiveCategory] = useState(0);
+  const [isCarouselPaused, setIsCarouselPaused] = useState(false);
+
+  useEffect(() => {
+    if (isCarouselPaused) return;
+
+    const autoplay = window.setInterval(() => {
+      setActiveCategory((current) =>
+        current === travelCategories.length - 1 ? 0 : current + 1,
+      );
+    }, 3600);
+
+    return () => window.clearInterval(autoplay);
+  }, [isCarouselPaused]);
+
+  const visibleCategories = [-2, -1, 0, 1, 2].map((offset) => {
+    const index =
+      (activeCategory + offset + travelCategories.length) %
+      travelCategories.length;
+
+    return {
+      category: travelCategories[index],
+      index,
+      offset,
+    };
+  });
+
   return (
     <section className="relative bg-gradient-to-b from-white via-[#FBFCFA] to-[#F4F8F5]">
       <div className="pointer-events-none absolute -left-28 top-36 h-72 w-72 rounded-full bg-[#087F5B]/[0.06] blur-[100px]" />
       <div className="pointer-events-none absolute -right-24 top-64 h-72 w-72 rounded-full bg-[#F4B942]/[0.08] blur-[110px]" />
+
       <div className="mx-auto max-w-[1440px] px-5 pb-12 sm:px-8 lg:px-12 xl:px-16">
         {/* TRUST / VALUE BAR */}
 
@@ -197,7 +217,7 @@ export default function TravelCategories() {
           </Link>
         </motion.div>
 
-        {/* ASYMMETRIC BENTO CATEGORY GRID */}
+        {/* 3D CATEGORY CAROUSEL */}
 
         <motion.div
           initial={{ opacity: 0, x: -12 }}
@@ -228,55 +248,167 @@ export default function TravelCategories() {
           </div>
         </motion.div>
 
-        <div className="mt-3 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-4 touch-pan-x overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mt-5 lg:grid lg:grid-cols-3 lg:grid-rows-[230px_230px_250px] lg:gap-5 lg:overflow-visible lg:pb-0">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.97 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.75, ease: revealEase }}
+          onMouseEnter={() => setIsCarouselPaused(true)}
+          onMouseLeave={() => setIsCarouselPaused(false)}
+          onFocusCapture={() => setIsCarouselPaused(true)}
+          onBlurCapture={() => setIsCarouselPaused(false)}
+          onKeyDown={(event) => {
+            if (event.key === "ArrowRight") {
+              setActiveCategory((current) =>
+                current === travelCategories.length - 1 ? 0 : current + 1,
+              );
+            }
+
+            if (event.key === "ArrowLeft") {
+              setActiveCategory((current) =>
+                current === 0 ? travelCategories.length - 1 : current - 1,
+              );
+            }
+          }}
+          className="relative mt-3 h-[390px] w-full overflow-hidden [perspective:1400px] sm:h-[445px] lg:mt-5 lg:h-[500px]"
+          role="region"
+          aria-label="Travel categories carousel"
+        >
+          <AnimatePresence initial={false}>
+            {visibleCategories.map(({ category, index, offset }) => {
+              const distance = Math.abs(offset);
+              const isActive = offset === 0;
+
+              return (
+                <motion.div
+                  key={category.slug}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: distance === 2 ? 0.58 : 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.48, ease: revealEase }}
+                  style={{ zIndex: travelCategories.length - distance }}
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center"
+                >
+                <motion.div
+                  drag={isActive ? "x" : false}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.16}
+                  onDragStart={() => setIsCarouselPaused(true)}
+                  onDragEnd={(_, info) => {
+                    setIsCarouselPaused(false);
+
+                    if (info.offset.x < -55 || info.velocity.x < -450) {
+                      setActiveCategory((current) =>
+                        current === travelCategories.length - 1
+                          ? 0
+                          : current + 1,
+                      );
+                    }
+
+                    if (info.offset.x > 55 || info.velocity.x > 450) {
+                      setActiveCategory((current) =>
+                        current === 0
+                          ? travelCategories.length - 1
+                          : current - 1,
+                      );
+                    }
+                  }}
+                  initial={false}
+                  animate={{
+                    x: `${offset * 84}%`,
+                    rotateY: offset === 0 ? 0 : offset < 0 ? 13 : -13,
+                    scale:
+                      distance === 0 ? 1 : distance === 1 ? 0.9 : 0.78,
+                    filter:
+                      distance === 0
+                        ? "brightness(1) saturate(1.06)"
+                        : "brightness(0.78) saturate(0.82)",
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 92,
+                    damping: 24,
+                    mass: 1.05,
+                    restDelta: 0.001,
+                    restSpeed: 0.001,
+                  }}
+                  style={{
+                    transformStyle: "preserve-3d",
+                    transformOrigin:
+                      offset < 0
+                        ? "right center"
+                        : offset > 0
+                          ? "left center"
+                          : "center center",
+                  }}
+                  className="pointer-events-auto h-[350px] w-[76vw] max-w-[300px] touch-pan-y sm:h-[400px] sm:w-[310px] sm:max-w-none lg:h-[455px] lg:w-[340px]"
+                >
+                  <Link
+                    href={`/destinations?category=${category.slug}`}
+                    aria-label={`${category.title}: ${category.destinations} destinations`}
+                    aria-current={isActive ? "true" : undefined}
+                    className="group relative block h-full overflow-hidden rounded-[22px] border border-white/45 bg-[#DDE9E3] shadow-[0_18px_44px_rgba(14,23,19,0.18)] outline-none transition-[border-color,box-shadow] duration-500 hover:border-[#FFD078]/75 hover:shadow-[0_24px_58px_rgba(14,23,19,0.24),0_0_30px_rgba(244,185,66,0.12)] focus-visible:ring-2 focus-visible:ring-[#F4B942] focus-visible:ring-offset-4"
+                  >
+                    <Image
+                      src={category.image}
+                      alt={category.title}
+                      fill
+                      sizes="(max-width: 640px) 76vw, (max-width: 1024px) 310px, 340px"
+                      className="object-cover saturate-[1.08] contrast-[1.02] transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#031D16]/90 via-black/[0.08] to-black/[0.04] transition-colors duration-500 group-hover:from-[#031D16]/82" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#087F5B]/[0.04] via-transparent to-[#F4B942]/[0.08] opacity-80 transition-opacity duration-500 group-hover:opacity-45" />
+
+                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5 sm:p-6">
+                      <div className="min-w-0 text-left text-white">
+                        <h3 className="truncate [font-family:Georgia,'Times_New_Roman',serif] text-[25px] font-normal leading-tight tracking-[-0.025em] [text-shadow:0_3px_20px_rgba(0,0,0,0.38)] sm:text-[29px]">
+                          {category.title}
+                        </h3>
+
+                        <p className="mt-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-[#FFE0A2] sm:text-[10px]">
+                          {category.destinations} destinations
+                        </p>
+                      </div>
+
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/55 bg-black/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-md transition-all duration-300 group-hover:rotate-[-12deg] group-hover:border-[#FFD078] group-hover:bg-[#F4B942] group-hover:text-[#17211D] sm:h-12 sm:w-12">
+                        <ArrowRight
+                          size={20}
+                          strokeWidth={1.6}
+                          className="-rotate-45"
+                        />
+                      </span>
+                    </div>
+                  </Link>
+                </motion.div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* CAROUSEL PAGINATION */}
+
+        <div className="mt-1 flex items-center justify-center gap-2 sm:mt-2">
           {travelCategories.map((category, index) => (
-            <motion.div
+            <button
               key={category.slug}
-              initial={{ opacity: 0, y: 30, scale: 0.985 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{
-                duration: 0.7,
-                delay: index * 0.08,
-                ease: revealEase,
-              }}
-              className={[
-                "w-full min-w-full shrink-0 snap-start lg:w-auto lg:min-w-0",
-                categoryLayoutClasses[index],
-              ].join(" ")}
+              type="button"
+              onClick={() => setActiveCategory(index)}
+              aria-label={`Show ${category.title}`}
+              aria-current={activeCategory === index ? "true" : undefined}
+              className="group flex h-5 items-center justify-center px-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#087F5B]/35"
             >
-              <Link
-                href={`/destinations?category=${category.slug}`}
-                className="group relative block h-full min-h-[270px] overflow-hidden rounded-xl bg-[#DDE9E3] shadow-[0_8px_24px_rgba(14,23,19,0.09)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_20px_42px_rgba(14,23,19,0.20)] md:min-h-[310px] lg:min-h-0"
-              >
-                <Image
-                  src={category.image}
-                  alt={category.title}
-                  fill
-                  sizes={index === 0 ? "(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 66vw" : "(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"}
-                  className="object-cover saturate-[1.08] contrast-[1.02] transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/[0.65] via-black/[0.08] to-transparent transition-colors duration-500 group-hover:from-black/[0.55]" />
-                <div className="absolute inset-0 bg-gradient-to-br from-[#087F5B]/[0.04] via-transparent to-[#F4B942]/[0.07] opacity-80 transition-opacity duration-500 group-hover:opacity-40" />
-
-                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 sm:p-6">
-                  <div className="min-w-0 text-left text-white">
-                    <h3 className={index === 0 ? "truncate [font-family:Georgia,'Times_New_Roman',serif] text-[24px] font-normal leading-tight tracking-[-0.025em] [text-shadow:0_3px_20px_rgba(0,0,0,0.35)] sm:text-[30px]" : "truncate [font-family:Georgia,'Times_New_Roman',serif] text-[20px] font-normal leading-tight tracking-[-0.02em] [text-shadow:0_3px_18px_rgba(0,0,0,0.35)] sm:text-[24px]"}>
-                      {category.title}
-                    </h3>
-
-                    <p className="mt-2 text-[9px] font-semibold uppercase tracking-[0.22em] text-[#FFE0A2] sm:text-[11px]">
-                      {category.destinations} destinations
-                    </p>
-                  </div>
-
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-white/55 bg-black/10 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] backdrop-blur-md transition-all duration-300 group-hover:rotate-[-12deg] group-hover:border-[#FFD078] group-hover:bg-[#F4B942] group-hover:text-[#17211D] sm:h-14 sm:w-14">
-                    <ArrowRight size={22} strokeWidth={1.5} className="-rotate-45" />
-                  </span>
-                </div>
-              </Link>
-            </motion.div>
+              <motion.span
+                animate={{
+                  width: activeCategory === index ? 24 : 6,
+                  backgroundColor:
+                    activeCategory === index ? "#087F5B" : "#BFD0C8",
+                }}
+                transition={{ duration: 0.3, ease: revealEase }}
+                className="h-1.5 rounded-full group-hover:bg-[#F4B942]"
+              />
+            </button>
           ))}
         </div>
 

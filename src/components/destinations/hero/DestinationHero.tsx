@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import DestinationSearch from "./DestinationSearch";
+import DestinationSearch from '@/components/destinations/listings/DestinationSearch';
 
 export default function DestinationHero() {
   return (

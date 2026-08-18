@@ -170,13 +170,13 @@ export default function HeroSection() {
 
                 {/* EXPLORE BUTTON */}
 
-                <Button
-                  as={Link}
-                  href="/destinations"
-                  className="!h-[48px] min-w-[92px] shrink-0 rounded-2xl border border-[#FFD078]/35 bg-gradient-to-br from-[#F6B84C] via-[#ECA23A] to-[#D88928] px-5 text-[12px] font-semibold tracking-[-0.005em] text-[#14211C] shadow-[0_8px_24px_rgba(229,151,43,0.30),inset_0_1px_0_rgba(255,255,255,0.34)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_12px_30px_rgba(229,151,43,0.38)] sm:text-[13px]"
-                >
-                  Explore
-                </Button>
+                <Link href="/destinations">
+                  <Button
+                    className="!h-[48px] min-w-[92px] shrink-0 rounded-2xl border border-[#FFD078]/35 bg-gradient-to-br from-[#F6B84C] via-[#ECA23A] to-[#D88928] px-5 text-[12px] font-semibold tracking-[-0.005em] text-[#14211C] shadow-[0_8px_24px_rgba(229,151,43,0.30),inset_0_1px_0_rgba(255,255,255,0.34)] transition-all duration-300 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_12px_30px_rgba(229,151,43,0.38)] sm:text-[13px]"
+                  >
+                    Explore
+                  </Button>
+                </Link>
               </div>
 
               {/* POPULAR DESTINATION CHIPS */}

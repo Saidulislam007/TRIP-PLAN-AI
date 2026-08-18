@@ -1,21 +1,127 @@
-export default function DestinationDetailsPage({ params }: { params: { slug: string } }) {
+import { getDestinationBySlug } from "@/data/destinationRegistry";
+import DestinationHeroDetails from "@/components/destinations/hero/DestinationHeroDetails";
+import DestinationStatsStrip from "@/components/destinations/hero/DestinationStatsStrip";
+import DestinationStickyNav from "@/components/destinations/layout/DestinationStickyNav";
+import DestinationOverview from "@/components/destinations/content/DestinationOverview";
+import WhyLoveIt from "@/components/destinations/content/WhyLoveIt";
+import AIDestinationGuide from "@/components/destinations/ai/AIDestinationGuide";
+import BestTimeToVisit from "@/components/destinations/content/BestTimeToVisit";
+import ThingsToDo from "@/components/destinations/content/ThingsToDo";
+import TopPlacesToExplore from "@/components/destinations/content/TopPlacesToExplore";
+import MarineDriveFeature from "@/components/destinations/content/MarineDriveFeature";
+import RecommendedItinerary from "@/components/destinations/content/RecommendedItinerary";
+import BudgetEstimator from "@/components/destinations/interactive/BudgetEstimator";
+import AccommodationSection from "@/components/destinations/content/AccommodationSection";
+import FoodDiningSection from "@/components/destinations/content/FoodDiningSection";
+import ReviewsSection from "@/components/destinations/reviews/ReviewsSection";
+import PhotoGallery from "@/components/destinations/content/PhotoGallery";
+import TravelInfoTabs from "@/components/destinations/info/TravelInfoTabs";
+import SmartTravelTips from "@/components/destinations/info/SmartTravelTips";
+import AITravelAssistant from "@/components/destinations/ai/AITravelAssistant";
+import RelatedDestinations from "@/components/destinations/layout/RelatedDestinations";
+import FinalCTA from "@/components/destinations/layout/FinalCTA";
+import StickyCTAs from "@/components/destinations/layout/StickyCTAs";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+
+export default async function DestinationDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  
+  const data = getDestinationBySlug(slug);
+  
+  if (!data) {
+    return notFound();
+  }
+
   return (
-    <div className="min-h-screen bg-[#F7F7F2] flex items-center justify-center p-8">
-      <div className="bg-white p-12 rounded-2xl border border-[#E2E7E3] text-center max-w-2xl w-full shadow-[0_8px_30px_rgba(23,33,29,0.06)]">
-        <h1 className="text-3xl font-serif font-bold text-[#17211D] mb-4">Destination Details</h1>
-        <p className="text-[16px] text-[#66736D] mb-8 font-medium">
-          You have navigated to the details page for: <span className="text-[#087F5B] font-bold">{params.slug}</span>
-        </p>
-        <p className="text-[14px] text-[#52615A] mb-8">
-          This is a placeholder page for the destination details. The full details implementation would display the specific imagery, reviews, map location, and itinerary planning tools for this destination.
-        </p>
-        <a 
-          href="/destinations"
-          className="inline-block bg-[#087F5B] text-white px-8 py-3 rounded-lg font-bold hover:bg-[#065F46] transition-colors"
-        >
-          ← Back to Destinations
-        </a>
+    <div className="min-h-screen bg-[#F7F7F2]">
+      <div className="w-full bg-[#F4A62A] text-[#17211D] py-2 px-4 text-sm font-medium flex justify-between items-center max-w-[1440px] mx-auto">
+        <div className="flex items-center gap-2">
+          <span>✨</span> Plan Smarter. Travel Better with AI.
+        </div>
+        <div className="hidden md:flex items-center gap-4">
+          <span>New traveler insights & features are here!</span>
+          <a href="#" className="font-bold hover:underline">Explore now →</a>
+        </div>
       </div>
+
+      <DestinationHeroDetails data={data} />
+      <DestinationStatsStrip 
+        rating={data.rating}
+        reviews={data.reviewCount}
+        recommendedStay={data.recommendedStay}
+        estimatedBudget={data.estimatedBudget}
+        popularSeason={data.popularSeason}
+      />
+      <DestinationStickyNav />
+
+      <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-12 md:py-16">
+        <div className="flex flex-col lg:flex-row gap-12">
+          
+          <div className="w-full lg:w-[68%] flex flex-col gap-16">
+            
+            <DestinationOverview data={data.overview} />
+            
+            <section id="ai-insights" className="scroll-mt-32">
+              <AIDestinationGuide data={data.aiGuide} />
+            </section>
+
+            <section className="scroll-mt-32">
+              <BestTimeToVisit data={data.bestTime} />
+            </section>
+
+            <section id="things-to-do" className="scroll-mt-32">
+              <ThingsToDo data={data.thingsToDo} />
+            </section>
+
+            <section id="places" className="scroll-mt-32">
+              <TopPlacesToExplore data={data.placesToExplore} />
+              <MarineDriveFeature data={data.marineDriveFeature} />
+            </section>
+
+            <section id="stay" className="scroll-mt-32">
+              <AccommodationSection data={data.hotels} />
+            </section>
+
+            <section id="food" className="scroll-mt-32">
+              <FoodDiningSection data={data.foods} />
+            </section>
+
+            <section id="reviews" className="scroll-mt-32">
+              <ReviewsSection data={data.reviews} />
+            </section>
+            
+            <section className="scroll-mt-32">
+              <PhotoGallery data={data.gallery} />
+            </section>
+
+            <section id="travel-info" className="scroll-mt-32">
+              <TravelInfoTabs data={data.travelInfo} />
+            </section>
+
+          </div>
+
+          <div className="w-full lg:w-[32%] flex flex-col gap-8">
+             <WhyLoveIt data={data.whyLoveIt} />
+             <RecommendedItinerary data={data.itinerary} />
+             <BudgetEstimator data={data.budget} />
+             <SmartTravelTips data={data.travelTips} />
+          </div>
+          
+        </div>
+        
+        <RelatedDestinations data={data.relatedDestinations} />
+        
+        <FinalCTA name={data.name} />
+
+      </div>
+
+      <StickyCTAs 
+        name={data.name}
+        aiMatch={data.aiMatch}
+        priceFrom={data.estimatedBudget}
+      />
+      <AITravelAssistant />
     </div>
   );
 }

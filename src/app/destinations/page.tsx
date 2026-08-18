@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import DestinationHero from "@/components/destinations/DestinationHero";
-import AIRecommendationBanner from "@/components/destinations/AIRecommendationBanner";
-import DestinationToolbar from "@/components/destinations/DestinationToolbar";
-import DestinationSidebar from "@/components/destinations/DestinationSidebar";
-import FeaturedDestinations from "@/components/destinations/FeaturedDestinations";
-import AllDestinations from "@/components/destinations/AllDestinations";
-import TrendingDestinations from "@/components/destinations/TrendingDestinations";
-import ExploreByExperience from "@/components/destinations/ExploreByExperience";
-import MapCompareSection from "@/components/destinations/MapCompareSection";
-import ReviewIntelligence from "@/components/destinations/ReviewIntelligence";
+import DestinationHero from "@/components/destinations/hero/DestinationHero";
+import AIRecommendationBanner from "@/components/destinations/ai/AIRecommendationBanner";
+import DestinationToolbar from "@/components/destinations/layout/DestinationToolbar";
+import DestinationSidebar from "@/components/destinations/layout/DestinationSidebar";
+import FeaturedDestinations from "@/components/destinations/listings/FeaturedDestinations";
+import AllDestinations from "@/components/destinations/listings/AllDestinations";
+import TrendingDestinations from "@/components/destinations/listings/TrendingDestinations";
+import ExploreByExperience from "@/components/destinations/listings/ExploreByExperience";
+import MapCompareSection from "@/components/destinations/interactive/MapCompareSection";
+import ReviewIntelligence from "@/components/destinations/reviews/ReviewIntelligence";
 import { destinationsData } from "@/data/destinations";
 
 export default function DestinationsPage() {

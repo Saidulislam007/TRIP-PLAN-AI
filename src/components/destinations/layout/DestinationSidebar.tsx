@@ -263,11 +263,11 @@ export default function DestinationSidebar({ isOpen, onClose }: DestinationSideb
         </div>
         <SidebarContent />
 
-        <div className="sticky bottom-0 bg-gradient-to-t from-[#F7F7F2] via-[#F7F7F2] to-transparent pb-4 pt-6 mt-4 z-10 flex flex-col gap-2">
-          <button className="w-full py-2.5 rounded-lg bg-[#0B2522] text-white font-bold text-[13px] hover:bg-[#113833] transition-colors shadow-sm">
+        <div className="mt-8 pt-6 border-t border-[#E2E7E3] pb-4 flex flex-col gap-3">
+          <button className="w-full py-3 rounded-xl bg-[#0B2522] text-white font-bold text-[14px] hover:bg-[#113833] transition-colors shadow-md">
             Apply Filters
           </button>
-          <button className="w-full py-2.5 rounded-lg bg-white border border-[#C7D3CE] text-[#0B2522] font-bold text-[13px] hover:bg-[#F8FAF9] transition-colors shadow-sm">
+          <button className="w-full py-3 rounded-xl bg-white border border-[#C7D3CE] text-[#0B2522] font-bold text-[14px] hover:bg-[#F8FAF9] hover:border-[#0B2522] transition-colors">
             Clear All
           </button>
         </div>

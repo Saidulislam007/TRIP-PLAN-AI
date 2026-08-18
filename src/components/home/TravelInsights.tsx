@@ -26,28 +26,28 @@ type RecommendedDestination = {
 
 const recommendedDestinations: RecommendedDestination[] = [
   {
-    name: "Bandarban",
+    name: "Cox's Bazar",
     match: 92,
     budget: "৳6,800",
-    image: "/images/destinations/bandarban.jpg",
+    image: "/assets/Coxs/cover-1.jpg",
   },
   {
-    name: "Kuakata",
+    name: "Saint Martin",
     match: 91,
     budget: "৳5,400",
-    image: "/images/destinations/kuakata.jpg",
+    image: "/assets/Saintmartin/cover-1.jpg",
   },
   {
-    name: "Rangamati",
+    name: "Sundarban",
     match: 90,
     budget: "৳6,500",
-    image: "/images/destinations/rangamati.jpg",
+    image: "/assets/Sundarban/cover-1.jpg",
   },
   {
     name: "Sylhet",
     match: 89,
     budget: "৳7,200",
-    image: "/images/destinations/sylhet.jpg",
+    image: "/assets/Sylhet/cover-1.jpg",
   },
 ];
 
@@ -231,7 +231,7 @@ function AIReviewIntelligence() {
 
         <div className="relative h-[42px] w-[78px] shrink-0 overflow-hidden rounded-md">
           <Image
-            src="/images/destinations/coxs-bazar.jpg"
+            src="/assets/Coxs/cover-1.jpg"
             alt="Cox's Bazar"
             fill
             sizes="78px"

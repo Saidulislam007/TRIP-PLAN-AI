@@ -26,16 +26,15 @@ type DropdownItem = {
 
 const exploreItems: DropdownItem[] = [
   {
-    label: "Popular Destinations",
-    href: "/destinations",
-  },
-  {
     label: "Travel Categories",
     href: "/categories",
   },
+];
+
+const destinationItems: DropdownItem[] = [
   {
-    label: "Recommended For You",
-    href: "/recommendations",
+    label: "Popular Destinations",
+    href: "/destinations",
   },
 ];
 
@@ -63,6 +62,7 @@ export default function Navbar() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [exploreOpen, setExploreOpen] = useState(false);
+  const [destinationsOpen, setDestinationsOpen] = useState(false);
   const [inspirationOpen, setInspirationOpen] = useState(false);
 
   /* ============================================================
@@ -98,44 +98,12 @@ export default function Navbar() {
   useEffect(() => {
     setMobileMenuOpen(false);
     setExploreOpen(false);
+    setDestinationsOpen(false);
     setInspirationOpen(false);
   }, [pathname]);
 
   return (
     <header className="fixed left-0 top-0 z-50 w-full bg-transparent font-sans antialiased">
-      {/* ========================================================
-          TOP ANNOUNCEMENT BAR
-      ======================================================== */}
-
-      <div className="h-[27px] w-full border-b border-white/[0.08] bg-[#071A16]/70 text-white shadow-[0_4px_18px_rgba(0,0,0,0.10)] backdrop-blur-xl">
-        <div className="mx-auto flex h-full max-w-[1440px] items-center px-5 sm:px-8 lg:px-10">
-          {/* Center announcement */}
-
-          <div className="flex flex-1 items-center justify-center gap-1.5">
-            <span className="text-[10px]">✨</span>
-
-            <p className="text-[11px] font-medium tracking-[0.015em]">
-              Plan Smarter. Travel Better with AI.
-            </p>
-          </div>
-
-          {/* Right announcement */}
-
-          <Link
-            href="/inspiration"
-            className="hidden items-center gap-2 text-[11px] font-medium tracking-[0.01em] text-white/95 transition-colors hover:text-white sm:flex"
-          >
-            <span>New traveler insights & features are here!</span>
-
-            <span className="text-white/30">|</span>
-
-            <span>Explore now</span>
-
-            <span className="text-[12px]">→</span>
-          </Link>
-        </div>
-      </div>
-
       {/* ========================================================
           MAIN NAVBAR
       ======================================================== */}
@@ -190,6 +158,7 @@ export default function Navbar() {
                 aria-expanded={exploreOpen}
                 onClick={() => {
                   setExploreOpen((prev) => !prev);
+                  setDestinationsOpen(false);
                   setInspirationOpen(false);
                 }}
                 className={`
@@ -270,8 +239,8 @@ export default function Navbar() {
                 aria-expanded={inspirationOpen}
                 onClick={() => {
                   setInspirationOpen((prev) => !prev);
-
                   setExploreOpen(false);
+                  setDestinationsOpen(false);
                 }}
                 className={`
                   relative flex h-full items-center

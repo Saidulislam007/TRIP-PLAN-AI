@@ -386,4 +386,5 @@ function DestinationCard({
       </div>
     </motion.article>
   );
+  
 }

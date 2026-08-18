@@ -28,7 +28,7 @@ type DropdownItem = {
 const exploreItems: DropdownItem[] = [
   {
     label: "Travel Categories",
-    href: "/categories",
+    href: "/travel-categories",
   },
 ];
 

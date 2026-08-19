@@ -20,7 +20,8 @@ export const jaflongData = {
       "Jaflong is one of the most stunning destinations in Bangladesh, famous for its rivers and hills.",
       "Whether you're looking for an adventure or a peaceful retreat, Jaflong offers breathtaking landscapes and unforgettable experiences for every traveler."
     ],
-    image: "/assets/Jaflong/cover-1.jpg"
+    image: "/assets/Jaflong/cover-1.jpg",
+    videoUrl: "https://www.youtube.com/embed/KvJGjTE3RKo?autoplay=1&controls=1&mute=0"
   },
 
   whyLoveIt: [
@@ -45,21 +46,41 @@ export const jaflongData = {
   ],
 
   thingsToDo: [
-    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Jaflong/cover-1.jpg", type: "Nature" },
-    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Jaflong/cover-1.jpg", type: "Culinary" },
-    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Jaflong/cover-1.jpg", type: "Creative" }
+    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Jaflong/Sightseeing.jfif", type: "Nature" },
+    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Jaflong/Thinking/local food.jpg", type: "Culinary" },
+    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Jaflong/Photography.jpg", type: "Creative" }
   ],
 
   placesToExplore: [
     {
       id: 1,
-      slug: "jaflong-main-spot",
-      title: "Jaflong Main Spot",
-      description: "The most famous attraction here.",
-      longDescription: "This is the heart of Jaflong, offering incredible views of rivers and hills. Visitors from all over the country come here to experience the serene beauty and majestic atmosphere.",
+      slug: "sangrampunji-waterfall",
+      title: "Sangrampunji Waterfall",
+      description: "A stunning waterfall cascading down the hills.",
+      longDescription: "Located very close to the Jaflong zero point, Sangrampunji Waterfall (also known as Mayabi Waterfall) offers a refreshing escape. The lush green surroundings and the cold mountain water make it a perfect spot for nature lovers.",
+      image: "/assets/Jaflong/cover-1.jpg",
+      rating: 4.7,
+      tags: ["Nature", "Scenic", "Must Visit"]
+    },
+    {
+      id: 2,
+      slug: "piyain-river",
+      title: "Piyain River",
+      description: "Crystal clear water with colorful stones.",
+      longDescription: "The Piyain River is famous for its transparent water and the collection of beautiful, colorful stones at the riverbed. Taking a boat ride here while viewing the distant Meghalaya mountains is an unforgettable experience.",
       image: "/assets/Jaflong/cover-1.jpg",
       rating: 4.8,
-      tags: ["Must Visit", "Scenic"]
+      tags: ["Boat Ride", "Photography", "Relaxation"]
+    },
+    {
+      id: 3,
+      slug: "khasi-village",
+      title: "Khasi Village",
+      description: "Experience the unique lifestyle of the Khasi tribe.",
+      longDescription: "Visit the nearby Khasi village to learn about the indigenous Khasi people, their unique matriarchal society, and their traditional betel leaf cultivation. It provides a rich cultural perspective to your trip.",
+      image: "/assets/Jaflong/cover-1.jpg",
+      rating: 4.6,
+      tags: ["Culture", "Must Visit", "Photography"]
     }
   ],
 
@@ -85,13 +106,13 @@ export const jaflongData = {
   },
 
   hotels: [
-    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Jaflong/cover-1.jpg", amenities: ["Views", "WiFi", "Pool"] },
-    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Jaflong/cover-1.jpg", amenities: ["Nature Walk", "Breakfast"] }
+    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Jaflong/Rersort/Premium Resort.jfif", amenities: ["Views", "WiFi", "Pool"] },
+    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Jaflong/Rersort/Eco Lodge.jpg", amenities: ["Nature Walk", "Breakfast"] }
   ],
 
   foods: [
-    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Jaflong/cover-1.jpg", type: "Lunch" },
-    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Jaflong/cover-1.jpg", type: "Dinner" }
+    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Jaflong/Taste/Traditional Thali.jfif", type: "Lunch" },
+    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Jaflong/BBQ Dinner.jfif", type: "Dinner" }
   ],
 
   reviews: {
@@ -99,8 +120,8 @@ export const jaflongData = {
     count: 850,
     breakdown: { 5: 60, 4: 30, 3: 5, 2: 3, 1: 2 },
     list: [
-      { id: 1, name: "Sarah M.", avatar: "/assets/Jaflong/cover-1.jpg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The rivers and hills are mesmerizing." },
-      { id: 2, name: "Rahul D.", avatar: "/assets/Jaflong/cover-1.jpg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Nature." }
+      { id: 1, name: "Sarah M.", avatar: "/assets/avatar-1.svg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The rivers and hills are mesmerizing." },
+      { id: 2, name: "Rahul D.", avatar: "/assets/avatar-2.svg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Nature." }
     ],
     aiSummary: {
       loved: ["Natural beauty", "Local food", "Peaceful environment", "Friendly locals", "Stunning landscapes"],
@@ -111,9 +132,9 @@ export const jaflongData = {
 
   gallery: [
     "/assets/Jaflong/cover-1.jpg",
-    "/assets/Jaflong/cover-1.jpg",
-    "/assets/Jaflong/cover-1.jpg",
-    "/assets/Jaflong/cover-1.jpg"
+    "/assets/Jaflong/Photography.jpg",
+    "/assets/Jaflong/Sightseeing.jfif",
+    "/assets/Jaflong/Thinking/local food.jpg"
   ],
 
   travelInfo: {
@@ -133,6 +154,6 @@ export const jaflongData = {
   ],
 
   relatedDestinations: [
-    { slug: "coxs-bazar", name: "Cox's Bazar", rating: 4.8, aiMatch: 94, budget: "৳8,500", image: "/assets/Coxs/cover-1.jpg" }
+    { slug: "jaflong", name: "Jaflong", rating: 4.8, aiMatch: 94, budget: "৳8,500", image: "/assets/Jaflong/cover-1.jpg" }
   ]
 };

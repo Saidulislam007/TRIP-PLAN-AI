@@ -5,7 +5,7 @@ export const kuakataData = {
   country: "Bangladesh",
   subtitle: "The Daughter of the Sea.",
   description: "Discover Kuakata through sunrises and beaches. Experience the best of what nature has to offer.",
-  heroImage: "/assets/Kuakata/cover-1.jpg",
+  heroImage: "/assets/Kuakata/image 1.webp",
   rating: 4.7,
   reviewCount: "850",
   aiMatch: 92,
@@ -20,7 +20,8 @@ export const kuakataData = {
       "Kuakata is one of the most stunning destinations in Bangladesh, famous for its sunrises and beaches.",
       "Whether you're looking for an adventure or a peaceful retreat, Kuakata offers breathtaking landscapes and unforgettable experiences for every traveler."
     ],
-    image: "/assets/Kuakata/cover-1.jpg"
+    image: "/assets/Kuakata/image 1.webp",
+    videoUrl: "https://www.youtube.com/embed/L82DjOsPcwM?autoplay=1&controls=1&mute=0"
   },
 
   whyLoveIt: [
@@ -45,35 +46,55 @@ export const kuakataData = {
   ],
 
   thingsToDo: [
-    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Kuakata/cover-1.jpg", type: "Nature" },
-    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Kuakata/cover-1.jpg", type: "Culinary" },
-    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Kuakata/cover-1.jpg", type: "Creative" }
+    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Kuakata/thinking/Sightseeing.webp", type: "Nature" },
+    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Kuakata/thinking/local food.jfif", type: "Culinary" },
+    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Kuakata/thinking/Photography.webp", type: "Creative" }
   ],
 
   placesToExplore: [
     {
       id: 1,
-      slug: "kuakata-main-spot",
-      title: "Kuakata Main Spot",
-      description: "The most famous attraction here.",
-      longDescription: "This is the heart of Kuakata, offering incredible views of sunrises and beaches. Visitors from all over the country come here to experience the serene beauty and majestic atmosphere.",
-      image: "/assets/Kuakata/cover-1.jpg",
+      slug: "gangamati-reserved-forest",
+      title: "Gangamati Reserved Forest",
+      description: "An evergreen mangrove forest by the sea.",
+      longDescription: "Located on the eastern side of Kuakata beach, Gangamati is a dense mangrove forest that protects the coast. You can spot various species of birds, wild fowls, and monkeys here.",
+      image: "/assets/Kuakata/image 2.jpg",
+      rating: 4.7,
+      tags: ["Nature", "Photography", "Adventure"]
+    },
+    {
+      id: 2,
+      slug: "fatrar-chor",
+      title: "Fatrar Chor",
+      description: "A beautiful island that is part of the Sundarbans.",
+      longDescription: "Fatrar Chor requires a scenic boat ride to reach. It is a part of the extended Sundarbans mangrove forest, where you can walk through the dense trees and enjoy the absolute tranquility of nature.",
+      image: "/assets/Kuakata/image 3.jpg",
+      rating: 4.6,
+      tags: ["Boat Ride", "Nature", "Relaxation"]
+    },
+    {
+      id: 3,
+      slug: "red-crab-beach",
+      title: "Red Crab Beach (Lal Kakrar Chor)",
+      description: "Thousands of red crabs decorating the sandy shore.",
+      longDescription: "A short distance from the main beach lies a secluded area where thousands of red crabs crawl around the sand, making it look like a red carpet. It is an amazing natural phenomenon perfect for photography.",
+      image: "/assets/Kuakata/image 4.jfif",
       rating: 4.8,
-      tags: ["Must Visit", "Scenic"]
+      tags: ["Scenic", "Wildlife", "Must Visit"]
     }
   ],
 
   marineDriveFeature: {
     title: "The Journey to Kuakata",
     description: "The road to Kuakata is as beautiful as the destination itself.",
-    image: "/assets/Kuakata/cover-1.jpg",
+    image: "/assets/Kuakata/image 2.jpg",
     highlights: ["Scenic routes", "Photo stops", "Nature views", "Local life", "Memorable journey"]
   },
 
   itinerary: [
-    { day: "DAY 01", title: "Arrival & Exploration", description: "Check in and explore nearby areas.", image: "/assets/Kuakata/cover-1.jpg" },
-    { day: "DAY 02", title: "Main Attractions", description: "Visit the top spots.", image: "/assets/Kuakata/cover-1.jpg" },
-    { day: "DAY 03", title: "Relaxation & Departure", description: "Enjoy a quiet morning before leaving.", image: "/assets/Kuakata/cover-1.jpg" }
+    { day: "DAY 01", title: "Arrival & Exploration", description: "Check in and explore nearby areas.", image: "/assets/Kuakata/image 1.webp" },
+    { day: "DAY 02", title: "Main Attractions", description: "Visit the top spots.", image: "/assets/Kuakata/image 2.jpg" },
+    { day: "DAY 03", title: "Relaxation & Departure", description: "Enjoy a quiet morning before leaving.", image: "/assets/Kuakata/image 3.webp" }
   ],
 
   budget: {
@@ -85,13 +106,13 @@ export const kuakataData = {
   },
 
   hotels: [
-    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Kuakata/cover-1.jpg", amenities: ["Views", "WiFi", "Pool"] },
-    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Kuakata/cover-1.jpg", amenities: ["Nature Walk", "Breakfast"] }
+    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Kuakata/resort/Premium Resort.jfif", amenities: ["Views", "WiFi", "Pool"] },
+    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Kuakata/resort/Eco Lodge.jpg", amenities: ["Nature Walk", "Breakfast"] }
   ],
 
   foods: [
-    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Kuakata/cover-1.jpg", type: "Lunch" },
-    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Kuakata/cover-1.jpg", type: "Dinner" }
+    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Kuakata/taste/Traditional Thali.jfif", type: "Lunch" },
+    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Kuakata/taste/BBQ Dinner.jfif", type: "Dinner" }
   ],
 
   reviews: {
@@ -99,8 +120,8 @@ export const kuakataData = {
     count: 850,
     breakdown: { 5: 60, 4: 30, 3: 5, 2: 3, 1: 2 },
     list: [
-      { id: 1, name: "Sarah M.", avatar: "/assets/Kuakata/cover-1.jpg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The sunrises and beaches are mesmerizing." },
-      { id: 2, name: "Rahul D.", avatar: "/assets/Kuakata/cover-1.jpg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Beach." }
+      { id: 1, name: "Sarah M.", avatar: "/assets/avatar-1.svg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The sunrises and beaches are mesmerizing." },
+      { id: 2, name: "Rahul D.", avatar: "/assets/avatar-2.svg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Beach." }
     ],
     aiSummary: {
       loved: ["Natural beauty", "Local food", "Peaceful environment", "Friendly locals", "Stunning landscapes"],
@@ -110,10 +131,10 @@ export const kuakataData = {
   },
 
   gallery: [
-    "/assets/Kuakata/cover-1.jpg",
-    "/assets/Kuakata/cover-1.jpg",
-    "/assets/Kuakata/cover-1.jpg",
-    "/assets/Kuakata/cover-1.jpg"
+    "/assets/Kuakata/image 1.webp",
+    "/assets/Kuakata/image 2.jpg",
+    "/assets/Kuakata/image 3.webp",
+    "/assets/Kuakata/images 4.jfif"
   ],
 
   travelInfo: {
@@ -133,6 +154,6 @@ export const kuakataData = {
   ],
 
   relatedDestinations: [
-    { slug: "coxs-bazar", name: "Cox's Bazar", rating: 4.8, aiMatch: 94, budget: "৳8,500", image: "/assets/Coxs/cover-1.jpg" }
+    { slug: "kuakata", name: "Kuakata", rating: 4.8, aiMatch: 94, budget: "৳8,500", image: "/assets/Kuakata/image 1.webp" }
   ]
 };

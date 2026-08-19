@@ -5,7 +5,7 @@ export const saintMartinData = {
   country: "Bangladesh",
   subtitle: "Coral Island Paradise.",
   description: "Discover Saint Martin through blue waters and corals. Experience the best of what nature has to offer.",
-  heroImage: "/assets/Saint/cover-1.jpg",
+  heroImage: "/assets/Saintmartin/cover-1.jpg",
   rating: 4.7,
   reviewCount: "850",
   aiMatch: 92,
@@ -20,7 +20,8 @@ export const saintMartinData = {
       "Saint Martin is one of the most stunning destinations in Bangladesh, famous for its blue waters and corals.",
       "Whether you're looking for an adventure or a peaceful retreat, Saint Martin offers breathtaking landscapes and unforgettable experiences for every traveler."
     ],
-    image: "/assets/Saint/cover-1.jpg"
+    image: "/assets/Saintmartin/cover-1.jpg",
+    videoUrl: "https://www.youtube.com/embed/U7JzEl2AGb0?autoplay=1&controls=1&mute=0"
   },
 
   whyLoveIt: [
@@ -45,35 +46,55 @@ export const saintMartinData = {
   ],
 
   thingsToDo: [
-    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Saint/cover-1.jpg", type: "Nature" },
-    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Saint/cover-1.jpg", type: "Culinary" },
-    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Saint/cover-1.jpg", type: "Creative" }
+    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Saintmartin/Thinking/Sightseeing.webp", type: "Nature" },
+    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Saintmartin/Thinking/Local Food.jfif", type: "Culinary" },
+    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Saintmartin/Thinking/Photography.jfif", type: "Creative" }
   ],
 
   placesToExplore: [
     {
       id: 1,
-      slug: "saint-martin-main-spot",
-      title: "Saint Martin Main Spot",
-      description: "The most famous attraction here.",
-      longDescription: "This is the heart of Saint Martin, offering incredible views of blue waters and corals. Visitors from all over the country come here to experience the serene beauty and majestic atmosphere.",
-      image: "/assets/Saint/cover-1.jpg",
-      rating: 4.8,
-      tags: ["Must Visit", "Scenic"]
+      slug: "chera-dwip",
+      title: "Chera Dwip",
+      description: "The southernmost part of Bangladesh.",
+      longDescription: "Chera Dwip is a beautiful, uninhabited coral island separated from the main island of Saint Martin during high tide. The crystal clear water, living corals, and raw, untouched environment make it a top destination.",
+      image: "/assets/Saintmartin/cover-1.jpg",
+      rating: 4.9,
+      tags: ["Must Visit", "Photography", "Relaxation"]
+    },
+    {
+      id: 2,
+      slug: "west-beach",
+      title: "West Beach",
+      description: "The perfect spot to witness breathtaking sunsets.",
+      longDescription: "The West Beach of Saint Martin is renowned for its powdery white sand and spectacular sunsets. It is much quieter than the commercial areas, offering a perfect, peaceful retreat by the sea.",
+      image: "/assets/Saintmartin/cover-1.jpg",
+      rating: 4.7,
+      tags: ["Relaxation", "Scenic", "Nature"]
+    },
+    {
+      id: 3,
+      slug: "marine-park",
+      title: "Saint Martin Marine Park",
+      description: "Protecting the rich biodiversity of the island.",
+      longDescription: "The Marine Park was established to protect the unique coral reefs and marine life around the island. Snorkeling around this area gives you a glimpse into a vibrant underwater world.",
+      image: "/assets/Saintmartin/cover-1.jpg",
+      rating: 4.5,
+      tags: ["Adventure", "Nature", "Must Visit"]
     }
   ],
 
   marineDriveFeature: {
     title: "The Journey to Saint Martin",
     description: "The road to Saint Martin is as beautiful as the destination itself.",
-    image: "/assets/Saint/cover-1.jpg",
+    image: "/assets/Saintmartin/cover-1.jpg",
     highlights: ["Scenic routes", "Photo stops", "Nature views", "Local life", "Memorable journey"]
   },
 
   itinerary: [
-    { day: "DAY 01", title: "Arrival & Exploration", description: "Check in and explore nearby areas.", image: "/assets/Saint/cover-1.jpg" },
-    { day: "DAY 02", title: "Main Attractions", description: "Visit the top spots.", image: "/assets/Saint/cover-1.jpg" },
-    { day: "DAY 03", title: "Relaxation & Departure", description: "Enjoy a quiet morning before leaving.", image: "/assets/Saint/cover-1.jpg" }
+    { day: "DAY 01", title: "Arrival & Exploration", description: "Check in and explore nearby areas.", image: "/assets/Saintmartin/cover-1.jpg" },
+    { day: "DAY 02", title: "Main Attractions", description: "Visit the top spots.", image: "/assets/Saintmartin/cover-1.jpg" },
+    { day: "DAY 03", title: "Relaxation & Departure", description: "Enjoy a quiet morning before leaving.", image: "/assets/Saintmartin/cover-1.jpg" }
   ],
 
   budget: {
@@ -85,13 +106,13 @@ export const saintMartinData = {
   },
 
   hotels: [
-    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Saint/cover-1.jpg", amenities: ["Views", "WiFi", "Pool"] },
-    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Saint/cover-1.jpg", amenities: ["Nature Walk", "Breakfast"] }
+    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Saintmartin/resort/Premium Resort.avif", amenities: ["Views", "WiFi", "Pool"] },
+    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Saintmartin/resort/Eco Lodge.jfif", amenities: ["Nature Walk", "Breakfast"] }
   ],
 
   foods: [
-    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Saint/cover-1.jpg", type: "Lunch" },
-    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Saint/cover-1.jpg", type: "Dinner" }
+    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Saintmartin/taste/Traditional Thali.webp", type: "Lunch" },
+    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Saintmartin/taste/BBQ Dinner.jpg", type: "Dinner" }
   ],
 
   reviews: {
@@ -99,8 +120,8 @@ export const saintMartinData = {
     count: 850,
     breakdown: { 5: 60, 4: 30, 3: 5, 2: 3, 1: 2 },
     list: [
-      { id: 1, name: "Sarah M.", avatar: "/assets/Saint/cover-1.jpg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The blue waters and corals are mesmerizing." },
-      { id: 2, name: "Rahul D.", avatar: "/assets/Saint/cover-1.jpg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Beach." }
+      { id: 1, name: "Sarah M.", avatar: "/assets/avatar-1.svg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The blue waters and corals are mesmerizing." },
+      { id: 2, name: "Rahul D.", avatar: "/assets/avatar-2.svg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Beach." }
     ],
     aiSummary: {
       loved: ["Natural beauty", "Local food", "Peaceful environment", "Friendly locals", "Stunning landscapes"],
@@ -110,10 +131,10 @@ export const saintMartinData = {
   },
 
   gallery: [
-    "/assets/Saint/cover-1.jpg",
-    "/assets/Saint/cover-1.jpg",
-    "/assets/Saint/cover-1.jpg",
-    "/assets/Saint/cover-1.jpg"
+    "/assets/Saintmartin/cover-1.jpg",
+    "/assets/Saintmartin/images 1.jfif",
+    "/assets/Saintmartin/image 2.jpg",
+    "/assets/Saintmartin/images 3.jfif"
   ],
 
   travelInfo: {
@@ -133,6 +154,6 @@ export const saintMartinData = {
   ],
 
   relatedDestinations: [
-    { slug: "coxs-bazar", name: "Cox's Bazar", rating: 4.8, aiMatch: 94, budget: "৳8,500", image: "/assets/Coxs/cover-1.jpg" }
+    { slug: "saint-martin", name: "Saint Martin", rating: 4.7, aiMatch: 92, budget: "৳6,500", image: "/assets/Saintmartin/cover-1.jpg" }
   ]
 };

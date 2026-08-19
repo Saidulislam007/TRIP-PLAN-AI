@@ -35,15 +35,6 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
 
   return (
     <div className="min-h-screen bg-[#F7F7F2]">
-      <div className="w-full bg-[#F4A62A] text-[#17211D] py-2 px-4 text-sm font-medium flex justify-between items-center max-w-[1440px] mx-auto">
-        <div className="flex items-center gap-2">
-          <span>✨</span> Plan Smarter. Travel Better with AI.
-        </div>
-        <div className="hidden md:flex items-center gap-4">
-          <span>New traveler insights & features are here!</span>
-          <a href="#" className="font-bold hover:underline">Explore now →</a>
-        </div>
-      </div>
 
       <DestinationHeroDetails data={data} />
       <DestinationStatsStrip 
@@ -71,7 +62,7 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
             </section>
 
             <section id="things-to-do" className="scroll-mt-32">
-              <ThingsToDo data={data.thingsToDo} />
+              <ThingsToDo data={data.thingsToDo} destinationName={data.name} />
             </section>
 
             <section id="places" className="scroll-mt-32">
@@ -84,7 +75,7 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
             </section>
 
             <section id="food" className="scroll-mt-32">
-              <FoodDiningSection data={data.foods} />
+              <FoodDiningSection data={data.foods} destinationName={data.name} />
             </section>
 
             <section id="reviews" className="scroll-mt-32">
@@ -92,7 +83,7 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
             </section>
             
             <section className="scroll-mt-32">
-              <PhotoGallery data={data.gallery} />
+              <PhotoGallery data={data.gallery} destinationName={data.name} />
             </section>
 
             <section id="travel-info" className="scroll-mt-32">
@@ -112,7 +103,7 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
         
         <RelatedDestinations data={data.relatedDestinations} />
         
-        <FinalCTA name={data.name} />
+        <FinalCTA name={data.name} image={data.heroImage} />
 
       </div>
 

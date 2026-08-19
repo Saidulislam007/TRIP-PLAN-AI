@@ -10,12 +10,13 @@ interface ThingsToDoProps {
     image: string;
     type: string;
   }[];
+  destinationName?: string;
 }
 
-export default function ThingsToDo({ data }: ThingsToDoProps) {
+export default function ThingsToDo({ data, destinationName }: ThingsToDoProps) {
   return (
     <div className="pt-4 relative">
-      <h3 className="text-2xl font-serif text-[#17211D] font-bold mb-6">Things to Do in Cox&apos;s Bazar</h3>
+      <h3 className="text-2xl font-serif text-[#17211D] font-bold mb-6">Things to Do {destinationName ? `in ${destinationName}` : ''}</h3>
       
       <div className="flex overflow-x-auto gap-4 pb-6 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
         {data.map((item) => (

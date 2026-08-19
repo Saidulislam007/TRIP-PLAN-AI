@@ -25,3 +25,13 @@ const registry: Record<string, any> = {
 export function getDestinationBySlug(slug: string) {
   return registry[slug] || null;
 }
+
+export function getPlaceWithDestinationBySlug(placeSlug: string) {
+  for (const [destSlug, destData] of Object.entries(registry)) {
+    const place = destData.placesToExplore?.find((p: any) => p.slug === placeSlug);
+    if (place) {
+      return { place, destination: destData };
+    }
+  }
+  return null;
+}

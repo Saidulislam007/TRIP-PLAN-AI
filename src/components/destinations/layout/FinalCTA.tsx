@@ -5,14 +5,15 @@ import Image from "next/image";
 
 interface FinalCTAProps {
   name: string;
+  image?: string;
 }
 
-export default function FinalCTA({ name }: FinalCTAProps) {
+export default function FinalCTA({ name, image }: FinalCTAProps) {
   return (
     <div className="relative w-full rounded-3xl overflow-hidden mt-16 mb-8 border border-[#E2E7E3] shadow-lg">
       <div className="absolute inset-0 z-0">
         <Image
-          src="/assets/Coxs/cover-4.jpg"
+          src={image || "/assets/Coxs/cover-4.jpg"}
           alt="CTA Background"
           fill
           className="object-cover"

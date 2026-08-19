@@ -7,9 +7,10 @@ import { Button } from "@heroui/react";
 
 interface GalleryProps {
   data: string[];
+  destinationName?: string;
 }
 
-export default function PhotoGallery({ data }: GalleryProps) {
+export default function PhotoGallery({ data, destinationName }: GalleryProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -60,7 +61,7 @@ export default function PhotoGallery({ data }: GalleryProps) {
   return (
     <div className="pt-4">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-2xl font-serif text-[#17211D] font-bold">Explore Cox&apos;s Bazar Through Photos</h3>
+        <h3 className="text-2xl font-serif text-[#17211D] font-bold">Explore {destinationName || "Cox's Bazar"} Through Photos</h3>
         <Button 
           variant="ghost"
           className="text-[#087F5B] font-bold hover:bg-[#087F5B]/10 hidden md:flex border-none"

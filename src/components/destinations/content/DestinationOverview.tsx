@@ -8,6 +8,7 @@ interface OverviewProps {
     title: string;
     content: string[];
     image: string;
+    videoUrl?: string;
   };
 }
 
@@ -50,8 +51,8 @@ export default function DestinationOverview({ data }: OverviewProps) {
           ) : (
             <iframe 
               className="absolute inset-0 w-full h-full"
-              src="https://www.youtube.com/embed/tCK3SFQ2gB0?autoplay=1&controls=1&mute=0" 
-              title="Cox's Bazar Video" 
+              src={data.videoUrl || "https://www.youtube.com/embed/tCK3SFQ2gB0?autoplay=1&controls=1&mute=0"} 
+              title={`${data.title} Video`} 
               frameBorder="0" 
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
               allowFullScreen

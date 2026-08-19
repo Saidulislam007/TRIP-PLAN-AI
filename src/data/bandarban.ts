@@ -5,7 +5,7 @@ export const bandarbanData = {
   country: "Bangladesh",
   subtitle: "The Roof of Bangladesh.",
   description: "Discover Bandarban through high peaks and indigenous tribes. Experience the best of what nature has to offer.",
-  heroImage: "/assets/Bandarban/cover-1.jpg",
+  heroImage: "/assets/Bandarban/images 1.jfif",
   rating: 4.7,
   reviewCount: "850",
   aiMatch: 92,
@@ -20,7 +20,8 @@ export const bandarbanData = {
       "Bandarban is one of the most stunning destinations in Bangladesh, famous for its high peaks and indigenous tribes.",
       "Whether you're looking for an adventure or a peaceful retreat, Bandarban offers breathtaking landscapes and unforgettable experiences for every traveler."
     ],
-    image: "/assets/Bandarban/cover-1.jpg"
+    image: "/assets/Bandarban/images 1.jfif",
+    videoUrl: "https://www.youtube.com/embed/rn0nkEZdoRg?autoplay=1&controls=1&mute=0"
   },
 
   whyLoveIt: [
@@ -45,35 +46,55 @@ export const bandarbanData = {
   ],
 
   thingsToDo: [
-    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Bandarban/cover-1.jpg", type: "Nature" },
-    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Bandarban/cover-1.jpg", type: "Culinary" },
-    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Bandarban/cover-1.jpg", type: "Creative" }
+    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Bandarban/Thinking/Sightseeing.jpg", type: "Nature" },
+    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Bandarban/Thinking/Local Food.webp", type: "Culinary" },
+    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Bandarban/Thinking/Photography.jpg", type: "Creative" }
   ],
 
   placesToExplore: [
     {
       id: 1,
-      slug: "bandarban-main-spot",
-      title: "Bandarban Main Spot",
-      description: "The most famous attraction here.",
-      longDescription: "This is the heart of Bandarban, offering incredible views of high peaks and indigenous tribes. Visitors from all over the country come here to experience the serene beauty and majestic atmosphere.",
-      image: "/assets/Bandarban/cover-1.jpg",
+      slug: "nilgiri",
+      title: "Nilgiri Resort",
+      description: "Touch the clouds from one of the highest peaks.",
+      longDescription: "Nilgiri is one of the tallest peaks and most beautiful tourist spots in Bangladesh. Managed by the army, this pristine location lets you literally walk among the clouds, offering a panoramic view of the hilly landscape.",
+      image: "/assets/Bandarban/images 1.jfif",
+      rating: 4.9,
+      tags: ["Scenic", "Must Visit", "Photography"]
+    },
+    {
+      id: 2,
+      slug: "chimbuk-hill",
+      title: "Chimbuk Hill",
+      description: "Known as the Darjeeling of Bengal.",
+      longDescription: "Chimbuk is the third highest mountain in Bangladesh. The winding roads leading to it are an adventure in themselves. Once at the top, you are rewarded with breathtaking views of the zigzagging Sangu River and endless green hills.",
+      image: "/assets/Bandarban/images 2.jfif",
+      rating: 4.7,
+      tags: ["Adventure", "Nature", "Photography"]
+    },
+    {
+      id: 3,
+      slug: "nafakhum-waterfall",
+      title: "Nafakhum Waterfall",
+      description: "The Niagara of Bangladesh.",
+      longDescription: "Nafakhum is one of the largest and most spectacular waterfalls in the country. Reaching it requires a thrilling boat ride on the Sangu River followed by a trek, making it the ultimate destination for adventure seekers.",
+      image: "/assets/Bandarban/images 3.jfif",
       rating: 4.8,
-      tags: ["Must Visit", "Scenic"]
+      tags: ["Adventure", "Nature", "Must Visit"]
     }
   ],
 
   marineDriveFeature: {
     title: "The Journey to Bandarban",
     description: "The road to Bandarban is as beautiful as the destination itself.",
-    image: "/assets/Bandarban/cover-1.jpg",
+    image: "/assets/Bandarban/images 2.jfif",
     highlights: ["Scenic routes", "Photo stops", "Nature views", "Local life", "Memorable journey"]
   },
 
   itinerary: [
-    { day: "DAY 01", title: "Arrival & Exploration", description: "Check in and explore nearby areas.", image: "/assets/Bandarban/cover-1.jpg" },
-    { day: "DAY 02", title: "Main Attractions", description: "Visit the top spots.", image: "/assets/Bandarban/cover-1.jpg" },
-    { day: "DAY 03", title: "Relaxation & Departure", description: "Enjoy a quiet morning before leaving.", image: "/assets/Bandarban/cover-1.jpg" }
+    { day: "DAY 01", title: "Arrival & Exploration", description: "Check in and explore nearby areas.", image: "/assets/Bandarban/images 1.jfif" },
+    { day: "DAY 02", title: "Main Attractions", description: "Visit the top spots.", image: "/assets/Bandarban/images 2.jfif" },
+    { day: "DAY 03", title: "Relaxation & Departure", description: "Enjoy a quiet morning before leaving.", image: "/assets/Bandarban/images 3.jfif" }
   ],
 
   budget: {
@@ -85,13 +106,13 @@ export const bandarbanData = {
   },
 
   hotels: [
-    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Bandarban/cover-1.jpg", amenities: ["Views", "WiFi", "Pool"] },
-    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Bandarban/cover-1.jpg", amenities: ["Nature Walk", "Breakfast"] }
+    { id: 1, name: "Sairu Hill Resort", category: "Luxury", rating: 4.8, location: "Chimbuk Road", priceFrom: 8500, image: "/assets/Bandarban/Resort/Sairu Hill Resort.jfif", amenities: ["Views", "WiFi", "Infinity Pool"] },
+    { id: 2, name: "Boga Lake Eco Camp", category: "Budget", rating: 4.5, location: "Boga Lake", priceFrom: 1500, image: "/assets/Bandarban/Resort/Boga Lake Eco Camp.webp", amenities: ["Nature Walk", "Local Food", "Campfire"] }
   ],
 
   foods: [
-    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Bandarban/cover-1.jpg", type: "Lunch" },
-    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Bandarban/cover-1.jpg", type: "Dinner" }
+    { id: 1, title: "Pahari Thali", description: "Authentic indigenous meal with fresh local ingredients.", price: "$$", image: "/assets/Bandarban/Taste/Pahari Thali.jfif", type: "Lunch" },
+    { id: 2, title: "Bamboo Chicken", description: "Traditional chicken cooked inside bamboo.", price: "$$$", image: "/assets/Bandarban/Taste/Bamboo Chicken.jfif", type: "Dinner" }
   ],
 
   reviews: {
@@ -99,8 +120,8 @@ export const bandarbanData = {
     count: 850,
     breakdown: { 5: 60, 4: 30, 3: 5, 2: 3, 1: 2 },
     list: [
-      { id: 1, name: "Sarah M.", avatar: "/assets/Bandarban/cover-1.jpg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The high peaks and indigenous tribes are mesmerizing." },
-      { id: 2, name: "Rahul D.", avatar: "/assets/Bandarban/cover-1.jpg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Nature." }
+      { id: 1, name: "Sarah M.", avatar: "/assets/avatar-1.svg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The high peaks and indigenous tribes are mesmerizing." },
+      { id: 2, name: "Rahul D.", avatar: "/assets/avatar-2.svg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Nature." }
     ],
     aiSummary: {
       loved: ["Natural beauty", "Local food", "Peaceful environment", "Friendly locals", "Stunning landscapes"],
@@ -110,10 +131,10 @@ export const bandarbanData = {
   },
 
   gallery: [
-    "/assets/Bandarban/cover-1.jpg",
-    "/assets/Bandarban/cover-1.jpg",
-    "/assets/Bandarban/cover-1.jpg",
-    "/assets/Bandarban/cover-1.jpg"
+    "/assets/Bandarban/images 1.jfif",
+    "/assets/Bandarban/images 2.jfif",
+    "/assets/Bandarban/images 3.jfif",
+    "/assets/Bandarban/images 4.jfif"
   ],
 
   travelInfo: {
@@ -133,6 +154,6 @@ export const bandarbanData = {
   ],
 
   relatedDestinations: [
-    { slug: "coxs-bazar", name: "Cox's Bazar", rating: 4.8, aiMatch: 94, budget: "৳8,500", image: "/assets/Coxs/cover-1.jpg" }
+    { slug: "bandarban", name: "Bandarban", rating: 4.8, aiMatch: 94, budget: "৳8,500", image: "/assets/Bandarban/images 1.jfif" }
   ]
 };

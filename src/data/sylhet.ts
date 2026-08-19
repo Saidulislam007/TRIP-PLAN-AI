@@ -20,7 +20,8 @@ export const sylhetData = {
       "Sylhet is one of the most stunning destinations in Bangladesh, famous for its waterfalls and tea estates.",
       "Whether you're looking for an adventure or a peaceful retreat, Sylhet offers breathtaking landscapes and unforgettable experiences for every traveler."
     ],
-    image: "/assets/Sylhet/cover-1.jpg"
+    image: "/assets/Sylhet/cover-1.jpg",
+    videoUrl: "https://www.youtube.com/embed/bpA-aWDh6zU?autoplay=1&controls=1&mute=0"
   },
 
   whyLoveIt: [
@@ -45,21 +46,41 @@ export const sylhetData = {
   ],
 
   thingsToDo: [
-    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Sylhet/cover-1.jpg", type: "Nature" },
-    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Sylhet/cover-1.jpg", type: "Culinary" },
-    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Sylhet/cover-1.jpg", type: "Creative" }
+    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Sylhet/thinking/Sightseeing.jfif", type: "Nature" },
+    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Sylhet/thinking/Local Food.jpg", type: "Culinary" },
+    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Sylhet/thinking/Photography.jfif", type: "Creative" }
   ],
 
   placesToExplore: [
     {
       id: 1,
-      slug: "sylhet-main-spot",
-      title: "Sylhet Main Spot",
-      description: "The most famous attraction here.",
-      longDescription: "This is the heart of Sylhet, offering incredible views of waterfalls and tea estates. Visitors from all over the country come here to experience the serene beauty and majestic atmosphere.",
+      slug: "ratargul-swamp-forest",
+      title: "Ratargul Swamp Forest",
+      description: "The only freshwater swamp forest in Bangladesh.",
+      longDescription: "Ratargul is a magnificent freshwater swamp forest located in Sylhet. Known as the 'Amazon of Bangladesh', the forest is mostly submerged during the monsoon, making it perfect for a serene boat ride among the dense, lush green trees.",
       image: "/assets/Sylhet/cover-1.jpg",
       rating: 4.8,
-      tags: ["Must Visit", "Scenic"]
+      tags: ["Nature", "Photography", "Must Visit"]
+    },
+    {
+      id: 2,
+      slug: "bholaganj-sada-pathor",
+      title: "Bholaganj Sada Pathor",
+      description: "Crystal clear water rushing over white stones.",
+      longDescription: "Bholaganj Sada Pathor is one of the most attractive tourist spots in Sylhet. The combination of the Meghalaya mountains, crystal clear river water, and the white stones scattered across the riverbed creates an incredibly photogenic and relaxing environment.",
+      image: "/assets/Sylhet/cover-1.jpg",
+      rating: 4.7,
+      tags: ["Relaxation", "Scenic", "Nature"]
+    },
+    {
+      id: 3,
+      slug: "lalakhal",
+      title: "Lalakhal",
+      description: "A wide canal with stunning blue-green water.",
+      longDescription: "Lalakhal offers a magical boat ride experience on water that naturally shifts colors from blue to green. Flowing down from the Cherrapunji hills of India, it is surrounded by lush tea gardens and provides a peaceful retreat from the busy city.",
+      image: "/assets/Sylhet/cover-1.jpg",
+      rating: 4.6,
+      tags: ["Boat Ride", "Peaceful", "Photography"]
     }
   ],
 
@@ -85,13 +106,13 @@ export const sylhetData = {
   },
 
   hotels: [
-    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Sylhet/cover-1.jpg", amenities: ["Views", "WiFi", "Pool"] },
-    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Sylhet/cover-1.jpg", amenities: ["Nature Walk", "Breakfast"] }
+    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Sylhet/resort/Premium Resort.jfif", amenities: ["Views", "WiFi", "Pool"] },
+    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Sylhet/resort/Eco Lodge.jfif", amenities: ["Nature Walk", "Breakfast"] }
   ],
 
   foods: [
-    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Sylhet/cover-1.jpg", type: "Lunch" },
-    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Sylhet/cover-1.jpg", type: "Dinner" }
+    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Sylhet/taste/Traditional Thali.jfif", type: "Lunch" },
+    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Sylhet/taste/BBQ Dinner.jfif", type: "Dinner" }
   ],
 
   reviews: {
@@ -99,8 +120,8 @@ export const sylhetData = {
     count: 850,
     breakdown: { 5: 60, 4: 30, 3: 5, 2: 3, 1: 2 },
     list: [
-      { id: 1, name: "Sarah M.", avatar: "/assets/Sylhet/cover-1.jpg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The waterfalls and tea estates are mesmerizing." },
-      { id: 2, name: "Rahul D.", avatar: "/assets/Sylhet/cover-1.jpg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Nature." }
+      { id: 1, name: "Sarah M.", avatar: "/assets/avatar-1.svg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The waterfalls and tea estates are mesmerizing." },
+      { id: 2, name: "Rahul D.", avatar: "/assets/avatar-2.svg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Nature." }
     ],
     aiSummary: {
       loved: ["Natural beauty", "Local food", "Peaceful environment", "Friendly locals", "Stunning landscapes"],
@@ -111,9 +132,9 @@ export const sylhetData = {
 
   gallery: [
     "/assets/Sylhet/cover-1.jpg",
-    "/assets/Sylhet/cover-1.jpg",
-    "/assets/Sylhet/cover-1.jpg",
-    "/assets/Sylhet/cover-1.jpg"
+    "/assets/Sylhet/cover-2.jpg",
+    "/assets/Sylhet/cover-3.jpg",
+    "/assets/Sylhet/thinking/Sightseeing.jfif"
   ],
 
   travelInfo: {
@@ -133,6 +154,6 @@ export const sylhetData = {
   ],
 
   relatedDestinations: [
-    { slug: "coxs-bazar", name: "Cox's Bazar", rating: 4.8, aiMatch: 94, budget: "৳8,500", image: "/assets/Coxs/cover-1.jpg" }
+    { slug: "sylhet", name: "Sylhet", rating: 4.8, aiMatch: 94, budget: "৳8,500", image: "/assets/Sylhet/cover-1.jpg" }
   ]
 };

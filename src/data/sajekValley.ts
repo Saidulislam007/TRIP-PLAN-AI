@@ -20,7 +20,8 @@ export const sajekValleyData = {
       "Sajek Valley is one of the most stunning destinations in Bangladesh, famous for its hills and clouds.",
       "Whether you're looking for an adventure or a peaceful retreat, Sajek Valley offers breathtaking landscapes and unforgettable experiences for every traveler."
     ],
-    image: "/assets/Sajek/cover-1.jpg"
+    image: "/assets/Sajek/cover-1.jpg",
+    videoUrl: "https://www.youtube.com/embed/cl9DnkuiKZs?autoplay=1&controls=1&mute=0"
   },
 
   whyLoveIt: [
@@ -45,9 +46,11 @@ export const sajekValleyData = {
   ],
 
   thingsToDo: [
-    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Sajek/cover-1.jpg", type: "Nature" },
-    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Sajek/cover-1.jpg", type: "Culinary" },
-    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Sajek/cover-1.jpg", type: "Creative" }
+    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Sajek/Thinking/Sightseeing.webp", type: "Nature" },
+    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Sajek/Thinking/Local Food.jfif", type: "Culinary" },
+    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Sajek/Thinking/Photography.jpg", type: "Creative" },
+    { id: 4, title: "Chander Gari Ride", description: "Thrilling jeep ride through the hills.", time: "1-2 hrs", image: "/assets/Sajek/Thinking/Chander Gari Ride.jfif", type: "Adventure" },
+    { id: 5, title: "Cloud Gazing", description: "Watch clouds play over Konglak Pahar.", time: "Flexible", image: "/assets/Sajek/Thinking/Cloud Gazing.jfif", type: "Relaxation" }
   ],
 
   placesToExplore: [
@@ -57,9 +60,29 @@ export const sajekValleyData = {
       title: "Sajek Valley Main Spot",
       description: "The most famous attraction here.",
       longDescription: "This is the heart of Sajek Valley, offering incredible views of hills and clouds. Visitors from all over the country come here to experience the serene beauty and majestic atmosphere.",
-      image: "/assets/Sajek/cover-1.jpg",
+      image: "/assets/Sajek/Explorer/sajek vally main spot.jfif",
       rating: 4.8,
       tags: ["Must Visit", "Scenic"]
+    },
+    {
+      id: 2,
+      slug: "konglak-pahar",
+      title: "Konglak Pahar",
+      description: "The highest peak in Sajek Valley.",
+      longDescription: "Konglak Pahar is the highest point in Sajek Valley, offering a breathtaking 360-degree panoramic view of the surrounding hills, including the distant mountains of Mizoram, India. A short trek to the top rewards visitors with majestic sunrises and sunsets.",
+      image: "/assets/Sajek/Explorer/konglak pahar.jpg",
+      rating: 4.9,
+      tags: ["Trekking", "Viewpoint"]
+    },
+    {
+      id: 3,
+      slug: "hazachora-waterfall",
+      title: "Hazachora Waterfall",
+      description: "A beautiful cascading waterfall on the way.",
+      longDescription: "Located just before entering Sajek Valley, Hazachora Waterfall is a popular stopover. Hidden within deep greenery, the crystal-clear water cascades down beautifully, making it an excellent spot for nature lovers to refresh before heading up to the hills.",
+      image: "/assets/Sajek/Explorer/hazachor waterfall.jpg",
+      rating: 4.7,
+      tags: ["Nature", "Waterfall"]
     }
   ],
 
@@ -85,13 +108,13 @@ export const sajekValleyData = {
   },
 
   hotels: [
-    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Sajek/cover-1.jpg", amenities: ["Views", "WiFi", "Pool"] },
-    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Sajek/cover-1.jpg", amenities: ["Nature Walk", "Breakfast"] }
+    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Sajek/Resort/Premium Resort.jfif", amenities: ["Views", "WiFi", "Pool"] },
+    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Sajek/Resort/Eco Lodge.jpg", amenities: ["Nature Walk", "Breakfast"] }
   ],
 
   foods: [
-    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Sajek/cover-1.jpg", type: "Lunch" },
-    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Sajek/cover-1.jpg", type: "Dinner" }
+    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Sajek/Taste/Traditional Thali.jfif", type: "Lunch" },
+    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Sajek/Taste/BBQ Dinner.jfif", type: "Dinner" }
   ],
 
   reviews: {
@@ -111,9 +134,9 @@ export const sajekValleyData = {
 
   gallery: [
     "/assets/Sajek/cover-1.jpg",
-    "/assets/Sajek/cover-1.jpg",
-    "/assets/Sajek/cover-1.jpg",
-    "/assets/Sajek/cover-1.jpg"
+    "/assets/Sajek/cover-2.jpg",
+    "/assets/Sajek/cover-3.jpg",
+    "/assets/Sajek/Explorer/konglak pahar.jpg"
   ],
 
   travelInfo: {
@@ -133,6 +156,6 @@ export const sajekValleyData = {
   ],
 
   relatedDestinations: [
-    { slug: "coxs-bazar", name: "Cox's Bazar", rating: 4.8, aiMatch: 94, budget: "৳8,500", image: "/assets/Coxs/cover-1.jpg" }
+    { slug: "sajek-valley", name: "Sajek Valley", rating: 4.7, aiMatch: 92, budget: "৳6,500", image: "/assets/Sajek/cover-1.jpg" }
   ]
 };

@@ -84,7 +84,7 @@ export default function TopPlacesToExplore({ data }: TopPlacesProps) {
                 </div>
                 <Link href={place.slug ? `/places/${place.slug}` : "#"}>
                   <Button 
-                    variant="flat" 
+                    variant="ghost" 
                     className="font-bold bg-[#087F5B]/10 text-[#087F5B] hover:bg-[#087F5B] hover:text-white rounded-full min-w-0 px-4 h-8 text-[12px] border-none transition-all shadow-none hover:shadow-md"
                   >
                     Explore <ArrowRight className="w-3 h-3 ml-1" />

@@ -64,7 +64,7 @@ export default function AIReviewSummary({ data }: AIReviewSummaryProps) {
       </div>
 
       <Button
-        variant="solid"
+        variant="primary"
         className="bg-[#163D36] hover:bg-[#1C4D44] text-white font-bold w-full rounded-xl py-6 transition-all hover:shadow-lg relative z-10"
       >
         View All Review Insights

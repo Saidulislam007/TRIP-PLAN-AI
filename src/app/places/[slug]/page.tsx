@@ -47,7 +47,7 @@ export default async function PlaceDetailsPage({ params }: { params: Promise<{ s
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
             <div className="max-w-3xl">
               <div className="flex flex-wrap gap-2.5 mb-6">
-                {place.tags.map((tag, i) => (
+                {place.tags.map((tag: string, i: number) => (
                   <span key={i} className="px-4 py-1.5 bg-white/10 backdrop-blur-xl border border-white/30 rounded-full text-[13px] font-extrabold text-white shadow-lg tracking-widest uppercase">
                     {tag}
                   </span>

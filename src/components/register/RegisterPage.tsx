@@ -72,7 +72,7 @@ export default function RegisterPage() {
   const [formData, setFormData] =
     useState<RegisterFormData>(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
-  const [acceptTerms, setAcceptTerms] = useState(false);
+  // const [acceptTerms, setAcceptTerms] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const rotateXValue = useMotionValue(0);
@@ -110,28 +110,28 @@ export default function RegisterPage() {
   const handleRegister = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const fullName = formData.fullName.trim();
-    const email = formData.email.trim().toLowerCase();
+    // const fullName = formData.fullName.trim();
+    // const email = formData.email.trim().toLowerCase();
 
-    if (
-      !fullName ||
-      !email ||
-      !formData.password ||
-      !formData.confirmPassword
-    ) {
-      setErrorMessage("Please complete all required fields.");
-      return;
-    }
+    // if (
+    //   !fullName ||
+    //   !email ||
+    //   !formData.password ||
+    //   !formData.confirmPassword
+    // ) {
+    //   setErrorMessage("Please complete all required fields.");
+    //   return;
+    // }
 
-    if (formData.password !== formData.confirmPassword) {
-      setErrorMessage("Passwords do not match.");
-      return;
-    }
+    // if (formData.password !== formData.confirmPassword) {
+    //   setErrorMessage("Passwords do not match.");
+    //   return;
+    // }
 
-    if (!acceptTerms) {
-      setErrorMessage("Please accept the Terms and Privacy Policy.");
-      return;
-    }
+    // if (!acceptTerms) {
+    //   setErrorMessage("Please accept the Terms and Privacy Policy.");
+    //   return;
+    // }
 
     setErrorMessage("");
 

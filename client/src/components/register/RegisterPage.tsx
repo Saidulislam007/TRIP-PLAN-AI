@@ -1,6 +1,8 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
+import { data } from "framer-motion/client";
 import {
   AlertCircle,
   ArrowLeft,
@@ -53,7 +55,7 @@ const destinationCards = [
   },
 ] as const;
 
-type RegisterFormData = {
+interface RegisterFormData {
   fullName: string;
   email: string;
   password: string;
@@ -107,32 +109,17 @@ export default function RegisterPage() {
     rotateYValue.set(0);
   };
 
-  const handleRegister = (event: FormEvent<HTMLFormElement>) => {
+  const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const userData = Object.fromEntries(formData.entries()) as unknown as RegisterFormData;
 
-    // const fullName = formData.fullName.trim();
-    // const email = formData.email.trim().toLowerCase();
+    const { data, error } = await authClient.signUp.email({
+        ...userData,
+    });
 
-    // if (
-    //   !fullName ||
-    //   !email ||
-    //   !formData.password ||
-    //   !formData.confirmPassword
-    // ) {
-    //   setErrorMessage("Please complete all required fields.");
-    //   return;
-    // }
-
-    // if (formData.password !== formData.confirmPassword) {
-    //   setErrorMessage("Passwords do not match.");
-    //   return;
-    // }
-
-    // if (!acceptTerms) {
-    //   setErrorMessage("Please accept the Terms and Privacy Policy.");
-    //   return;
-    // }
-
+    console.log("signup data", { data, error });
+   
     setErrorMessage("");
 
     // TODO: The backend developer will connect account registration here.
@@ -458,11 +445,11 @@ export default function RegisterPage() {
                 prefersReducedMotion
                   ? { left: "52%", top: "54%", opacity: 1 }
                   : {
-                      left: ["65%", "55%", "51%", "47%"],
-                      top: ["24%", "39%", "58%", "81%"],
-                      rotate: [145, 168, 152, 160],
-                      opacity: [0, 1, 1, 1],
-                    }
+                    left: ["65%", "55%", "51%", "47%"],
+                    top: ["24%", "39%", "58%", "81%"],
+                    rotate: [145, 168, 152, 160],
+                    opacity: [0, 1, 1, 1],
+                  }
               }
               transition={{
                 duration: 8,
@@ -499,10 +486,10 @@ export default function RegisterPage() {
                     prefersReducedMotion
                       ? false
                       : {
-                          opacity: 0,
-                          y: 18,
-                          rotate: index === 1 ? -2 : 2,
-                        }
+                        opacity: 0,
+                        y: 18,
+                        rotate: index === 1 ? -2 : 2,
+                      }
                   }
                   animate={{ opacity: 1, y: 0, rotate: 0 }}
                   transition={{
@@ -514,9 +501,9 @@ export default function RegisterPage() {
                     prefersReducedMotion
                       ? undefined
                       : {
-                          scale: 1.035,
-                          rotateY: index % 2 ? -4 : 4,
-                        }
+                        scale: 1.035,
+                        rotateY: index % 2 ? -4 : 4,
+                      }
                   }
                   style={{ transformStyle: "preserve-3d" }}
                   className={`absolute z-30 w-[118px] overflow-hidden rounded-[14px] border border-white/75 bg-[#071A16]/[0.88] p-1 text-white shadow-[0_16px_35px_rgba(7,26,22,0.24)] backdrop-blur-lg sm:w-[150px] sm:rounded-[17px] sm:p-1.5 xl:w-[170px] ${destination.className}`}
@@ -577,15 +564,15 @@ function AnimatedBrand({
             prefersReducedMotion
               ? undefined
               : {
-                  rotateX: [0, -8, 0, 7, 0],
-                  rotateY: [0, 12, 0, -10, 0],
-                  scale: [1, 1.045, 1, 1.025, 1],
-                  boxShadow: [
-                    "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
-                    "0 14px 34px rgba(217,134,31,0.48), inset 0 1px 0 rgba(255,255,255,0.55)",
-                    "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
-                  ],
-                }
+                rotateX: [0, -8, 0, 7, 0],
+                rotateY: [0, 12, 0, -10, 0],
+                scale: [1, 1.045, 1, 1.025, 1],
+                boxShadow: [
+                  "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
+                  "0 14px 34px rgba(217,134,31,0.48), inset 0 1px 0 rgba(255,255,255,0.55)",
+                  "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
+                ],
+              }
           }
           transition={{
             duration: 5.5,

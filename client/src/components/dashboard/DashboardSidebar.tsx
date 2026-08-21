@@ -16,7 +16,7 @@ import {
   HelpCircle,
   Settings,
   Plus,
-  Plane,
+  Sparkles,
   ChevronDown
 } from "lucide-react";
 import { dashboardData } from "@/data/dashboardData";
@@ -59,12 +59,12 @@ export default function DashboardSidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-full w-full flex-col bg-[#073D31] text-white">
+    <div className="flex h-full w-full flex-col bg-[#04271C] text-white">
       {/* Logo & Brand */}
       <div className="p-6 pb-4">
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#F4A934]">
-            <Plane size={20} className="text-[#073D31] -rotate-45" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white">
+            <Sparkles size={18} className="text-[#04271C]" />
           </div>
           <div className="flex flex-col">
             <span className="text-xl font-bold font-serif tracking-wide leading-tight">
@@ -92,7 +92,7 @@ export default function DashboardSidebar() {
       <div className="flex-1 overflow-y-auto px-4 pb-4 custom-scrollbar">
         {navigation.map((group, idx) => (
           <div key={idx} className="mb-6">
-            <h3 className="mb-2 px-3 text-[10px] font-bold tracking-widest text-white/40 uppercase">
+            <h3 className="mb-2 px-3 text-[10px] font-bold tracking-widest text-white/50 uppercase">
               {group.section}
             </h3>
             <nav className="flex flex-col gap-1">
@@ -104,21 +104,21 @@ export default function DashboardSidebar() {
                     href={item.href}
                     className={`group flex items-center justify-between rounded-xl px-3 py-2.5 text-[13px] font-medium transition-colors ${
                       isActive
-                        ? "bg-[#0B2522] text-white"
-                        : "text-white/70 hover:bg-white/5 hover:text-white"
+                        ? "bg-[#0B3D2E] text-white"
+                        : "text-white/70 hover:bg-[#0A382A]/50 hover:text-white"
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <item.icon
                         size={18}
                         className={`${
-                          isActive ? "text-[#F4A934]" : "text-white/50 group-hover:text-white/80"
+                          isActive ? "text-white" : "text-white/50 group-hover:text-white/80"
                         }`}
                       />
                       {item.name}
                     </div>
                     {item.badge && (
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#F4A934] text-[10px] font-bold text-[#073D31]">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#F4A934] text-[10px] font-bold text-[#17211D]">
                         {item.badge}
                       </span>
                     )}
@@ -132,15 +132,15 @@ export default function DashboardSidebar() {
 
       {/* User Footer */}
       <div className="p-4">
-        <div className="flex w-full cursor-pointer items-center justify-between rounded-2xl bg-[#0B2522] p-3 transition-colors hover:bg-white/5">
+        <div className="flex w-full cursor-pointer items-center justify-between rounded-2xl bg-[#0B3D2E] p-3 transition-colors hover:bg-[#0A382A]">
           <div className="flex items-center gap-3">
-            <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-[#073D31]">
+            <div className="relative h-10 w-10 overflow-hidden rounded-full border border-[#04271C]">
               <img
                 src={dashboardData.user.avatar}
                 alt={dashboardData.user.name}
                 className="h-full w-full object-cover"
                 onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Rifat+Ahmed&background=F4A934&color=073D31";
+                  (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Rifat+Ahmed&background=F4A934&color=04271C";
                 }}
               />
             </div>
@@ -148,12 +148,12 @@ export default function DashboardSidebar() {
               <span className="text-[13px] font-bold text-white">
                 {dashboardData.user.name}
               </span>
-              <span className="text-[11px] text-white/50">
+              <span className="text-[11px] text-white/60">
                 {dashboardData.user.role}
               </span>
             </div>
           </div>
-          <ChevronDown size={16} className="text-white/40" />
+          <ChevronDown size={16} className="text-white/60" />
         </div>
       </div>
     </div>

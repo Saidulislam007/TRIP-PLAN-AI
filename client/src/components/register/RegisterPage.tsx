@@ -2,7 +2,6 @@
 
 import { authClient } from "@/lib/auth-client";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
-import { data } from "framer-motion/client";
 import {
   AlertCircle,
   ArrowLeft,
@@ -115,7 +114,9 @@ export default function RegisterPage() {
     const userData = Object.fromEntries(formData.entries()) as unknown as RegisterFormData;
 
     const { data, error } = await authClient.signUp.email({
-        ...userData,
+      name: userData.fullName,
+      email: userData.email,
+      password: userData.password,
     });
 
     console.log("signup data", { data, error });

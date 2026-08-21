@@ -113,6 +113,8 @@ export default function RegisterPage() {
     const formData = new FormData(event.currentTarget);
     const userData = Object.fromEntries(formData.entries()) as unknown as RegisterFormData;
 
+    console.log("userData", userData);
+
     const { data, error } = await authClient.signUp.email({
       name: userData.fullName,
       email: userData.email,
@@ -120,6 +122,7 @@ export default function RegisterPage() {
     });
 
     console.log("signup data", { data, error });
+    console.log("signup data",  data);
    
     setErrorMessage("");
 

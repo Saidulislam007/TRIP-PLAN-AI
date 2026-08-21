@@ -1,5 +1,6 @@
 "use client";
 
+import { User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -61,6 +62,7 @@ const mainMenuItems = [
     href: "/admin-panel/moderation",
     icon: ShieldCheck,
   },
+  
 ];
 
 export default function AdminSidebar({ isOpen, onClose }) {
@@ -433,43 +435,46 @@ export default function AdminSidebar({ isOpen, onClose }) {
               </Link>
 
               {/* Logout */}
-              <button
-                type="button"
-                className="
-                  group
-                  flex w-full
-                  items-center gap-3
-                  rounded-[10px]
-                  px-3 py-[9px]
-                  text-[13px]
-                  font-medium
-                  text-[#D0E2DD]
-                  transition-all
-                  duration-200
-                  hover:bg-red-500/15
-                  hover:text-red-300
-                "
-              >
-                <LogOut
-                  size={18}
-                  strokeWidth={1.8}
-                  className="
-                    text-[#A9C9C0]
-                    transition-all
-                    duration-200
-                    group-hover:-translate-x-0.5
-                    group-hover:text-red-300
-                  "
-                />
+              
+             <Link
+  href="/admin-panel/logout"
+  onClick={onClose}
+  className="
+    group
+    flex w-full
+    items-center gap-3
+    rounded-[10px]
+    px-3 py-[9px]
+    text-[13px]
+    font-medium
+    text-[#D0E2DD]
+    transition-all
+    duration-200
+    hover:bg-red-500/15
+    hover:text-red-300
+  "
+>
+  <LogOut
+    size={18}
+    strokeWidth={1.8}
+    className="
+      text-[#A9C9C0]
+      transition-all
+      duration-200
+      group-hover:-translate-x-0.5
+      group-hover:text-red-300
+    "
+  />
 
-                <span>Logout</span>
-              </button>
+  <span>Logout</span>
+</Link>
+              
             </div>
           </div>
         </nav>
 
         {/* ================= UPGRADE CARD ================= */}
-        <div className="shrink-0 px-3 pb-3">
+        {/* <div className="shrink-0 px-3 pb-3">
           <div
             className="
               relative
@@ -535,7 +540,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* ================= BRAND FOOTER ================= */}
         <div className="shrink-0 border-t border-white/10 px-5 py-3">

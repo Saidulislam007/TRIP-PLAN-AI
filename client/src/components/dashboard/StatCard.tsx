@@ -29,7 +29,7 @@ export default function StatCard({ icon, title, value, detail, iconBgColor = "bg
       </div>
       
       {/* Arrow */}
-      <div className="absolute bottom-4 right-4 text-[#087F5B] opacity-0 transition-opacity group-hover:opacity-100">
+      <div className="absolute bottom-4 right-4 text-[#087F5B] transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
         <ArrowUpRight size={18} />
       </div>
     </div>

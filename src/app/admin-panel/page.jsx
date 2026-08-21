@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import DashboardChart from "@/components/admin-panel/DashboardChart";
+import RecentActivity from "../../components/admin-panel/RecentlyActivity";
 
 const stats = [
   {
@@ -279,6 +280,8 @@ export default function AdminPanelPage() {
         </div>
 
       </div>
+
+      <RecentActivity/>
 
     </div>
   );

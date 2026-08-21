@@ -237,7 +237,7 @@ export default function ReviewJourneyCTA() {
               }}
               className="
                 mt-2
-                max-w-[540px]
+                max-w-135
                 text-[9px]
                 leading-[1.65]
                 text-white/70

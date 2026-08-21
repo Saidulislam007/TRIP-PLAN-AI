@@ -8,13 +8,9 @@ export default function ReviewsPage() {
   return (
     <main className="min-h-screen bg-[#F7F7F2]">
       <ReviewHero />
-
       <TrustedTravelerStats />
-
       <AIReviewIntelligence />
-
       <TravelerReviewsSection />
-
       <ReviewJourneyCTA />
     </main>
   );

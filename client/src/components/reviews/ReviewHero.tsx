@@ -108,7 +108,7 @@ export default function ReviewHero() {
                 {/* Write Review */}
 
                 <Link
-                  href="/reviews/write"
+                  href="/reviews/write-review"
                   className="group inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-[#F4A62A] px-6 text-sm font-semibold text-[#17211D] shadow-lg shadow-black/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#F4B942] hover:shadow-xl"
                 >
                   <PenLine

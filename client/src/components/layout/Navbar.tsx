@@ -30,6 +30,14 @@ const exploreItems: DropdownItem[] = [
     label: "Travel Categories",
     href: "/travel-categories",
   },
+  {
+    label: "Hotels",
+    href: "/hotels",
+  },
+  {
+    label: "Food",
+    href: "/food",
+  },
 ];
 
 const destinationItems: DropdownItem[] = [

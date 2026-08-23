@@ -7,15 +7,12 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
-  Backpack,
   CalendarDays,
   Check,
   ChevronDown,
   Clock3,
-  Compass,
   Heart,
   History,
-  Leaf,
   Link2,
   MailPlus,
   RotateCcw,
@@ -29,155 +26,39 @@ import {
   UserRound,
   Users,
   WalletCards,
-  Waves,
   X,
 } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
 
-type FilterGroup = "season" | "budget" | "duration";
+import {
+  categories,
+  filterOptions,
+  initialFilters,
+  initialPreferences,
+  groupLabels,
+  getMatchScore,
+  getDynamicDestinationCount,
+  getItinerary,
+  readStoredValue,
+  storeValue,
+  STORAGE_KEYS,
+} from "@/data/travelStyles";
 
-type Filters = Record<FilterGroup, string[]>;
+import type {
+  FilterGroup,
+  Filters,
+  Category,
+  TravelPreferences,
+} from "@/data/travelStyles";
 
-type Category = {
-  title: string;
-  description: string;
-  slug: string;
-  image: string;
-  destinations: number;
-  icon: LucideIcon;
-  seasons: string[];
-  budgets: string[];
-  durations: string[];
-  keywords: string[];
-  layout: string;
-};
+import TrendingSection from "@/components/travel-categories/TrendingSection";
+import TravelStyleMatcher from "@/components/travel-categories/TravelStyleMatcher";
+import TravelerStories from "@/components/travel-categories/TravelerStories";
 
-type TravelPreferences = {
-  travelerType: "Solo" | "Couple" | "Family" | "Friends";
-  interests: string[];
-  budget: string;
-  duration: string;
-};
-
-type ItineraryDay = {
-  day: number;
-  title: string;
-  description: string;
-};
-
-const STORAGE_KEYS = {
-  preferences: "tripplan-ai-travel-preferences",
-  wishlist: "tripplan-ai-category-wishlist",
-  searchHistory: "tripplan-ai-category-search-history",
-} as const;
-
-const filterOptions: Record<FilterGroup, string[]> = {
-  season: ["Spring", "Summer", "Autumn", "Winter"],
-  budget: ["Budget", "Mid-range", "Luxury"],
-  duration: ["Weekend Getaway", "5–7 Days", "8–14 Days", "15+ Days"],
-};
-
-const initialFilters: Filters = {
-  season: [],
-  budget: [],
-  duration: [],
-};
-
-const initialPreferences: TravelPreferences = {
-  travelerType: "Solo",
-  interests: [],
-  budget: "Mid-range",
-  duration: "5–7 Days",
-};
-
-const categories: Category[] = [
-  {
-    title: "Adventure",
-    description: "Go beyond the familiar",
-    slug: "adventure",
-    image: "/images/categories/adventure.jpg",
-    destinations: 24,
-    icon: Compass,
-    seasons: ["Spring", "Summer", "Autumn", "Winter"],
-    budgets: ["Budget", "Mid-range", "Luxury"],
-    durations: ["Weekend Getaway", "5–7 Days", "8–14 Days", "15+ Days"],
-    keywords: ["hiking", "trekking", "camping", "mountain", "thrill"],
-    layout: "lg:row-span-2",
-  },
-  {
-    title: "Beach",
-    description: "Follow the sun",
-    slug: "beach",
-    image: "/images/categories/beach.jpg",
-    destinations: 18,
-    icon: Waves,
-    seasons: ["Spring", "Summer", "Winter"],
-    budgets: ["Budget", "Mid-range", "Luxury"],
-    durations: ["Weekend Getaway", "5–7 Days", "8–14 Days"],
-    keywords: ["island", "ocean", "sunset", "relax", "sea"],
-    layout: "lg:col-span-2",
-  },
-  {
-    title: "Romantic",
-    description: "Escape together",
-    slug: "romantic",
-    image: "/images/categories/romantic.jpg",
-    destinations: 12,
-    icon: Heart,
-    seasons: ["Spring", "Autumn", "Winter"],
-    budgets: ["Mid-range", "Luxury"],
-    durations: ["Weekend Getaway", "5–7 Days", "8–14 Days"],
-    keywords: ["couple", "honeymoon", "sunset", "resort", "escape"],
-    layout: "lg:col-span-2",
-  },
-  {
-    title: "Family",
-    description: "Make memories",
-    slug: "family",
-    image: "/images/categories/family.jpg",
-    destinations: 15,
-    icon: Users,
-    seasons: ["Spring", "Summer", "Autumn", "Winter"],
-    budgets: ["Budget", "Mid-range", "Luxury"],
-    durations: ["Weekend Getaway", "5–7 Days", "8–14 Days"],
-    keywords: ["children", "group", "safe", "memories", "family-friendly"],
-    layout: "",
-  },
-  {
-    title: "Nature",
-    description: "Return to calm",
-    slug: "nature",
-    image: "/images/categories/nature.jpg",
-    destinations: 16,
-    icon: Leaf,
-    seasons: ["Spring", "Summer", "Autumn", "Winter"],
-    budgets: ["Budget", "Mid-range", "Luxury"],
-    durations: ["Weekend Getaway", "5–7 Days", "8–14 Days", "15+ Days"],
-    keywords: ["forest", "waterfall", "lake", "wildlife", "peaceful"],
-    layout: "",
-  },
-  {
-    title: "Backpacking",
-    description: "Travel freely",
-    slug: "backpacking",
-    image: "/images/categories/backpacking.jpg",
-    destinations: 20,
-    icon: Backpack,
-    seasons: ["Spring", "Summer", "Autumn"],
-    budgets: ["Budget", "Mid-range"],
-    durations: ["5–7 Days", "8–14 Days", "15+ Days"],
-    keywords: ["solo", "hostel", "local", "independent", "low-cost"],
-    layout: "",
-  },
-];
+/* ============================================================
+   CONSTANTS
+============================================================ */
 
 const revealEase = [0.22, 1, 0.36, 1] as const;
-
-const groupLabels: Record<FilterGroup, string> = {
-  season: "Season",
-  budget: "Budget",
-  duration: "Duration",
-};
 
 const groupIcons = {
   season: CalendarDays,
@@ -185,102 +66,9 @@ const groupIcons = {
   duration: Clock3,
 };
 
-function readStoredValue<T>(key: string, fallback: T): T {
-  try {
-    const value = window.localStorage.getItem(key);
-    return value ? (JSON.parse(value) as T) : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function storeValue<T>(key: string, value: T) {
-  try {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    // The page still works when storage is unavailable.
-  }
-}
-
-function getMatchScore(
-  category: Category,
-  filters: Filters,
-  preferences: TravelPreferences,
-  isWishlisted: boolean,
-) {
-  let score = 76;
-
-  const selectedFilters = [
-    ...filters.season,
-    ...filters.budget,
-    ...filters.duration,
-  ];
-  const categoryValues = [
-    ...category.seasons,
-    ...category.budgets,
-    ...category.durations,
-  ];
-
-  score += selectedFilters.filter((item) => categoryValues.includes(item)).length * 4;
-  score += preferences.interests.includes(category.slug) ? 9 : 0;
-  score += category.budgets.includes(preferences.budget) ? 3 : 0;
-  score += category.durations.includes(preferences.duration) ? 3 : 0;
-  score += isWishlisted ? 2 : 0;
-
-  if (preferences.travelerType === "Couple" && category.slug === "romantic") score += 5;
-  if (preferences.travelerType === "Family" && category.slug === "family") score += 5;
-  if (preferences.travelerType === "Solo" && category.slug === "backpacking") score += 4;
-  if (preferences.travelerType === "Friends" && category.slug === "adventure") score += 4;
-
-  return Math.min(98, score);
-}
-
-function getDynamicDestinationCount(category: Category, filters: Filters) {
-  let ratio = 1;
-
-  if (filters.season.length > 0) ratio *= 0.82;
-  if (filters.budget.length > 0) ratio *= 0.76;
-  if (filters.duration.length > 0) ratio *= 0.8;
-
-  return Math.max(1, Math.round(category.destinations * ratio));
-}
-
-function getItinerary(category: Category): ItineraryDay[] {
-  const itineraryByCategory: Record<string, ItineraryDay[]> = {
-    adventure: [
-      { day: 1, title: "Arrival & trail briefing", description: "Settle in, meet your local guide, and prepare for the route ahead." },
-      { day: 2, title: "Signature outdoor experience", description: "Spend the day hiking, exploring viewpoints, and enjoying a local lunch." },
-      { day: 3, title: "Hidden landscape & return", description: "Visit a quieter natural landmark before a relaxed journey home." },
-    ],
-    beach: [
-      { day: 1, title: "Coastal arrival", description: "Check in, walk the shoreline, and enjoy a relaxed sunset experience." },
-      { day: 2, title: "Island & water day", description: "Explore nearby islands, local food, and optional water activities." },
-      { day: 3, title: "Slow morning & departure", description: "Enjoy a calm beach morning before returning home." },
-    ],
-    romantic: [
-      { day: 1, title: "Private arrival experience", description: "Check in together and begin with a sunset dinner." },
-      { day: 2, title: "Curated couple experience", description: "Explore scenic places with a private activity and memorable evening." },
-      { day: 3, title: "Relaxed farewell", description: "Enjoy breakfast, a short photo stop, and an easy departure." },
-    ],
-    family: [
-      { day: 1, title: "Family-friendly arrival", description: "Easy check-in, nearby sightseeing, and an early group dinner." },
-      { day: 2, title: "Activities for everyone", description: "Mix educational, playful, and relaxing activities for all ages." },
-      { day: 3, title: "Memory-making morning", description: "Enjoy one final shared experience before the return trip." },
-    ],
-    nature: [
-      { day: 1, title: "Into the landscape", description: "Arrive, settle into an eco stay, and take a gentle nature walk." },
-      { day: 2, title: "Forest, lake & local life", description: "Explore the area's signature landscape with a local guide." },
-      { day: 3, title: "Quiet morning", description: "Enjoy a slow sunrise experience and return refreshed." },
-    ],
-    backpacking: [
-      { day: 1, title: "Local arrival & orientation", description: "Check into a social stay and learn the most efficient local route." },
-      { day: 2, title: "Independent discovery", description: "Follow a flexible route through markets, landmarks, and local food spots." },
-      { day: 3, title: "One last neighbourhood", description: "Explore a final hidden corner before moving to your next stop." },
-    ],
-  };
-
-  return itineraryByCategory[category.slug] ?? itineraryByCategory.nature;
-}
+/* ============================================================
+   MAIN COMPONENT
+============================================================ */
 
 export default function TravelCategoriesPage() {
   const shouldReduceMotion = useReducedMotion();
@@ -472,11 +260,15 @@ export default function TravelCategoriesPage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-gradient-to-b from-[#FFFEFB] via-white to-[#F4F8F5] text-[#13221C]">
+      {/* ========================================================
+          HERO SECTION
+      ======================================================== */}
       <section className="relative pb-14 pt-[112px] sm:pb-16 sm:pt-[126px] lg:pb-20">
         <div aria-hidden="true" className="pointer-events-none absolute -left-24 top-32 h-72 w-72 rounded-full bg-[#087F5B]/[0.06] blur-[100px]" />
         <div aria-hidden="true" className="pointer-events-none absolute -right-24 top-24 h-72 w-72 rounded-full bg-[#F4A934]/[0.08] blur-[110px]" />
 
         <div className="relative mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12 xl:px-16">
+          {/* Breadcrumb */}
           <motion.nav
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -491,6 +283,7 @@ export default function TravelCategoriesPage() {
             <span aria-current="page" className="text-[#35453D]">Travel Categories</span>
           </motion.nav>
 
+          {/* Hero Content */}
           <div className="mt-6 grid items-end gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(380px,500px)] lg:gap-12">
             <motion.div
               initial={{ opacity: 0, y: 24, filter: "blur(8px)" }}
@@ -498,13 +291,14 @@ export default function TravelCategoriesPage() {
               transition={{ duration: 0.75, ease: revealEase }}
             >
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#087F5B] sm:text-[11px]">Travel, your way</p>
-              <h1 className="mt-3 max-w-[720px] [font-family:Georgia,'Times_New_Roman',serif] text-[42px] font-normal leading-[0.98] tracking-[-0.045em] text-[#13221C] sm:text-[56px] lg:text-[68px]">
+              <h1 className="mt-3 max-w-[720px] font-serif text-[42px] font-normal leading-[0.98] tracking-[-0.045em] text-[#13221C] sm:text-[56px] lg:text-[68px]">
                 Stories begin with a{" "}
                 <span className="bg-gradient-to-r from-[#D98B26] via-[#F4A934] to-[#B8691B] bg-clip-text italic text-transparent">travel style.</span>
               </h1>
               <p className="mt-5 max-w-[560px] text-[13px] font-medium leading-[1.75] text-[#5B6C63] sm:text-[15px]">Choose how you want to explore the world. Every journey has a style—what&apos;s yours?</p>
             </motion.div>
 
+            {/* Search Card */}
             <motion.form
               initial={{ opacity: 0, y: 20, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -512,7 +306,7 @@ export default function TravelCategoriesPage() {
               onSubmit={handleSearchSubmit}
               className="relative rounded-[24px] border border-[#E4E8E4] bg-white/85 p-4 shadow-[0_18px_50px_rgba(31,43,36,0.09),inset_0_1px_0_rgba(255,255,255,0.90)] backdrop-blur-xl sm:p-5"
             >
-              <label htmlFor="category-search" className="[font-family:Georgia,'Times_New_Roman',serif] text-[18px] font-normal text-[#26382F] sm:text-[20px]">Where would you like to feel alive?</label>
+              <label htmlFor="category-search" className="font-serif text-[18px] font-normal text-[#26382F] sm:text-[20px]">Where would you like to feel alive?</label>
               <div className="relative mt-3 flex h-14 items-center rounded-2xl border border-[#DDE5E0] bg-[#FFFEFB] transition-all duration-300 focus-within:border-[#087F5B]/45 focus-within:shadow-[0_0_0_4px_rgba(8,127,91,0.08)]">
                 <Search aria-hidden="true" size={18} className="pointer-events-none absolute left-4 text-[#087F5B]" />
                 <input
@@ -532,6 +326,7 @@ export default function TravelCategoriesPage() {
                 </button>
               </div>
 
+              {/* Search History Dropdown */}
               <AnimatePresence>
                 {isSearchFocused && searchHistory.length > 0 && (
                   <motion.div
@@ -565,6 +360,9 @@ export default function TravelCategoriesPage() {
             </motion.form>
           </div>
 
+          {/* ========================================================
+              MOBILE FILTER TOGGLE
+          ======================================================== */}
           <div className="mt-10 flex items-center justify-between gap-4 lg:hidden">
             <button
               type="button"
@@ -585,6 +383,7 @@ export default function TravelCategoriesPage() {
             )}
           </div>
 
+          {/* Mobile Filter Panel */}
           <AnimatePresence initial={false}>
             {isFilterOpen && (
               <motion.div
@@ -602,7 +401,11 @@ export default function TravelCategoriesPage() {
             )}
           </AnimatePresence>
 
+          {/* ========================================================
+              SIDEBAR + CARD GRID
+          ======================================================== */}
           <div className="mt-7 grid items-start gap-7 lg:grid-cols-[230px_minmax(0,1fr)] xl:grid-cols-[250px_minmax(0,1fr)] xl:gap-9">
+            {/* Sidebar */}
             <motion.aside
               initial={{ opacity: 0, x: -18 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -613,6 +416,7 @@ export default function TravelCategoriesPage() {
               <FiltersPanel filters={filters} onToggle={toggleFilter} onClear={clearFilters} />
             </motion.aside>
 
+            {/* Cards Section */}
             <div>
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
@@ -642,7 +446,8 @@ export default function TravelCategoriesPage() {
                 </div>
               </div>
 
-              <motion.div layout className="grid grid-flow-dense grid-cols-1 gap-3.5 sm:grid-cols-2 lg:auto-rows-[182px] lg:grid-cols-3 lg:gap-4">
+              {/* CARD GRID — uniform 3-column */}
+              <motion.div layout className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
                 <AnimatePresence>
                   {filteredCategories.map(
                     ({ category, matchScore, destinationCount }, index) => (
@@ -663,10 +468,11 @@ export default function TravelCategoriesPage() {
                 </AnimatePresence>
               </motion.div>
 
+              {/* Empty State */}
               {filteredCategories.length === 0 && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex min-h-[360px] flex-col items-center justify-center rounded-[26px] border border-dashed border-[#CAD8D1] bg-white/70 px-6 text-center">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#EAF7F1] text-[#087F5B]"><Search size={23} /></div>
-                  <h2 className="mt-5 [font-family:Georgia,'Times_New_Roman',serif] text-[25px] text-[#17211D]">No exact matches found</h2>
+                  <h2 className="mt-5 font-serif text-[25px] text-[#17211D]">No travel styles match your current filters.</h2>
                   <p className="mt-2 max-w-sm text-[12px] leading-6 text-[#6B7A72]">Try changing your search, season, budget, or duration.</p>
                   <button type="button" onClick={clearFilters} className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-[#087F5B] px-5 text-[11px] font-bold text-white transition-colors hover:bg-[#06694B]">
                     <RotateCcw size={14} /> Clear Filters
@@ -675,61 +481,84 @@ export default function TravelCategoriesPage() {
               )}
             </div>
           </div>
-
-          <motion.section
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.75, ease: revealEase }}
-            className="relative mt-8 overflow-hidden rounded-[26px] border border-[#D9E3DD] bg-gradient-to-br from-[#F7F4E9] via-[#FFFEFA] to-[#EDF7F2] p-5 shadow-[0_18px_48px_rgba(23,33,29,0.08)] sm:p-7 lg:grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.35fr)] lg:items-center lg:gap-8"
-          >
-            <div aria-hidden="true" className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-[#087F5B]/10 blur-[55px]" />
-            <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 left-[30%] h-48 w-48 rounded-full bg-[#F4A934]/12 blur-[60px]" />
-
-            <div className="relative">
-              <motion.div
-                animate={shouldReduceMotion ? undefined : { rotate: [0, 8, -8, 0], scale: [1, 1.08, 1] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#073D31] text-[#FFD078] shadow-[0_12px_28px_rgba(7,61,49,0.18)]"
-              >
-                <Sparkles size={21} />
-              </motion.div>
-              <h2 className="mt-5 [font-family:Georgia,'Times_New_Roman',serif] text-[27px] font-normal leading-tight tracking-[-0.025em] text-[#17211D] sm:text-[32px]">Let AI curate your next chapter</h2>
-              <p className="mt-3 max-w-[500px] text-[12px] font-medium leading-6 text-[#627168] sm:text-[13px]">Answer a few questions and let TripPlan AI design journeys that fit your style, time, and budget.</p>
-              <button type="button" onClick={() => setIsPreferencesOpen(true)} className="group mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-[#E89425] to-[#F5B13E] px-5 text-[11px] font-bold text-[#13221C] shadow-[0_10px_25px_rgba(232,148,37,0.24)] transition-all hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E89425]/45">
-                Discover My Match <Sparkles size={14} className="transition-transform duration-300 group-hover:rotate-12" />
-              </button>
-            </div>
-
-            <div className="relative mt-7 grid gap-3 sm:grid-cols-3 lg:mt-0">
-              {personalizedSuggestions.map(({ category, matchScore }, index) => (
-                <motion.div
-                  key={category.slug}
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.5 }}
-                  transition={{ duration: 0.55, delay: index * 0.09, ease: revealEase }}
-                >
-                  <button type="button" onClick={() => setPreviewCategory(category)} className="group flex min-h-[100px] w-full overflow-hidden rounded-2xl border border-white/80 bg-white text-left shadow-[0_10px_25px_rgba(23,33,29,0.08)] sm:block">
-                    <div className="relative min-h-[100px] w-[110px] shrink-0 overflow-hidden sm:h-[105px] sm:w-full">
-                      <Image src={category.image} alt="" fill sizes="(max-width: 640px) 110px, 220px" className="object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
-                      <span className="absolute left-2 top-2 rounded-full border border-white/30 bg-[#071A16]/70 px-2 py-1 text-[8px] font-bold uppercase tracking-[0.08em] text-[#FFD078] backdrop-blur-md">AI match {matchScore}%</span>
-                    </div>
-                    <div className="flex flex-1 items-center justify-between gap-3 p-3 sm:items-start">
-                      <div>
-                        <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#87938D]">{preferences.duration} · {category.title}</p>
-                        <h3 className="mt-1 [font-family:Georgia,'Times_New_Roman',serif] text-[15px] leading-tight text-[#17211D]">{category.description}</h3>
-                      </div>
-                      <ArrowUpRight size={16} className="shrink-0 text-[#087F5B] transition-colors group-hover:text-[#D98B26]" />
-                    </div>
-                  </button>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
         </div>
       </section>
 
+      {/* ========================================================
+          NEW SECTION #1 — TRENDING THIS SEASON
+      ======================================================== */}
+      <TrendingSection />
+
+      {/* ========================================================
+          NEW SECTION #2 — FIND YOUR PERFECT TRAVEL STYLE
+      ======================================================== */}
+      <TravelStyleMatcher />
+
+      {/* ========================================================
+          NEW SECTION #3 — REAL STORIES. REAL JOURNEYS.
+      ======================================================== */}
+      <TravelerStories />
+
+      {/* ========================================================
+          EXISTING — AI CURATION SECTION
+      ======================================================== */}
+      <section className="relative mx-auto w-full max-w-[1440px] px-5 pb-14 sm:px-8 sm:pb-16 lg:px-12 lg:pb-20 xl:px-16">
+        <motion.section
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{ duration: 0.75, ease: revealEase }}
+          className="relative overflow-hidden rounded-[26px] border border-[#D9E3DD] bg-gradient-to-br from-[#F7F4E9] via-[#FFFEFA] to-[#EDF7F2] p-5 shadow-[0_18px_48px_rgba(23,33,29,0.08)] sm:p-7 lg:grid lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.35fr)] lg:items-center lg:gap-8"
+        >
+          <div aria-hidden="true" className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-[#087F5B]/10 blur-[55px]" />
+          <div aria-hidden="true" className="pointer-events-none absolute -bottom-16 left-[30%] h-48 w-48 rounded-full bg-[#F4A934]/12 blur-[60px]" />
+
+          <div className="relative">
+            <motion.div
+              animate={shouldReduceMotion ? undefined : { rotate: [0, 8, -8, 0], scale: [1, 1.08, 1] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-[#073D31] text-[#FFD078] shadow-[0_12px_28px_rgba(7,61,49,0.18)]"
+            >
+              <Sparkles size={21} />
+            </motion.div>
+            <h2 className="mt-5 font-serif text-[27px] font-normal leading-tight tracking-[-0.025em] text-[#17211D] sm:text-[32px]">Let AI curate your next chapter</h2>
+            <p className="mt-3 max-w-[500px] text-[12px] font-medium leading-6 text-[#627168] sm:text-[13px]">Answer a few questions and let TripPlan AI design journeys that fit your style, time, and budget.</p>
+            <button type="button" onClick={() => setIsPreferencesOpen(true)} className="group mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-gradient-to-r from-[#E89425] to-[#F5B13E] px-5 text-[11px] font-bold text-[#13221C] shadow-[0_10px_25px_rgba(232,148,37,0.24)] transition-all hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E89425]/45">
+              Discover My Match <Sparkles size={14} className="transition-transform duration-300 group-hover:rotate-12" />
+            </button>
+          </div>
+
+          <div className="relative mt-7 grid gap-3 sm:grid-cols-3 lg:mt-0">
+            {personalizedSuggestions.map(({ category, matchScore }, index) => (
+              <motion.div
+                key={category.slug}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.55, delay: index * 0.09, ease: revealEase }}
+              >
+                <button type="button" onClick={() => setPreviewCategory(category)} className="group flex min-h-[100px] w-full overflow-hidden rounded-2xl border border-white/80 bg-white text-left shadow-[0_10px_25px_rgba(23,33,29,0.08)] sm:block">
+                  <div className="relative min-h-[100px] w-[110px] shrink-0 overflow-hidden sm:h-[105px] sm:w-full">
+                    <Image src={category.image} alt="" fill sizes="(max-width: 640px) 110px, 220px" className="object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                    <span className="absolute left-2 top-2 rounded-full border border-white/30 bg-[#071A16]/70 px-2 py-1 text-[8px] font-bold uppercase tracking-[0.08em] text-[#FFD078] backdrop-blur-md">AI match {matchScore}%</span>
+                  </div>
+                  <div className="flex flex-1 items-center justify-between gap-3 p-3 sm:items-start">
+                    <div>
+                      <p className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#87938D]">{preferences.duration} · {category.title}</p>
+                      <h3 className="mt-1 font-serif text-[15px] leading-tight text-[#17211D]">{category.description}</h3>
+                    </div>
+                    <ArrowUpRight size={16} className="shrink-0 text-[#087F5B] transition-colors group-hover:text-[#D98B26]" />
+                  </div>
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+      </section>
+
+      {/* ========================================================
+          TOAST NOTIFICATION
+      ======================================================== */}
       <AnimatePresence>
         {notice && (
           <motion.div
@@ -743,6 +572,9 @@ export default function TravelCategoriesPage() {
         )}
       </AnimatePresence>
 
+      {/* ========================================================
+          DIALOGS
+      ======================================================== */}
       <PreferencesDialog
         isOpen={isPreferencesOpen}
         preferences={preferences}
@@ -770,6 +602,10 @@ export default function TravelCategoriesPage() {
     </main>
   );
 }
+
+/* ============================================================
+   FILTERS PANEL
+============================================================ */
 
 function FiltersPanel({
   filters,
@@ -825,6 +661,10 @@ function FiltersPanel({
   );
 }
 
+/* ============================================================
+   CATEGORY CARD
+============================================================ */
+
 function CategoryCard({
   category,
   href,
@@ -855,19 +695,22 @@ function CategoryCard({
       animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
       exit={{ opacity: 0, scale: 0.96, filter: "blur(5px)" }}
       transition={{ duration: reduceMotion ? 0 : 0.55, delay: reduceMotion ? 0 : index * 0.055, ease: revealEase }}
-      className={`group relative h-[290px] overflow-hidden rounded-[20px] border border-[#23483D]/25 bg-[#0B251E] shadow-[0_14px_32px_rgba(23,33,29,0.10)] transition-shadow duration-500 hover:shadow-[0_22px_55px_rgba(8,59,46,0.22),0_0_0_1px_rgba(244,169,52,0.18)] sm:h-[310px] lg:h-auto ${category.layout}`}
+      className="group relative h-[290px] overflow-hidden rounded-[20px] border border-[#23483D]/25 bg-[#0B251E] shadow-[0_14px_32px_rgba(23,33,29,0.10)] transition-shadow duration-500 hover:shadow-[0_22px_55px_rgba(8,59,46,0.22),0_0_0_1px_rgba(244,169,52,0.18)] sm:h-[310px]"
     >
       <Link href={href} aria-label={`Explore ${category.title} destinations`} className="absolute inset-0 z-20 rounded-[20px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#FFD078]" />
 
       <Image src={category.image} alt={`${category.title} travel experience`} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.035]" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#041C16]/95 via-[#071A16]/18 to-black/[0.04] transition-colors duration-500 group-hover:from-[#031812]/90" />
 
+      {/* Icon */}
       <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-white/40 bg-[#071A16]/30 text-white shadow-[0_8px_20px_rgba(0,0,0,0.12)] backdrop-blur-md transition-all duration-300 group-hover:border-[#FFD078]/60 group-hover:bg-[#F4A934] group-hover:text-[#13221C]">
         <Icon size={18} strokeWidth={1.8} />
       </div>
 
+      {/* AI Match Badge */}
       <span className="absolute left-[62px] top-[19px] z-10 rounded-full border border-[#FFD078]/35 bg-[#071A16]/60 px-2.5 py-1 text-[8px] font-bold uppercase tracking-[0.1em] text-[#FFD078] backdrop-blur-md">AI match {matchScore}%</span>
 
+      {/* Wishlist */}
       <button
         type="button"
         onClick={onToggleWishlist}
@@ -878,9 +721,10 @@ function CategoryCard({
         <Heart size={17} fill={isWishlisted ? "currentColor" : "none"} />
       </button>
 
+      {/* Content */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex items-end justify-between gap-4 p-5 sm:p-6">
         <div className="min-w-0 text-white">
-          <h2 className="truncate [font-family:Georgia,'Times_New_Roman',serif] text-[27px] font-normal leading-none tracking-[-0.025em] sm:text-[30px]">{category.title}</h2>
+          <h2 className="truncate font-serif text-[27px] font-normal leading-none tracking-[-0.025em] sm:text-[30px]">{category.title}</h2>
           <p className="mt-1.5 text-[11px] font-medium text-white/85">{category.description}</p>
           <div className="mt-2.5 flex flex-wrap items-center gap-2.5">
             <p className="text-[8px] font-bold uppercase tracking-[0.17em] text-[#8FE0C2] sm:text-[9px]">{destinationCount} matching destinations</p>
@@ -897,6 +741,10 @@ function CategoryCard({
     </motion.article>
   );
 }
+
+/* ============================================================
+   PREFERENCES DIALOG
+============================================================ */
 
 function PreferencesDialog({
   isOpen,
@@ -968,7 +816,7 @@ function PreferencesDialog({
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#E2E9E5] bg-[#FFFEFB]/95 px-5 py-4 backdrop-blur-xl sm:px-7">
               <div>
                 <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-[#087F5B]">Personalized suggestions</p>
-                <h2 id="preferences-title" className="mt-1 [font-family:Georgia,'Times_New_Roman',serif] text-[24px] text-[#17211D]">Tell AI how you travel</h2>
+                <h2 id="preferences-title" className="mt-1 font-serif text-[24px] text-[#17211D]">Tell AI how you travel</h2>
               </div>
               <button type="button" onClick={onClose} aria-label="Close preferences" className="flex h-9 w-9 items-center justify-center rounded-full border border-[#DCE5E0] text-[#53635B] transition-colors hover:border-[#087F5B]/40 hover:text-[#087F5B]"><X size={17} /></button>
             </div>
@@ -987,12 +835,12 @@ function PreferencesDialog({
                 <legend className="flex items-center gap-2 text-[11px] font-bold text-[#26382F]"><Sparkles size={16} className="text-[#D98B26]" /> What experiences interest you?</legend>
                 <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {categories.map((category) => {
-                    const Icon = category.icon;
+                    const CatIcon = category.icon;
                     const selected = draft.interests.includes(category.slug);
 
                     return (
                       <button key={category.slug} type="button" aria-pressed={selected} onClick={() => toggleInterest(category.slug)} className={`flex min-h-12 items-center gap-2.5 rounded-xl border px-3 text-left text-[10px] font-bold transition-all ${selected ? "border-[#F4A934] bg-[#FFF3D8] text-[#9B5715]" : "border-[#DDE6E1] bg-white text-[#52635A] hover:border-[#F4A934]/45"}`}>
-                        <Icon size={15} /> {category.title}
+                        <CatIcon size={15} /> {category.title}
                         {selected && <Check size={13} className="ml-auto" />}
                       </button>
                     );
@@ -1027,6 +875,10 @@ function PreferencesDialog({
     </AnimatePresence>
   );
 }
+
+/* ============================================================
+   ITINERARY PREVIEW DIALOG
+============================================================ */
 
 function ItineraryPreviewDialog({
   category,
@@ -1133,7 +985,7 @@ function ItineraryPreviewDialog({
             <button type="button" onClick={onClose} aria-label="Close itinerary preview" className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/35 bg-[#071A16]/35 text-white backdrop-blur-md hover:border-[#FFD078]/70 hover:text-[#FFD078]"><X size={18} /></button>
             <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
               <span className="inline-flex rounded-full border border-[#FFD078]/35 bg-[#071A16]/55 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.12em] text-[#FFD078] backdrop-blur-md">AI match {matchScore}%</span>
-              <h2 id="itinerary-preview-title" className="mt-3 [font-family:Georgia,'Times_New_Roman',serif] text-[32px] font-normal leading-none sm:text-[42px]">{category.title} itinerary preview</h2>
+              <h2 id="itinerary-preview-title" className="mt-3 font-serif text-[32px] font-normal leading-none sm:text-[42px]">{category.title} itinerary preview</h2>
               <p className="mt-2 text-[11px] font-medium text-white/75 sm:text-[12px]">Personalized for {preferences.travelerType.toLowerCase()} travel · {preferences.duration} · {preferences.budget}</p>
             </div>
           </div>
@@ -1146,7 +998,7 @@ function ItineraryPreviewDialog({
                 <div className="col-span-2 rounded-2xl border border-[#DFE8E3] bg-white p-3.5 sm:col-span-1"><p className="text-[8px] font-bold uppercase tracking-[0.12em] text-[#88958E]">Travel style</p><p className="mt-1.5 text-[12px] font-bold text-[#17211D]">{category.title}</p></div>
               </div>
 
-              <h3 className="mt-7 [font-family:Georgia,'Times_New_Roman',serif] text-[23px] text-[#17211D]">Your three-day preview</h3>
+              <h3 className="mt-7 font-serif text-[23px] text-[#17211D]">Your three-day preview</h3>
               <div className="mt-4 space-y-3">
                 {itinerary.map((item, index) => (
                   <motion.div key={item.day} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: reduceMotion ? 0 : 0.35, delay: index * 0.08 }} className="flex gap-3 rounded-2xl border border-[#E0E8E4] bg-white p-4">
@@ -1159,7 +1011,7 @@ function ItineraryPreviewDialog({
 
             <aside className="rounded-[22px] border border-[#DCE7E1] bg-gradient-to-b from-[#F1F8F4] to-white p-5">
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#073D31] text-[#FFD078]"><Users size={19} /></div>
-              <h3 className="mt-4 [font-family:Georgia,'Times_New_Roman',serif] text-[22px] text-[#17211D]">Plan together</h3>
+              <h3 className="mt-4 font-serif text-[22px] text-[#17211D]">Plan together</h3>
               <p className="mt-2 text-[10px] leading-5 text-[#68776F]">Add travel companions to this preview or share a collaboration link.</p>
 
               <form onSubmit={addCollaborator} className="mt-4">

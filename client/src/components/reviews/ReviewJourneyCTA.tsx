@@ -289,7 +289,7 @@ export default function ReviewJourneyCTA() {
           >
             {/* Write Review */}
 
-            <Link href="/reviews/write">
+            <Link href="/reviews/write-review">
               <motion.div
                 whileHover={
                   shouldReduceMotion

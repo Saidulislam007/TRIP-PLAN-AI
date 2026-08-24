@@ -2,24 +2,14 @@
 
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import {
-  AlertCircle,
   ArrowLeft,
-  Eye,
-  EyeOff,
-  LockKeyhole,
-  Mail,
   MapPin,
   Plane,
-  UserRound,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  type ChangeEvent,
-  type FormEvent,
-  type MouseEvent,
-  useState,
-} from "react";
+import type { MouseEvent } from "react";
+import RegisterForm from "./RegisterForm";
 
 const revealEase = [0.22, 1, 0.36, 1] as const;
 
@@ -53,43 +43,13 @@ const destinationCards = [
   },
 ] as const;
 
-type RegisterFormData = {
-  fullName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
-const initialFormData: RegisterFormData = {
-  fullName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-};
-
 export default function RegisterPage() {
   const prefersReducedMotion = useReducedMotion();
-  const [formData, setFormData] =
-    useState<RegisterFormData>(initialFormData);
-  const [showPassword, setShowPassword] = useState(false);
-  const [acceptTerms, setAcceptTerms] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   const rotateXValue = useMotionValue(0);
   const rotateYValue = useMotionValue(0);
   const rotateX = useSpring(rotateXValue, { stiffness: 120, damping: 18 });
   const rotateY = useSpring(rotateYValue, { stiffness: 120, damping: 18 });
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-
-    setFormData((current) => ({
-      ...current,
-      [name]: value,
-    }));
-
-    if (errorMessage) setErrorMessage("");
-  };
 
   const handleMapMove = (event: MouseEvent<HTMLDivElement>) => {
     if (prefersReducedMotion) return;
@@ -105,44 +65,6 @@ export default function RegisterPage() {
   const resetMapTilt = () => {
     rotateXValue.set(0);
     rotateYValue.set(0);
-  };
-
-  const handleRegister = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    // const fullName = formData.fullName.trim();
-    // const email = formData.email.trim().toLowerCase();
-
-    // if (
-    //   !fullName ||
-    //   !email ||
-    //   !formData.password ||
-    //   !formData.confirmPassword
-    // ) {
-    //   setErrorMessage("Please complete all required fields.");
-    //   return;
-    // }
-
-    // if (formData.password !== formData.confirmPassword) {
-    //   setErrorMessage("Passwords do not match.");
-    //   return;
-    // }
-
-    // if (!acceptTerms) {
-    //   setErrorMessage("Please accept the Terms and Privacy Policy.");
-    //   return;
-    // }
-
-    setErrorMessage("");
-
-    // TODO: The backend developer will connect account registration here.
-    // Available values: fullName, email, formData.password, and acceptTerms.
-  };
-
-  const handleGoogleRegister = () => {
-    setErrorMessage("");
-
-    // TODO: The backend developer will connect Google registration here.
   };
 
   return (
@@ -172,214 +94,9 @@ export default function RegisterPage() {
               personalized journeys with AI.
             </p>
 
-            <form
-              className="mt-6"
-              onSubmit={handleRegister}
-              autoComplete="off"
-              noValidate
-            >
-              <div>
-                <label
-                  htmlFor="register-name"
-                  className="text-[12px] font-bold text-[#203C32] sm:text-[13px]"
-                >
-                  Full name
-                </label>
-                <div className="relative mt-2">
-                  <UserRound
-                    size={17}
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7B8A84]"
-                  />
-                  <input
-                    id="register-name"
-                    name="fullName"
-                    type="text"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    autoComplete="off"
-                    data-lpignore="true"
-                    data-1p-ignore="true"
-                    required
-                    placeholder="Your full name"
-                    className="h-[50px] w-full rounded-[14px] border border-[#D8E2DD] bg-[#FCFDFB] py-3 pl-11 pr-4 text-[13px] font-medium text-[#17211D] outline-none transition-all placeholder:text-[#9AA7A1] focus:border-[#087F5B]/60 focus:ring-4 focus:ring-[#087F5B]/10 sm:h-[52px] sm:text-[14px]"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label
-                  htmlFor="register-email"
-                  className="text-[12px] font-bold text-[#203C32] sm:text-[13px]"
-                >
-                  Email address
-                </label>
-                <div className="relative mt-2">
-                  <Mail
-                    size={17}
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7B8A84]"
-                  />
-                  <input
-                    id="register-email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    autoComplete="off"
-                    data-lpignore="true"
-                    data-1p-ignore="true"
-                    required
-                    placeholder="you@example.com"
-                    className="h-[50px] w-full rounded-[14px] border border-[#D8E2DD] bg-[#FCFDFB] py-3 pl-11 pr-4 text-[13px] font-medium text-[#17211D] outline-none transition-all placeholder:text-[#9AA7A1] focus:border-[#087F5B]/60 focus:ring-4 focus:ring-[#087F5B]/10 sm:h-[52px] sm:text-[14px]"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <div>
-                  <label
-                    htmlFor="register-password"
-                    className="text-[12px] font-bold text-[#203C32] sm:text-[13px]"
-                  >
-                    Password
-                  </label>
-                  <div className="relative mt-2">
-                    <LockKeyhole
-                      size={17}
-                      aria-hidden="true"
-                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7B8A84]"
-                    />
-                    <input
-                      id="register-password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      value={formData.password}
-                      onChange={handleChange}
-                      autoComplete="new-password"
-                      data-lpignore="true"
-                      data-1p-ignore="true"
-                      required
-                      placeholder="Create password"
-                      className="h-[50px] w-full rounded-[14px] border border-[#D8E2DD] bg-[#FCFDFB] py-3 pl-11 pr-11 text-[12px] font-medium text-[#17211D] outline-none transition-all placeholder:text-[#9AA7A1] focus:border-[#087F5B]/60 focus:ring-4 focus:ring-[#087F5B]/10 sm:h-[52px] sm:text-[13px]"
-                    />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowPassword((current) => !current)
-                      }
-                      aria-label={
-                        showPassword ? "Hide passwords" : "Show passwords"
-                      }
-                      className="absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-xl text-[#74827C] transition-colors hover:bg-[#EDF7F3] hover:text-[#087F5B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#087F5B]/35"
-                    >
-                      {showPassword ? (
-                        <EyeOff size={16} />
-                      ) : (
-                        <Eye size={16} />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="register-confirm-password"
-                    className="text-[12px] font-bold text-[#203C32] sm:text-[13px]"
-                  >
-                    Confirm password
-                  </label>
-                  <div className="relative mt-2">
-                    <LockKeyhole
-                      size={17}
-                      aria-hidden="true"
-                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#7B8A84]"
-                    />
-                    <input
-                      id="register-confirm-password"
-                      name="confirmPassword"
-                      type={showPassword ? "text" : "password"}
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      autoComplete="new-password"
-                      data-lpignore="true"
-                      data-1p-ignore="true"
-                      required
-                      placeholder="Repeat password"
-                      className="h-[50px] w-full rounded-[14px] border border-[#D8E2DD] bg-[#FCFDFB] py-3 pl-11 pr-4 text-[12px] font-medium text-[#17211D] outline-none transition-all placeholder:text-[#9AA7A1] focus:border-[#087F5B]/60 focus:ring-4 focus:ring-[#087F5B]/10 sm:h-[52px] sm:text-[13px]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <label className="mt-4 flex cursor-pointer items-start gap-2 text-[10px] font-medium leading-5 text-[#5F7069] sm:text-[11px]">
-                <input
-                  type="checkbox"
-                  checked={acceptTerms}
-                  onChange={(event) => setAcceptTerms(event.target.checked)}
-                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#C9D6D0] accent-[#F4A934]"
-                />
-                <span>
-                  I agree to the Terms and Privacy Policy.
-                </span>
-              </label>
-
-              {errorMessage && (
-                <motion.div
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  role="alert"
-                  className="mt-4 flex items-start gap-2 rounded-[14px] border border-rose-200 bg-rose-50 p-3 text-[12px] font-medium leading-5 text-rose-700"
-                >
-                  <AlertCircle size={17} className="mt-0.5 shrink-0" />
-                  <span>{errorMessage}</span>
-                </motion.div>
-              )}
-
-              <motion.button
-                whileHover={
-                  prefersReducedMotion
-                    ? undefined
-                    : { scale: 1.01, y: -1 }
-                }
-                whileTap={{ scale: 0.985 }}
-                type="submit"
-                className="mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-[14px] border border-[#FFD078]/60 bg-gradient-to-r from-[#F4A934] via-[#F6AC32] to-[#E89022] px-5 text-[13px] font-bold text-white shadow-[0_10px_26px_rgba(232,144,34,0.27),inset_0_1px_0_rgba(255,255,255,0.35)] transition-[filter,box-shadow] hover:brightness-105 hover:shadow-[0_13px_30px_rgba(232,144,34,0.34)] sm:h-14 sm:text-[14px]"
-              >
-                <Plane size={17} fill="currentColor" />
-                Create My Account
-              </motion.button>
-            </form>
-
-            <div className="my-4 flex items-center gap-3">
-              <span className="h-px flex-1 bg-[#E2E8E5]" />
-              <span className="text-[10px] font-medium text-[#89958F] sm:text-[11px]">
-                or continue with
-              </span>
-              <span className="h-px flex-1 bg-[#E2E8E5]" />
-            </div>
-
-            <motion.button
-              whileTap={{ scale: 0.985 }}
-              type="button"
-              onClick={handleGoogleRegister}
-              className="flex h-[50px] w-full items-center justify-center gap-2.5 rounded-[14px] border border-[#D8E2DD] bg-white text-[12px] font-bold text-[#203C32] shadow-sm transition-colors hover:border-[#B7CEC4] hover:bg-[#FBFCFA] sm:h-[52px] sm:text-[13px]"
-            >
-              <span className="grid h-5 w-5 place-items-center rounded-full bg-gradient-to-br from-[#4285F4] via-[#34A853] to-[#EA4335] text-[10px] font-black text-white">
-                G
-              </span>
-              Continue with Google
-            </motion.button>
-
-            <p className="mt-4 text-center text-[11px] font-medium text-[#6E7D77] sm:text-[12px]">
-              Already have an account?{" "}
-              <Link
-                href="/login"
-                className="font-bold text-[#087F5B] transition-colors hover:text-[#065F46] hover:underline"
-              >
-                Sign in
-              </Link>
-            </p>
+            <RegisterForm
+              prefersReducedMotion={Boolean(prefersReducedMotion)}
+            />
           </div>
         </motion.div>
 
@@ -458,11 +175,11 @@ export default function RegisterPage() {
                 prefersReducedMotion
                   ? { left: "52%", top: "54%", opacity: 1 }
                   : {
-                      left: ["65%", "55%", "51%", "47%"],
-                      top: ["24%", "39%", "58%", "81%"],
-                      rotate: [145, 168, 152, 160],
-                      opacity: [0, 1, 1, 1],
-                    }
+                    left: ["65%", "55%", "51%", "47%"],
+                    top: ["24%", "39%", "58%", "81%"],
+                    rotate: [145, 168, 152, 160],
+                    opacity: [0, 1, 1, 1],
+                  }
               }
               transition={{
                 duration: 8,
@@ -499,10 +216,10 @@ export default function RegisterPage() {
                     prefersReducedMotion
                       ? false
                       : {
-                          opacity: 0,
-                          y: 18,
-                          rotate: index === 1 ? -2 : 2,
-                        }
+                        opacity: 0,
+                        y: 18,
+                        rotate: index === 1 ? -2 : 2,
+                      }
                   }
                   animate={{ opacity: 1, y: 0, rotate: 0 }}
                   transition={{
@@ -514,9 +231,9 @@ export default function RegisterPage() {
                     prefersReducedMotion
                       ? undefined
                       : {
-                          scale: 1.035,
-                          rotateY: index % 2 ? -4 : 4,
-                        }
+                        scale: 1.035,
+                        rotateY: index % 2 ? -4 : 4,
+                      }
                   }
                   style={{ transformStyle: "preserve-3d" }}
                   className={`absolute z-30 w-[118px] overflow-hidden rounded-[14px] border border-white/75 bg-[#071A16]/[0.88] p-1 text-white shadow-[0_16px_35px_rgba(7,26,22,0.24)] backdrop-blur-lg sm:w-[150px] sm:rounded-[17px] sm:p-1.5 xl:w-[170px] ${destination.className}`}
@@ -577,15 +294,15 @@ function AnimatedBrand({
             prefersReducedMotion
               ? undefined
               : {
-                  rotateX: [0, -8, 0, 7, 0],
-                  rotateY: [0, 12, 0, -10, 0],
-                  scale: [1, 1.045, 1, 1.025, 1],
-                  boxShadow: [
-                    "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
-                    "0 14px 34px rgba(217,134,31,0.48), inset 0 1px 0 rgba(255,255,255,0.55)",
-                    "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
-                  ],
-                }
+                rotateX: [0, -8, 0, 7, 0],
+                rotateY: [0, 12, 0, -10, 0],
+                scale: [1, 1.045, 1, 1.025, 1],
+                boxShadow: [
+                  "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
+                  "0 14px 34px rgba(217,134,31,0.48), inset 0 1px 0 rgba(255,255,255,0.55)",
+                  "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
+                ],
+              }
           }
           transition={{
             duration: 5.5,

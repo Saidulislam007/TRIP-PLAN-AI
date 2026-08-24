@@ -18,6 +18,7 @@ export default function ReviewIntelligence() {
     "Limited high-end nightlife"
   ];
 
+  
   return (
     <div className="mb-16">
       <div className="flex flex-col md:flex-row items-end justify-between mb-8 gap-4">

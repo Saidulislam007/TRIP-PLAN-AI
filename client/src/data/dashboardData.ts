@@ -62,7 +62,7 @@ export const dashboardData = {
     group: "Family Trip",
     budget: "৳15,000 – ৳18,000",
     aiMatch: 94,
-    image: "/assets/Coxs/cover-1.jpg",
+    image: "/assets/Coxs/cover-4.jpg",
   },
   quickSuggestions: [
     "Weekend Escape",

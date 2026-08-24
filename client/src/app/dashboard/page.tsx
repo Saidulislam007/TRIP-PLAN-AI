@@ -27,47 +27,56 @@ export default function DashboardOverview() {
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          icon={<CalendarDays size={20} className="text-[#087F5B]" />}
-          iconBgColor="bg-[#087F5B]/10"
-          title="Upcoming Trips"
-          value={`0${stats.upcomingTrips.count}`}
-          detail={stats.upcomingTrips.detail}
-        />
-        <StatCard
-          icon={<Heart size={20} className="text-[#F4A934]" />}
-          iconBgColor="bg-[#F4A934]/10"
-          title="Saved Destinations"
-          value={stats.savedDestinations.count.toString()}
-          detail={stats.savedDestinations.detail}
-        />
-        <StatCard
-          icon={<Briefcase size={20} className="text-[#073D31]" />}
-          iconBgColor="bg-[#073D31]/10"
-          title="Trips Completed"
-          value={`0${stats.tripsCompleted.count}`}
-          detail={stats.tripsCompleted.detail}
-        />
-        <StatCard
-          icon={<Wallet size={20} className="text-[#F4B942]" />}
-          iconBgColor="bg-[#F4B942]/10"
-          title="Total Travel Budget"
-          value={stats.totalBudget.amount}
-          detail={stats.totalBudget.detail}
-        />
-      </div>
+      {/* Top Layout: Left Side (Stats + Cards) | Right Side (Budget) */}
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+        
+        {/* Left Side */}
+        <div className="flex flex-col gap-6 xl:col-span-9">
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StatCard
+              icon={<CalendarDays size={20} className="text-[#087F5B]" />}
+              iconBgColor="bg-[#087F5B]/10"
+              title="Upcoming Trips"
+              value={`0${stats.upcomingTrips.count}`}
+              detail={stats.upcomingTrips.detail}
+            />
+            <StatCard
+              icon={<Heart size={20} className="text-[#F4A934]" />}
+              iconBgColor="bg-[#F4A934]/10"
+              title="Saved Destinations"
+              value={stats.savedDestinations.count.toString()}
+              detail={stats.savedDestinations.detail}
+            />
+            <StatCard
+              icon={<Briefcase size={20} className="text-[#073D31]" />}
+              iconBgColor="bg-[#073D31]/10"
+              title="Trips Completed"
+              value={`0${stats.tripsCompleted.count}`}
+              detail={stats.tripsCompleted.detail}
+            />
+            <StatCard
+              icon={<Wallet size={20} className="text-[#F4B942]" />}
+              iconBgColor="bg-[#F4B942]/10"
+              title="Total Travel Budget"
+              value={stats.totalBudget.amount}
+              detail={stats.totalBudget.detail}
+            />
+          </div>
 
-      {/* Top Section Grid (Next Adventure & Trip Generator & Budget) */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        <div className="lg:col-span-5">
-          <NextAdventureCard />
+          {/* Next Adventure & AI Generator */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-9">
+            <div className="lg:col-span-5">
+              <NextAdventureCard />
+            </div>
+            <div className="lg:col-span-4">
+              <AITripGenerator />
+            </div>
+          </div>
         </div>
-        <div className="lg:col-span-4">
-          <AITripGenerator />
-        </div>
-        <div className="lg:col-span-3">
+
+        {/* Right Side: Budget Tracker */}
+        <div className="xl:col-span-3 h-full">
           <BudgetTracker />
         </div>
       </div>

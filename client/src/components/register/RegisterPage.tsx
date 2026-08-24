@@ -104,7 +104,7 @@ export default function RegisterPage() {
           initial={prefersReducedMotion ? false : { opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.12, ease: revealEase }}
-          className="order-2 min-h-[390px] [perspective:1200px] sm:min-h-[520px] lg:min-h-0"
+          className="order-2 min-h-97.5 [perspective:1200px] sm:min-h-[520px] lg:min-h-0"
           onMouseMove={handleMapMove}
           onMouseLeave={resetMapTilt}
         >
@@ -114,7 +114,7 @@ export default function RegisterPage() {
               rotateY: prefersReducedMotion ? 0 : rotateY,
               transformStyle: "preserve-3d",
             }}
-            className="relative h-full min-h-[390px] overflow-hidden rounded-[24px] border border-[#DCE6E1] bg-[#E9E8D9] shadow-[0_24px_60px_rgba(23,51,42,0.14)] sm:min-h-[520px] sm:rounded-[30px] lg:min-h-[700px]"
+            className="relative h-full min-h-97.5 overflow-hidden rounded-[24px] border border-[#DCE6E1] bg-[#E9E8D9] shadow-[0_24px_60px_rgba(23,51,42,0.14)] sm:min-h-[520px] sm:rounded-[30px] lg:min-h-[700px]"
           >
             <Image
               src="/images/login/bangladesh-3d-route-map.png"
@@ -125,8 +125,8 @@ export default function RegisterPage() {
               className="object-cover"
             />
 
-            <div className="absolute inset-0 bg-gradient-to-b from-white/[0.08] via-transparent to-[#071A16]/[0.12]" />
-            <div className="absolute left-5 top-5 rounded-full border border-white/60 bg-white/[0.76] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#087F5B] shadow-sm backdrop-blur-xl sm:left-7 sm:top-7 sm:text-[10px]">
+            <div className="absolute inset-0 bg-linear-to-b from-white/8 via-transparent to-[#071A16]/12" />
+            <div className="absolute left-5 top-5 rounded-full border border-white/60 bg-white/76 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#087F5B] shadow-sm backdrop-blur-xl sm:left-7 sm:top-7 sm:text-[10px]">
               Your adventure starts here
             </div>
 

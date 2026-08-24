@@ -7,12 +7,15 @@ import {
   ArrowRight,
   Bookmark,
   Camera,
+  Car,
   CheckCircle2,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  CircleDollarSign,
   Grid2X2,
   Heart,
+  Hotel,
   List,
   MapPin,
   MessageCircle,
@@ -20,12 +23,15 @@ import {
   Search,
   Send,
   Share2,
+  ShieldCheck,
   SlidersHorizontal,
   Sparkles,
   Star,
   ThumbsUp,
   UserRound,
   Users,
+  UsersRound,
+  Utensils,
   X,
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
@@ -134,39 +140,44 @@ const reviews: Review[] = [
 
 const experienceRatings: ExperienceRating[] = [
   {
-    label: "Scenery",
+    label: "Overall Experience",
     rating: 4.9,
     icon: <Sparkles size={12} />,
   },
   {
-    label: "Food",
+    label: "Food & Dining",
     rating: 4.7,
-    icon: <span>🍜</span>,
+    icon: <Utensils size={12} />,
   },
   {
-    label: "Activities",
+    label: "Family Experience",
     rating: 4.8,
-    icon: <span>◈</span>,
+    icon: <UsersRound size={12} />,
+  },
+  {
+    label: "Transportation",
+    rating: 4.8,
+    icon: <Car size={12} />,
+  },
+  {
+    label: "Accommodation",
+    rating: 4.8,
+    icon: <Hotel size={12} />,
   },
   {
     label: "Cleanliness",
     rating: 4.5,
-    icon: <span>✦</span>,
-  },
-  {
-    label: "Accessibility",
-    rating: 4.3,
-    icon: <span>⌁</span>,
+    icon: <Sparkles size={12} />,
   },
   {
     label: "Value for Money",
     rating: 4.6,
-    icon: <span>৳</span>,
+    icon: <CircleDollarSign size={12} />,
   },
   {
-    label: "Local Experience",
+    label: "Safety & Security",
     rating: 4.8,
-    icon: <MapPin size={12} />,
+    icon: <ShieldCheck size={12} />,
   },
 ];
 

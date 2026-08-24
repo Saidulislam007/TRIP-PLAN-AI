@@ -83,24 +83,36 @@ const concerns = [
 
 const categories = [
   {
-    label: "Beaches",
+    label: "Overall Experience",
     score: 4.9,
   },
   {
-    label: "Food",
+    label: "Family Experience",
+    score: 4.9,
+  },
+  {
+    label: "Food & Dining",
     score: 4.7,
   },
   {
-    label: "Scenery",
+    label: "Transportation",
     score: 4.8,
   },
   {
-    label: "Family Experience",
-    score: 4.6,
+    label: "Accommodation",
+    score: 4.7,
   },
   {
-    label: "Accessibility",
+    label: "Safety & Security",
     score: 4.2,
+  },
+  {
+    label: "Cleanliness",
+    score: 4.5,
+  },
+  {
+    label: "Value for Money",
+    score: 4.7,
   },
 ];
 

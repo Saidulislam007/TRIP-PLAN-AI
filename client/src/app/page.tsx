@@ -8,6 +8,7 @@ import TravelInsights from "@/components/home/TravelInsights";
 import TravelJourney from "@/components/home/TravelJourney";
 import TripPlanNewsletter from "@/components/home/TripPlanNewsletter";
 import TripPlanTestimonials from "@/components/home/TripPlanTestimonials";
+import { Toaster } from "react-hot-toast";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
       <TravelFeatures />
       <TripPlanTestimonials/>
       <TripPlanNewsletter/>
+      <Toaster />
     </div>
   );
 }

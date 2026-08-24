@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-import { Search, Bell, Heart, Menu } from "lucide-react";
+import { Search, Bell, Heart, Menu, ChevronDown } from "lucide-react";
 import { dashboardData } from "@/data/dashboardData";
 
 interface DashboardHeaderProps {
@@ -11,18 +11,6 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
   const pathname = usePathname();
-
-  // Very basic breadcrumb generation based on route
-  const getBreadcrumbs = () => {
-    const paths = pathname.split("/").filter(Boolean);
-    if (paths.length === 0 || paths[0] !== "dashboard") return "Dashboard / Overview";
-    
-    const pageName = paths[1] 
-      ? paths[1].charAt(0).toUpperCase() + paths[1].slice(1) 
-      : "Overview";
-      
-    return `Dashboard / ${pageName}`;
-  };
 
   return (
     <header className="sticky top-0 z-30 flex h-20 w-full items-center justify-between bg-[#F7F7F2] px-6 lg:px-10">
@@ -35,8 +23,10 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
         >
           <Menu size={24} />
         </button>
-        <div className="hidden sm:flex text-[13px] font-medium text-[#17211D]">
-          {getBreadcrumbs()}
+        <div className="hidden sm:flex items-center gap-1.5 text-[12px] font-medium">
+          <span className="text-[#F4A934]">Dashboard</span>
+          <span className="text-[#66736D]">/</span>
+          <span className="text-[#17211D]">Overview</span>
         </div>
       </div>
 
@@ -53,12 +43,12 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
         </div>
 
         {/* Action Icons */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <button className="relative flex h-10 w-10 items-center justify-center rounded-full text-[#17211D] transition-colors hover:bg-black/5">
             <Bell size={20} />
-            {dashboardData.stats.upcomingTrips.count > 0 && (
-              <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-[#F4A934] ring-2 ring-[#F7F7F2]" />
-            )}
+            <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#F4A934] text-[9px] font-bold text-[#17211D] ring-2 ring-[#F7F7F2]">
+              3
+            </span>
           </button>
           <button className="flex h-10 w-10 items-center justify-center rounded-full text-[#17211D] transition-colors hover:bg-black/5">
             <Heart size={20} />
@@ -66,15 +56,18 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
         </div>
 
         {/* User Avatar */}
-        <div className="relative h-9 w-9 cursor-pointer overflow-hidden rounded-full ring-2 ring-transparent transition-all hover:ring-[#F4A934]">
-          <img
-            src={dashboardData.user.avatar}
-            alt={dashboardData.user.name}
-            className="h-full w-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Rifat+Ahmed&background=073D31&color=fff";
-            }}
-          />
+        <div className="flex items-center gap-2 cursor-pointer transition-all hover:opacity-80">
+          <div className="relative h-9 w-9 overflow-hidden rounded-full ring-2 ring-transparent">
+            <img
+              src={dashboardData.user.avatar}
+              alt={dashboardData.user.name}
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Rifat+Ahmed&background=073D31&color=fff";
+              }}
+            />
+          </div>
+          <ChevronDown size={14} className="text-[#17211D]" />
         </div>
       </div>
     </header>

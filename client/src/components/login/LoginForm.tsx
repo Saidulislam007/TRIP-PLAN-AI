@@ -63,8 +63,8 @@ export default function LoginForm({
       callbackURL: "/",
     });
 
-    console.log("signup data", { data, error });
-    console.log("signup data", data);
+    console.log("signin data", { data, error });
+    console.log("signin data", data);
 
     setErrorMessage("");
 

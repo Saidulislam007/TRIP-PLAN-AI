@@ -86,6 +86,21 @@ const initialCategories: RatingCategory[] = [
     value: 0,
   },
   {
+    id: "family",
+    label: "Family Experience",
+    value: 0,
+  },
+  {
+    id: "transportation",
+    label: "Transportation",
+    value: 0,
+  },
+  {
+    id: "accommodation",
+    label: "Accommodation",
+    value: 0,
+  },
+  {
     id: "cleanliness",
     label: "Cleanliness",
     value: 0,
@@ -97,7 +112,7 @@ const initialCategories: RatingCategory[] = [
   },
   {
     id: "safety",
-    label: "Safety",
+    label: "Safety & Security",
     value: 0,
   },
   {

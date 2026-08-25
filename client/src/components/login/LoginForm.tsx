@@ -1,5 +1,6 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { motion } from "framer-motion";
 import {
   AlertCircle,
@@ -11,11 +12,12 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { type ChangeEvent, type FormEvent, useState } from "react";
+import toast from "react-hot-toast";
 
-type FormData = {
+interface FormData {
   email: string;
   password: string;
-};
+}
 
 type LoginFormProps = {
   prefersReducedMotion: boolean;
@@ -45,26 +47,46 @@ export default function LoginForm({
     if (errorMessage) setErrorMessage("");
   };
 
-  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const email = formData.email.trim().toLowerCase();
+    const formData = new FormData(event.currentTarget);
+    const userData = Object.fromEntries(
+      formData.entries(),
+    ) as unknown as FormData;
 
-    if (!email || !formData.password) {
-      setErrorMessage("Please enter your email address and password.");
-      return;
-    }
+    console.log("userData", userData);
+
+    const { data, error } = await authClient.signIn.email({
+      email: userData.email,
+      password: userData.password,
+      callbackURL: "/",
+    });
+
+    console.log("signup data", { data, error });
+    console.log("signup data", data);
 
     setErrorMessage("");
 
-    // TODO: The backend developer will connect the email/password login here.
-    // Available values: email, formData.password, and rememberMe.
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setErrorMessage("");
 
-    // TODO: The backend developer will connect Google authentication here.
+    const { data, error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
+    if (error) {
+      toast.error(error.message as string);
+      setErrorMessage(error.message as string);
+      return;
+    } else {
+      toast.success("Redirecting to google!");
+    }
+
+    console.log("signup data", { data, error });
+
   };
 
   return (
@@ -99,7 +121,7 @@ export default function LoginForm({
               data-1p-ignore="true"
               required
               placeholder="you@example.com"
-              className="h-[52px] w-full rounded-[14px] border border-[#D8E2DD] bg-[#FCFDFB] py-3 pl-11 pr-4 text-[13px] font-medium text-[#17211D] outline-none transition-all placeholder:text-[#9AA7A1] focus:border-[#087F5B]/60 focus:ring-4 focus:ring-[#087F5B]/10 disabled:cursor-not-allowed disabled:opacity-60 sm:h-14 sm:text-[14px]"
+              className="h-13 w-full rounded-[14px] border border-[#D8E2DD] bg-[#FCFDFB] py-3 pl-11 pr-4 text-[13px] font-medium text-[#17211D] outline-none transition-all placeholder:text-[#9AA7A1] focus:border-[#087F5B]/60 focus:ring-4 focus:ring-[#087F5B]/10 disabled:cursor-not-allowed disabled:opacity-60 sm:h-14 sm:text-[14px]"
             />
           </div>
         </div>
@@ -128,7 +150,7 @@ export default function LoginForm({
               data-1p-ignore="true"
               required
               placeholder="Enter your password"
-              className="h-[52px] w-full rounded-[14px] border border-[#D8E2DD] bg-[#FCFDFB] py-3 pl-11 pr-12 text-[13px] font-medium text-[#17211D] outline-none transition-all placeholder:text-[#9AA7A1] focus:border-[#087F5B]/60 focus:ring-4 focus:ring-[#087F5B]/10 disabled:cursor-not-allowed disabled:opacity-60 sm:h-14 sm:text-[14px]"
+              className="h-13 w-full rounded-[14px] border border-[#D8E2DD] bg-[#FCFDFB] py-3 pl-11 pr-12 text-[13px] font-medium text-[#17211D] outline-none transition-all placeholder:text-[#9AA7A1] focus:border-[#087F5B]/60 focus:ring-4 focus:ring-[#087F5B]/10 disabled:cursor-not-allowed disabled:opacity-60 sm:h-14 sm:text-[14px]"
             />
             <button
               type="button"
@@ -178,7 +200,7 @@ export default function LoginForm({
           }
           whileTap={{ scale: 0.985 }}
           type="submit"
-          className="mt-5 flex h-[52px] w-full items-center justify-center gap-2 rounded-[14px] border border-[#FFD078]/60 bg-gradient-to-r from-[#F4A934] via-[#F6AC32] to-[#E89022] px-5 text-[13px] font-bold text-white shadow-[0_10px_26px_rgba(232,144,34,0.27),inset_0_1px_0_rgba(255,255,255,0.35)] transition-[filter,box-shadow] hover:brightness-105 hover:shadow-[0_13px_30px_rgba(232,144,34,0.34)] disabled:cursor-not-allowed disabled:opacity-65 sm:h-14 sm:text-[14px]"
+          className="mt-5 flex h-13 w-full items-center justify-center gap-2 rounded-[14px] border border-[#FFD078]/60 bg-linear-to-r from-[#F4A934] via-[#F6AC32] to-[#E89022] px-5 text-[13px] font-bold text-white shadow-[0_10px_26px_rgba(232,144,34,0.27),inset_0_1px_0_rgba(255,255,255,0.35)] transition-[filter,box-shadow] hover:brightness-105 hover:shadow-[0_13px_30px_rgba(232,144,34,0.34)] disabled:cursor-not-allowed disabled:opacity-65 sm:h-14 sm:text-[14px]"
         >
           <Plane size={17} fill="currentColor" />
           Continue Planning
@@ -197,9 +219,9 @@ export default function LoginForm({
         whileTap={{ scale: 0.985 }}
         type="button"
         onClick={handleGoogleLogin}
-        className="flex h-[52px] w-full items-center justify-center gap-2.5 rounded-[14px] border border-[#D8E2DD] bg-white text-[12px] font-bold text-[#203C32] shadow-sm transition-colors hover:border-[#B7CEC4] hover:bg-[#FBFCFA] disabled:cursor-not-allowed disabled:opacity-65 sm:h-14 sm:text-[13px]"
+        className="flex h-13 w-full items-center justify-center gap-2.5 rounded-[14px] border border-[#D8E2DD] bg-white text-[12px] font-bold text-[#203C32] shadow-sm transition-colors hover:border-[#B7CEC4] hover:bg-[#FBFCFA] disabled:cursor-not-allowed disabled:opacity-65 sm:h-14 sm:text-[13px]"
       >
-        <span className="grid h-5 w-5 place-items-center rounded-full bg-gradient-to-br from-[#4285F4] via-[#34A853] to-[#EA4335] text-[10px] font-black text-white">
+        <span className="grid h-5 w-5 place-items-center rounded-full bg-linear-to-br from-[#4285F4] via-[#34A853] to-[#EA4335] text-[10px] font-black text-white">
           G
         </span>
         Continue with Google

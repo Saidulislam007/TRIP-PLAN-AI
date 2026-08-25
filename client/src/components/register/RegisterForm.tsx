@@ -67,6 +67,7 @@ export default function RegisterForm({
       name: userData.fullName,
       email: userData.email,
       password: userData.password,
+      callbackURL: "/",
     });
 
     console.log("signup data", { data, error });
@@ -83,7 +84,7 @@ export default function RegisterForm({
 
     const { data, error } = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/onboarding",
+      callbackURL: "/",
     });
     if (error) {
       toast.error(error.message as string);
@@ -95,7 +96,6 @@ export default function RegisterForm({
 
     console.log("signup data", { data, error });
 
-    // TODO: The backend developer will connect Google registration here.
   };
 
   return (

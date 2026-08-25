@@ -481,7 +481,7 @@ function NavItem({ href, label, active = false }: NavItemProps) {
             right-0
             h-[2px]
             rounded-full
-            bg-gradient-to-r from-[#087F5B] to-[#F4A934]
+            bg-linear-to-r from-[#087F5B] to-[#F4A934]
             transition-all duration-200
             ${active
               ? "scale-x-100 opacity-100"
@@ -655,11 +655,11 @@ function MobileMenu({
 
       {/* Mobile buttons */}
 
-      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[#DDE9E3] pt-4">
+      <div className="mt-4 flex justify-between gap-2 border-t border-[#DDE9E3] pt-4">
         {user ? (
           <button
             onClick={handleLogout}
-            className="ml-4 flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+            className="flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
           >
             Logout
           </button>

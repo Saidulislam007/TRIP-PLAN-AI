@@ -19,6 +19,7 @@ import {
   Bell,
   Rocket,
   ChevronRight,
+  Plane
 } from "lucide-react";
 
 const mainMenuItems = [
@@ -94,6 +95,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
           flex-col
           overflow-hidden
           bg-[#004D40]
+        
           text-white
           shadow-xl
 
@@ -103,8 +105,13 @@ export default function AdminSidebar({ isOpen, onClose }) {
           ease-in-out
 
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-
-          lg:translate-x-0
+           
+    lg:sticky
+    lg:top-[80px]
+    lg:h-[calc(100vh-80px)]
+    lg:z-40
+    lg:translate-x-0
+  
         `}
       >
         {/* ================= MOBILE CLOSE BUTTON ================= */}
@@ -126,6 +133,26 @@ export default function AdminSidebar({ isOpen, onClose }) {
         >
           <X size={20} />
         </button>
+
+        {/* ================= LOGO ================= */}
+<div className="shrink-0 px-5 pt-5 pb-3">
+  <Link
+    href="/"
+    className="flex items-center gap-2.5"
+  >
+    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] shadow-md">
+      <Plane
+        size={19}
+        strokeWidth={2.3}
+        className="rotate-[-45deg] text-[#123B31]"
+      />
+    </div>
+
+    <span className="text-[18px] font-extrabold tracking-tight text-white">
+      TripPlan <span className="text-[#F4A934]">AI</span>
+    </span>
+  </Link>
+</div>
 
         {/* ================= ADMIN PROFILE ================= */}
         <div className="shrink-0 px-5 pb-5 pt-6">

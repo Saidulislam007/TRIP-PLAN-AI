@@ -16,6 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Globe2,
+  Save
 } from "lucide-react";
 
 const destinationsData = [
@@ -201,6 +202,20 @@ export default function DestinationsPage() {
 
   const [deleteDestination, setDeleteDestination] =
     useState(null);
+const [showDestinationModal, setShowDestinationModal] = useState(false);
+const [editingDestination, setEditingDestination] = useState(null);
+
+const [formData, setFormData] = useState({
+  name: "",
+  location: "",
+  category: "Nature",
+  rating: "4.5",
+  views: "0",
+  status: "Active",
+  featured: false,
+  image: "",
+  description: "",
+});
 
   const filteredDestinations = useMemo(() => {
     return destinations.filter((destination) => {
@@ -281,6 +296,107 @@ export default function DestinationsPage() {
     setCurrentPage(1);
   };
 
+  const openAddModal = () => {
+  setEditingDestination(null);
+
+  setFormData({
+    name: "",
+    location: "",
+    category: "Nature",
+    rating: "4.5",
+    views: "0",
+    status: "Active",
+    featured: false,
+    image:
+      "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80",
+    description: "",
+  });
+
+  setShowDestinationModal(true);
+};
+
+const openEditModal = (destination) => {
+  setEditingDestination(destination);
+
+  setFormData({
+    name: destination.name,
+    location: destination.location,
+    category: destination.category,
+    rating: destination.rating.toString(),
+    views: destination.views.toString(),
+    status: destination.status,
+    featured: destination.featured,
+    image: destination.image,
+    description: destination.description,
+  });
+
+  setShowDestinationModal(true);
+};
+
+const handleFormChange = (e) => {
+  const { name, value, type, checked } = e.target;
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: type === "checkbox" ? checked : value,
+  }));
+};
+
+const handleDestinationSubmit = (e) => {
+  e.preventDefault();
+
+  if (!formData.name.trim() || !formData.location.trim()) {
+    return;
+  }
+
+  if (editingDestination) {
+    // EDIT
+    setDestinations((prev) =>
+      prev.map((destination) =>
+        destination.id === editingDestination.id
+          ? {
+              ...destination,
+              name: formData.name,
+              location: formData.location,
+              category: formData.category,
+              rating: Number(formData.rating),
+              views: Number(formData.views),
+              status: formData.status,
+              featured: formData.featured,
+              image: formData.image,
+              description: formData.description,
+            }
+          : destination
+      )
+    );
+  } else {
+    // ADD
+    const newDestination = {
+      id: Date.now(),
+      name: formData.name,
+      location: formData.location,
+      category: formData.category,
+      rating: Number(formData.rating),
+      views: Number(formData.views),
+      status: formData.status,
+      featured: formData.featured,
+      image: formData.image,
+      description: formData.description,
+    };
+
+    setDestinations((prev) => [
+      newDestination,
+      ...prev,
+    ]);
+
+    setCurrentPage(1);
+  }
+
+  setShowDestinationModal(false);
+  setEditingDestination(null);
+};
+
+
   const handleDelete = () => {
     if (!deleteDestination) return;
 
@@ -360,6 +476,7 @@ export default function DestinationsPage() {
           whileTap={{
             scale: 0.96,
           }}
+           onClick={openAddModal}
           className="
             flex
             w-full
@@ -369,7 +486,7 @@ export default function DestinationsPage() {
             rounded-xl
             bg-green-600
             px-4
-            py-2.5
+            py-2.5 cursor-pointer
             text-sm
             font-semibold
             text-white
@@ -998,10 +1115,11 @@ export default function DestinationsPage() {
                             hover="green"
                           />
 
-                          <ActionButton
-                            icon={<Pencil size={17} />}
-                            hover="blue"
-                          />
+                         <ActionButton
+  icon={<Pencil size={17} />}
+  onClick={() => openEditModal(destination)}
+  hover="blue"
+/>
 
                           <ActionButton
                             icon={<Trash2 size={17} />}
@@ -1310,12 +1428,13 @@ export default function DestinationsPage() {
                         whileTap={{
                           scale: 0.95,
                         }}
+                          onClick={() => openEditModal(destination)}
                         className="
                           flex
                           flex-1
                           items-center
                           justify-center
-                          gap-1.5
+                          gap-1.5 cursor-pointer
                           rounded-lg
                           bg-blue-50
                           py-2
@@ -1801,6 +1920,535 @@ export default function DestinationsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* =========================
+    ADD / EDIT DESTINATION MODAL
+========================= */}
+
+<AnimatePresence>
+  {showDestinationModal && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={() => {
+        setShowDestinationModal(false);
+        setEditingDestination(null);
+      }}
+      className="
+        fixed
+        inset-0
+        z-[100]
+        flex
+        items-center
+        justify-center
+        bg-black/40
+        p-4
+        backdrop-blur-sm
+      "
+    >
+      <motion.div
+        initial={{
+          opacity: 0,
+          scale: 0.9,
+          y: 25,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          y: 0,
+        }}
+        exit={{
+          opacity: 0,
+          scale: 0.95,
+        }}
+        onClick={(e) => e.stopPropagation()}
+        className="
+          max-h-[90vh]
+          w-full
+          max-w-2xl
+          overflow-y-auto
+          rounded-2xl
+          bg-white
+          shadow-2xl
+        "
+      >
+        {/* Modal Header */}
+
+        <div className="
+          flex
+          items-center
+          justify-between
+          border-b
+          border-gray-100
+          px-6
+          py-4
+        ">
+          <div>
+            <h2 className="
+              text-lg
+              font-bold
+              text-gray-900
+            ">
+              {editingDestination
+                ? "Edit Destination"
+                : "Add Destination"}
+            </h2>
+
+            <p className="
+              mt-1
+              text-xs
+              text-gray-400
+            ">
+              {editingDestination
+                ? "Update destination information."
+                : "Add a new travel destination."}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowDestinationModal(false);
+              setEditingDestination(null);
+            }}
+            className="
+              cursor-pointer
+              rounded-full
+              p-2
+              text-gray-400
+              transition
+              hover:bg-gray-100
+              hover:text-gray-700
+            "
+          >
+            <X size={19} />
+          </button>
+        </div>
+
+        {/* Form */}
+
+        <form
+          onSubmit={handleDestinationSubmit}
+          className="p-6"
+        >
+          <div className="
+            grid
+            grid-cols-1
+            gap-4
+            sm:grid-cols-2
+          ">
+
+            {/* Name */}
+
+            <div>
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Destination Name
+              </label>
+
+              <input
+                name="name"
+                value={formData.name}
+                onChange={handleFormChange}
+                placeholder="e.g. Jaflong"
+                required
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  transition
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Location */}
+
+            <div>
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Location
+              </label>
+
+              <input
+                name="location"
+                value={formData.location}
+                onChange={handleFormChange}
+                placeholder="e.g. Sylhet, Bangladesh"
+                required
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  transition
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Category */}
+
+            <div>
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Category
+              </label>
+
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleFormChange}
+                className="
+                  h-11
+                  w-full
+                  cursor-pointer
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  focus:border-green-500
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              >
+                <option value="Nature">Nature</option>
+                <option value="Beach">Beach</option>
+                <option value="Hill">Hill</option>
+                <option value="Wildlife">Wildlife</option>
+              </select>
+            </div>
+
+            {/* Status */}
+
+            <div>
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Status
+              </label>
+
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleFormChange}
+                className="
+                  h-11
+                  w-full
+                  cursor-pointer
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  focus:border-green-500
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              >
+                <option value="Active">Active</option>
+                <option value="Draft">Draft</option>
+              </select>
+            </div>
+
+            {/* Rating */}
+
+            <div>
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Rating
+              </label>
+
+              <input
+                name="rating"
+                type="number"
+                min="0"
+                max="5"
+                step="0.1"
+                value={formData.rating}
+                onChange={handleFormChange}
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Views */}
+
+            <div>
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Views
+              </label>
+
+              <input
+                name="views"
+                type="number"
+                min="0"
+                value={formData.views}
+                onChange={handleFormChange}
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Image URL */}
+
+            <div className="sm:col-span-2">
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Image URL
+              </label>
+
+              <input
+                name="image"
+                value={formData.image}
+                onChange={handleFormChange}
+                placeholder="https://..."
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Description */}
+
+            <div className="sm:col-span-2">
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Description
+              </label>
+
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleFormChange}
+                rows={4}
+                placeholder="Write destination description..."
+                className="
+                  w-full
+                  resize-none
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  py-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Featured */}
+
+            <div className="
+              flex
+              items-center
+              gap-3
+              sm:col-span-2
+            ">
+              <input
+                id="featured"
+                name="featured"
+                type="checkbox"
+                checked={formData.featured}
+                onChange={handleFormChange}
+                className="
+                  h-4
+                  w-4
+                  cursor-pointer
+                  accent-green-600
+                "
+              />
+
+              <label
+                htmlFor="featured"
+                className="
+                  cursor-pointer
+                  text-sm
+                  font-medium
+                  text-gray-600
+                "
+              >
+                Mark as Featured Destination
+              </label>
+            </div>
+
+          </div>
+
+          {/* Buttons */}
+
+          <div className="
+            mt-6
+            flex
+            flex-col-reverse
+            gap-3
+            sm:flex-row
+            sm:justify-end
+          ">
+            <button
+              type="button"
+              onClick={() => {
+                setShowDestinationModal(false);
+                setEditingDestination(null);
+              }}
+              className="
+                cursor-pointer
+                rounded-xl
+                border
+                border-gray-200
+                px-5
+                py-2.5
+                text-sm
+                font-semibold
+                text-gray-600
+                transition
+                hover:bg-gray-50
+              "
+            >
+              Cancel
+            </button>
+
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              type="submit"
+              className="
+                cursor-pointer
+                rounded-xl
+                bg-green-600
+                px-5
+                py-2.5
+                text-sm
+                font-semibold
+                text-white
+                shadow-sm
+                shadow-green-200
+                transition
+                hover:bg-green-700
+              "
+            >
+              {editingDestination
+                ? "Update Destination"
+                : "Add Destination"}
+            </motion.button>
+          </div>
+        </form>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
       {/* =========================
           DELETE MODAL

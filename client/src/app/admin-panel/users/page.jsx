@@ -1,5 +1,6 @@
 "use client";
 
+
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -176,6 +177,20 @@ export default function UsersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUser, setSelectedUser] = useState(null);
   const [deleteUser, setDeleteUser] = useState(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+const [editingUser, setEditingUser] = useState(null);
+
+const emptyUser = {
+  name: "",
+  email: "",
+  phone: "",
+  location: "",
+  joined: "",
+  trips: 0,
+  status: "Active",
+};
+
+const [userForm, setUserForm] = useState(emptyUser);
 
   const filteredUsers = useMemo(() => {
     return users.filter((user) => {
@@ -226,6 +241,54 @@ export default function UsersPage() {
     setStatusFilter("All");
     setCurrentPage(1);
   };
+
+  const handleAddUser = () => {
+  if (!userForm.name || !userForm.email) return;
+
+  const newUser = {
+    ...userForm,
+    id: Date.now(),
+    trips: Number(userForm.trips) || 0,
+  };
+
+  setUsers((prev) => [newUser, ...prev]);
+
+  setShowAddModal(false);
+  setUserForm(emptyUser);
+  setCurrentPage(1);
+};
+
+const openEditModal = (user) => {
+  setEditingUser(user);
+  setUserForm({
+    name: user.name,
+    email: user.email,
+    phone: user.phone,
+    location: user.location,
+    joined: user.joined,
+    trips: user.trips,
+    status: user.status,
+  });
+};
+
+const handleEditUser = () => {
+  if (!editingUser || !userForm.name || !userForm.email) return;
+
+  setUsers((prev) =>
+    prev.map((user) =>
+      user.id === editingUser.id
+        ? {
+            ...user,
+            ...userForm,
+            trips: Number(userForm.trips) || 0,
+          }
+        : user
+    )
+  );
+
+  setEditingUser(null);
+  setUserForm(emptyUser);
+};
 
   const handleDelete = () => {
     if (!deleteUser) return;
@@ -278,8 +341,12 @@ export default function UsersPage() {
           whileTap={{
             scale: 0.96,
           }}
+           onClick={() => {
+    setUserForm(emptyUser);
+    setShowAddModal(true);
+  }}
           className="
-            flex items-center justify-center gap-2
+            flex cursor-pointer items-center justify-center gap-2
             rounded-xl bg-green-600
             px-4 py-2.5
             text-sm font-semibold text-white
@@ -897,10 +964,11 @@ export default function UsersPage() {
                           whileTap={{
                             scale: 0.9,
                           }}
+                           onClick={() => openEditModal(user)}
                           title="Edit User"
                           className="
                             rounded-lg
-                            p-2
+                            p-2 cursor-pointer
                             text-gray-400
                             transition-colors
                             hover:bg-blue-50
@@ -1138,6 +1206,7 @@ export default function UsersPage() {
                         whileTap={{
                           scale: 0.95,
                         }}
+                          onClick={() => openEditModal(user)}
                         className="
                           flex flex-1
                           items-center
@@ -1145,7 +1214,7 @@ export default function UsersPage() {
                           gap-1.5
                           rounded-lg
                           bg-blue-50
-                          py-2
+                          py-2 cursor-pointer
                           text-xs font-semibold
                           text-blue-600
                           transition-colors
@@ -1796,6 +1865,398 @@ export default function UsersPage() {
 
         )}
       </AnimatePresence>
+
+      {/* =========================================
+    ADD / EDIT USER MODAL
+========================================= */}
+
+<AnimatePresence>
+  {(showAddModal || editingUser) && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={() => {
+        setShowAddModal(false);
+        setEditingUser(null);
+        setUserForm(emptyUser);
+      }}
+      className="
+        fixed inset-0 z-[100]
+        flex items-center justify-center
+        bg-black/40 p-4
+        backdrop-blur-sm
+      "
+    >
+      <motion.div
+        initial={{
+          opacity: 0,
+          scale: 0.9,
+          y: 25,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          y: 0,
+        }}
+        exit={{
+          opacity: 0,
+          scale: 0.95,
+          y: 15,
+        }}
+        transition={{
+          duration: 0.25,
+        }}
+        onClick={(e) => e.stopPropagation()}
+        className="
+          max-h-[90vh]
+          w-full max-w-lg
+          overflow-y-auto
+          rounded-2xl
+          bg-white
+          p-5 sm:p-6
+          shadow-2xl
+        "
+      >
+
+        {/* Header */}
+        <div className="flex items-center justify-between">
+
+          <div>
+            <h3 className="text-lg font-bold text-gray-900">
+              {editingUser ? "Edit User" : "Add New User"}
+            </h3>
+
+            <p className="mt-1 text-xs text-gray-400">
+              {editingUser
+                ? "Update user information."
+                : "Create a new user account."}
+            </p>
+          </div>
+
+          <motion.button
+            whileHover={{ rotate: 90 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => {
+              setShowAddModal(false);
+              setEditingUser(null);
+              setUserForm(emptyUser);
+            }}
+            className="
+              cursor-pointer
+              rounded-lg
+              p-2
+              text-gray-400
+              hover:bg-gray-100
+              hover:text-gray-700
+            "
+          >
+            <X size={18} />
+          </motion.button>
+
+        </div>
+
+        {/* Form */}
+        <div className="mt-6 space-y-4">
+
+          {/* Name */}
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-gray-600">
+              Full Name
+            </label>
+
+            <input
+              type="text"
+              value={userForm.name}
+              onChange={(e) =>
+                setUserForm({
+                  ...userForm,
+                  name: e.target.value,
+                })
+              }
+              placeholder="Enter full name"
+              className="
+                h-11 w-full
+                rounded-xl
+                border border-gray-200
+                bg-gray-50
+                px-4
+                text-sm text-gray-700
+                outline-none
+                transition
+                focus:border-green-500
+                focus:bg-white
+                focus:ring-4
+                focus:ring-green-50
+              "
+            />
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-gray-600">
+              Email
+            </label>
+
+            <input
+              type="email"
+              value={userForm.email}
+              onChange={(e) =>
+                setUserForm({
+                  ...userForm,
+                  email: e.target.value,
+                })
+              }
+              placeholder="Enter email address"
+              className="
+                h-11 w-full
+                rounded-xl
+                border border-gray-200
+                bg-gray-50
+                px-4
+                text-sm text-gray-700
+                outline-none
+                transition
+                focus:border-green-500
+                focus:bg-white
+                focus:ring-4
+                focus:ring-green-50
+              "
+            />
+          </div>
+
+          {/* Phone + Location */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-gray-600">
+                Phone
+              </label>
+
+              <input
+                type="text"
+                value={userForm.phone}
+                onChange={(e) =>
+                  setUserForm({
+                    ...userForm,
+                    phone: e.target.value,
+                  })
+                }
+                placeholder="+880..."
+                className="
+                  h-11 w-full
+                  rounded-xl
+                  border border-gray-200
+                  bg-gray-50
+                  px-4
+                  text-sm text-gray-700
+                  outline-none
+                  transition
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-gray-600">
+                Location
+              </label>
+
+              <input
+                type="text"
+                value={userForm.location}
+                onChange={(e) =>
+                  setUserForm({
+                    ...userForm,
+                    location: e.target.value,
+                  })
+                }
+                placeholder="Sylhet, Bangladesh"
+                className="
+                  h-11 w-full
+                  rounded-xl
+                  border border-gray-200
+                  bg-gray-50
+                  px-4
+                  text-sm text-gray-700
+                  outline-none
+                  transition
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+          </div>
+
+          {/* Joined + Trips */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-gray-600">
+                Joined Date
+              </label>
+
+              <input
+                type="text"
+                value={userForm.joined}
+                onChange={(e) =>
+                  setUserForm({
+                    ...userForm,
+                    joined: e.target.value,
+                  })
+                }
+                placeholder="Aug 25, 2026"
+                className="
+                  h-11 w-full
+                  rounded-xl
+                  border border-gray-200
+                  bg-gray-50
+                  px-4
+                  text-sm text-gray-700
+                  outline-none
+                  transition
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-gray-600">
+                Total Trips
+              </label>
+
+              <input
+                type="number"
+                min="0"
+                value={userForm.trips}
+                onChange={(e) =>
+                  setUserForm({
+                    ...userForm,
+                    trips: e.target.value,
+                  })
+                }
+                className="
+                  h-11 w-full
+                  rounded-xl
+                  border border-gray-200
+                  bg-gray-50
+                  px-4
+                  text-sm text-gray-700
+                  outline-none
+                  transition
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+          </div>
+
+          {/* Status */}
+          <div>
+            <label className="mb-1.5 block text-xs font-semibold text-gray-600">
+              Status
+            </label>
+
+            <select
+              value={userForm.status}
+              onChange={(e) =>
+                setUserForm({
+                  ...userForm,
+                  status: e.target.value,
+                })
+              }
+              className="
+                h-11 w-full
+                cursor-pointer
+                rounded-xl
+                border border-gray-200
+                bg-gray-50
+                px-4
+                text-sm text-gray-700
+                outline-none
+                transition
+                focus:border-green-500
+                focus:bg-white
+                focus:ring-4
+                focus:ring-green-50
+              "
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
+        </div>
+
+        {/* Buttons */}
+        <div className="mt-6 flex gap-3">
+
+          <motion.button
+            whileTap={{ scale: 0.96 }}
+            onClick={() => {
+              setShowAddModal(false);
+              setEditingUser(null);
+              setUserForm(emptyUser);
+            }}
+            className="
+              flex-1
+              cursor-pointer
+              rounded-xl
+              border border-gray-200
+              py-2.5
+              text-sm font-semibold
+              text-gray-600
+              transition-colors
+              hover:bg-gray-50
+            "
+          >
+            Cancel
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={
+              editingUser
+                ? handleEditUser
+                : handleAddUser
+            }
+            disabled={!userForm.name || !userForm.email}
+            className="
+              flex-1
+              cursor-pointer
+              rounded-xl
+              bg-green-600
+              py-2.5
+              text-sm font-semibold
+              text-white
+              transition-colors
+              hover:bg-green-700
+              disabled:cursor-not-allowed
+              disabled:opacity-50
+            "
+          >
+            {editingUser ? "Save Changes" : "Add User"}
+          </motion.button>
+
+        </div>
+
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
       {/* =========================================
           DELETE MODAL

@@ -139,6 +139,15 @@ export default function CategoriesPage() {
   const [showAddModal, setShowAddModal] =
     useState(false);
 
+    const [showEditModal, setShowEditModal] = useState(false);
+
+const [editCategory, setEditCategory] = useState(null);
+
+const [editCategoryData, setEditCategoryData] = useState({
+  name: "",
+  description: "",
+});
+
   const [newCategory, setNewCategory] = useState({
     name: "",
     description: "",
@@ -189,34 +198,75 @@ export default function CategoriesPage() {
     setDeleteCategory(null);
   };
 
-  const handleAddCategory = (e) => {
-    e.preventDefault();
+ const handleAddCategory = (e) => {
+  e.preventDefault();
 
-    if (!newCategory.name.trim()) return;
+  if (!newCategory.name.trim()) return;
 
-    const newItem = {
-      id: Date.now(),
-      name: newCategory.name,
-      description:
-        newCategory.description ||
-        "A new travel category.",
-      destinations: 0,
-      status: "Active",
-      icon: FolderOpen,
-    };
-
-    setCategories((current) => [
-      ...current,
-      newItem,
-    ]);
-
-    setNewCategory({
-      name: "",
-      description: "",
-    });
-
-    setShowAddModal(false);
+  const newItem = {
+    id: Date.now(),
+    name: newCategory.name.trim(),
+    description:
+      newCategory.description.trim() ||
+      "A new travel category.",
+    destinations: 0,
+    status: "Active",
+    icon: FolderOpen,
   };
+
+  setCategories((current) => [
+    ...current,
+    newItem,
+  ]);
+
+  setNewCategory({
+    name: "",
+    description: "",
+  });
+
+  setShowAddModal(false);
+};
+
+const handleEditOpen = (category) => {
+  setEditCategory(category);
+
+  setEditCategoryData({
+    name: category.name,
+    description: category.description,
+  });
+
+  setShowEditModal(true);
+};
+
+const handleEditCategory = (e) => {
+  e.preventDefault();
+
+  if (!editCategory) return;
+  if (!editCategoryData.name.trim()) return;
+
+  setCategories((current) =>
+    current.map((category) =>
+      category.id === editCategory.id
+        ? {
+            ...category,
+            name: editCategoryData.name.trim(),
+            description:
+              editCategoryData.description.trim() ||
+              "A travel category.",
+          }
+        : category
+    )
+  );
+
+  setEditCategory(null);
+
+  setEditCategoryData({
+    name: "",
+    description: "",
+  });
+
+  setShowEditModal(false);
+};
 
   return (
     <div className="w-full min-w-0 overflow-x-hidden p-4 sm:p-6 lg:p-8">
@@ -814,11 +864,11 @@ export default function CategoriesPage() {
                               type="green"
                             />
 
-                            <ActionButton
-                              icon={<Pencil size={17} />}
-                              type="blue"
-                            />
-
+                 <ActionButton
+  icon={<Pencil size={17} />}
+  onClick={() => handleEditOpen(category)}
+  type="blue"
+/>
                             <ActionButton
                               icon={<Trash2 size={17} />}
                               onClick={() =>
@@ -1016,30 +1066,32 @@ export default function CategoriesPage() {
                         View
                       </motion.button>
 
-                      <motion.button
-                        whileTap={{
-                          scale: 0.95,
-                        }}
-                        className="
-                          flex
-                          flex-1
-                          cursor-pointer
-                          items-center
-                          justify-center
-                          gap-1.5
-                          rounded-lg
-                          bg-blue-50
-                          py-2
-                          text-xs
-                          font-semibold
-                          text-blue-600
-                          transition
-                          hover:bg-blue-100
-                        "
-                      >
-                        <Pencil size={14} />
-                        Edit
-                      </motion.button>
+<motion.button
+  type="button"
+  whileTap={{
+    scale: 0.95,
+  }}
+  onClick={() => handleEditOpen(category)}
+  className="
+    flex
+    flex-1
+    cursor-pointer
+    items-center
+    justify-center
+    gap-1.5
+    rounded-lg
+    bg-blue-50
+    py-2
+    text-xs
+    font-semibold
+    text-blue-600
+    transition
+    hover:bg-blue-100
+  "
+>
+  <Pencil size={14} />
+  Edit
+</motion.button>
 
                       <motion.button
                         whileTap={{
@@ -1653,9 +1705,246 @@ export default function CategoriesPage() {
         )}
       </AnimatePresence>
 
+      {/* =========================
+    EDIT CATEGORY MODAL
+========================= */}
+
+<AnimatePresence>
+  {showEditModal && editCategory && (
+    <ModalOverlay
+      onClose={() => {
+        setShowEditModal(false);
+        setEditCategory(null);
+      }}
+    >
+      <motion.form
+        onSubmit={handleEditCategory}
+        initial={{
+          opacity: 0,
+          scale: 0.9,
+          y: 20,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          y: 0,
+        }}
+        exit={{
+          opacity: 0,
+          scale: 0.95,
+        }}
+        className="
+          w-full
+          max-w-md
+          rounded-2xl
+          bg-white
+          p-6
+          shadow-2xl
+        "
+      >
+
+        {/* Header */}
+
+        <div className="
+          flex
+          items-center
+          justify-between
+        ">
+
+          <div>
+            <h2 className="
+              text-lg
+              font-bold
+              text-gray-900
+            ">
+              Edit Category
+            </h2>
+
+            <p className="
+              mt-1
+              text-xs
+              text-gray-400
+            ">
+              Update category information.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowEditModal(false);
+              setEditCategory(null);
+            }}
+            className="
+              cursor-pointer
+              rounded-lg
+              p-2
+              text-gray-400
+              transition
+              hover:bg-gray-100
+              hover:text-gray-700
+            "
+          >
+            <X size={18} />
+          </button>
+
+        </div>
+
+        {/* Category Name */}
+
+        <div className="mt-6">
+
+          <label className="
+            text-sm
+            font-semibold
+            text-gray-700
+          ">
+            Category Name
+          </label>
+
+          <input
+            type="text"
+            value={editCategoryData.name}
+            onChange={(e) =>
+              setEditCategoryData({
+                ...editCategoryData,
+                name: e.target.value,
+              })
+            }
+            placeholder="Category name"
+            className="
+              mt-2
+              h-11
+              w-full
+              rounded-xl
+              border
+              border-gray-200
+              bg-gray-50
+              px-4
+              text-sm
+              text-gray-700
+              outline-none
+              transition
+              focus:border-green-500
+              focus:bg-white
+              focus:ring-4
+              focus:ring-green-50
+            "
+            required
+          />
+
+        </div>
+
+        {/* Description */}
+
+        <div className="mt-4">
+
+          <label className="
+            text-sm
+            font-semibold
+            text-gray-700
+          ">
+            Description
+          </label>
+
+          <textarea
+            value={editCategoryData.description}
+            onChange={(e) =>
+              setEditCategoryData({
+                ...editCategoryData,
+                description: e.target.value,
+              })
+            }
+            placeholder="Write a short description..."
+            rows={4}
+            className="
+              mt-2
+              w-full
+              resize-none
+              rounded-xl
+              border
+              border-gray-200
+              bg-gray-50
+              p-4
+              text-sm
+              text-gray-700
+              outline-none
+              transition
+              focus:border-green-500
+              focus:bg-white
+              focus:ring-4
+              focus:ring-green-50
+            "
+          />
+
+        </div>
+
+        {/* Buttons */}
+
+        <div className="
+          mt-6
+          flex
+          gap-3
+        ">
+
+          <button
+            type="button"
+            onClick={() => {
+              setShowEditModal(false);
+              setEditCategory(null);
+            }}
+            className="
+              flex-1
+              cursor-pointer
+              rounded-xl
+              border
+              border-gray-200
+              py-2.5
+              text-sm
+              font-semibold
+              text-gray-600
+              transition
+              hover:bg-gray-50
+            "
+          >
+            Cancel
+          </button>
+
+          <motion.button
+            type="submit"
+            whileTap={{
+              scale: 0.96,
+            }}
+            className="
+              flex-1
+              cursor-pointer
+              rounded-xl
+              bg-green-600
+              py-2.5
+              text-sm
+              font-semibold
+              text-white
+              shadow-sm
+              transition
+              hover:bg-green-700
+            "
+          >
+            Save Changes
+          </motion.button>
+
+        </div>
+
+      </motion.form>
+    </ModalOverlay>
+  )}
+</AnimatePresence>
+
     </div>
   );
 }
+
+
+
 
 
 /* =========================================
@@ -1768,6 +2057,7 @@ function ActionButton({
 
   return (
     <motion.button
+      type="button"
       whileHover={{
         scale: 1.1,
       }}
@@ -1788,7 +2078,6 @@ function ActionButton({
     </motion.button>
   );
 }
-
 
 /* =========================================
    MODAL OVERLAY

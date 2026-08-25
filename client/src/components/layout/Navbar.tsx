@@ -1,14 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown, Heart, Menu, Plane, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { authClient, useSession } from "@/lib/auth-client";
+import { Avatar } from "@heroui/react";
 
 /* ============================================================
    TYPES
 ============================================================ */
+
 
 type NavItemProps = {
   href: string;
@@ -68,6 +71,23 @@ const inspirationItems: DropdownItem[] = [
 
 export default function Navbar() {
   const pathname = usePathname();
+
+  const router = useRouter();
+
+  const { data } = useSession();
+  const user = data?.user;
+
+  const handleLogout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push('/');
+          // window.location.href = '/';
+        }
+      }
+    });
+  }
+
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [exploreOpen, setExploreOpen] = useState(false);
@@ -182,10 +202,9 @@ export default function Navbar() {
                   font-medium
                   tracking-[-0.01em]
                   transition-colors duration-200
-                  ${
-                    isExploreActive || exploreOpen
-                      ? "text-[#087F5B]"
-                      : "text-[#30483F] hover:text-[#B86D1B]"
+                  ${isExploreActive || exploreOpen
+                    ? "text-[#087F5B]"
+                    : "text-[#30483F] hover:text-[#B86D1B]"
                   }
                 `}
               >
@@ -263,10 +282,9 @@ export default function Navbar() {
                   font-medium
                   tracking-[-0.01em]
                   transition-colors duration-200
-                  ${
-                    isInspirationActive || inspirationOpen
-                      ? "text-[#087F5B]"
-                      : "text-[#30483F] hover:text-[#B86D1B]"
+                  ${isInspirationActive || inspirationOpen
+                    ? "text-[#087F5B]"
+                    : "text-[#30483F] hover:text-[#B86D1B]"
                   }
                 `}
               >
@@ -311,7 +329,7 @@ export default function Navbar() {
               These stay on the right.
           ==================================================== */}
 
-          <div className="ml-auto hidden items-center lg:flex">
+          <div className="ml-auto hidden items-center lg:flex gap-2">
             {/* Search */}
 
             <Link
@@ -322,10 +340,9 @@ export default function Navbar() {
                 items-center justify-center
                 rounded-full
                 transition-colors duration-200
-                ${
-                  isSearchActive
-                    ? "bg-[#087F5B]/10 text-[#087F5B]"
-                    : "text-[#476057] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
+                ${isSearchActive
+                  ? "bg-[#087F5B]/10 text-[#087F5B]"
+                  : "text-[#476057] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
                 }
               `}
             >
@@ -342,10 +359,9 @@ export default function Navbar() {
                 items-center justify-center
                 rounded-full
                 transition-colors duration-200
-                ${
-                  isWishlistActive
-                    ? "bg-[#087F5B]/10 text-[#087F5B]"
-                    : "text-[#476057] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
+                ${isWishlistActive
+                  ? "bg-[#087F5B]/10 text-[#087F5B]"
+                  : "text-[#476057] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
                 }
               `}
             >
@@ -354,21 +370,40 @@ export default function Navbar() {
 
             {/* Login */}
 
-            <Link
-              href="/login"
-              className="ml-4 flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
-            >
-              Login
-            </Link>
+            {user ? (
+              <button
+                onClick={handleLogout}
+                className="ml-4 flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="ml-4 flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+              >
+                Login
+              </Link>
+            )}
 
             {/* Get Started */}
 
-            <Link
-              href="/signup"
-              className="ml-[9px] flex h-[38px] items-center justify-center rounded-full border border-[#FFD078]/55 bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] px-[18px] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_8px_22px_rgba(217,134,31,0.28),inset_0_1px_0_rgba(255,255,255,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_11px_28px_rgba(217,134,31,0.36)]"
-            >
-              Get Started
-            </Link>
+            {user ? (
+              (
+                <Avatar>
+                  <Avatar.Image alt="John Doe" src={user.image ?? undefined} />
+                  <Avatar.Fallback>{user.name.charAt(0)}</Avatar.Fallback>
+                </Avatar>
+              )
+            )
+              : (
+                <Link
+                  href="/signup"
+                  className="ml-[9px] flex h-[38px] items-center justify-center rounded-full border border-[#FFD078]/55 bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] px-[18px] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_8px_22px_rgba(217,134,31,0.28),inset_0_1px_0_rgba(255,255,255,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_11px_28px_rgba(217,134,31,0.36)]"
+                >
+                  Get Started
+                </Link>
+              )}
           </div>
 
           {/* ====================================================
@@ -446,12 +481,11 @@ function NavItem({ href, label, active = false }: NavItemProps) {
             right-0
             h-[2px]
             rounded-full
-            bg-gradient-to-r from-[#087F5B] to-[#F4A934]
+            bg-linear-to-r from-[#087F5B] to-[#F4A934]
             transition-all duration-200
-            ${
-              active
-                ? "scale-x-100 opacity-100"
-                : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100"
+            ${active
+              ? "scale-x-100 opacity-100"
+              : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100"
             }
           `}
         />
@@ -501,10 +535,9 @@ function Dropdown({
                 font-medium
                 tracking-[-0.005em]
                 transition-colors
-                ${
-                  active
-                    ? "bg-[#EDF7F3] text-[#087F5B]"
-                    : "text-[#26342E] hover:bg-[#F4F8F6] hover:text-[#087F5B]"
+                ${active
+                  ? "bg-[#EDF7F3] text-[#087F5B]"
+                  : "text-[#26342E] hover:bg-[#F4F8F6] hover:text-[#087F5B]"
                 }
               `}
             >
@@ -532,6 +565,22 @@ function MobileMenu({
   pathname: string;
   onClose: () => void;
 }) {
+
+  const router = useRouter();
+
+  const { data } = useSession();
+  const user = data?.user;
+
+  const handleLogout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push('/');
+          // window.location.href = '/';
+        }
+      }
+    });
+  }
   const mobileItems = [
     {
       label: "Home",
@@ -587,10 +636,9 @@ function MobileMenu({
               text-[15px]
               font-medium
               tracking-[-0.01em]
-              ${
-                item.active
-                  ? "bg-[#087F5B]/10 text-[#087F5B]"
-                  : "text-[#30483F] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
+              ${item.active
+                ? "bg-[#087F5B]/10 text-[#087F5B]"
+                : "text-[#30483F] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
               }
             `}
           >
@@ -607,22 +655,39 @@ function MobileMenu({
 
       {/* Mobile buttons */}
 
-      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[#DDE9E3] pt-4">
-        <Link
-          href="/login"
-          onClick={onClose}
-          className="flex h-10 items-center justify-center rounded-full border border-[#B9CEC5] bg-white/70 text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] transition-colors hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
-        >
-          Login
-        </Link>
+      <div className="mt-4 flex justify-between gap-2 border-t border-[#DDE9E3] pt-4">
+        {user ? (
+          <button
+            onClick={handleLogout}
+            className="flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+          >
+            Logout
+          </button>
+        ) : (
+          <Link
+            href="/login"
+            className="ml-4 flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+          >
+            Login
+          </Link>
+        )}
 
-        <Link
-          href="/signup"
-          onClick={onClose}
-          className="flex h-10 items-center justify-center rounded-full bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_7px_18px_rgba(217,134,31,0.25)]"
-        >
-          Get Started
-        </Link>
+        {user ? (
+          (
+            <Avatar>
+              <Avatar.Image alt="John Doe" src={user.image ?? undefined} />
+              <Avatar.Fallback>{user.name.charAt(0)}</Avatar.Fallback>
+            </Avatar>
+          )
+        )
+          : (
+            <Link
+              href="/signup"
+              className="ml-[9px] flex h-[38px] items-center justify-center rounded-full border border-[#FFD078]/55 bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] px-[18px] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_8px_22px_rgba(217,134,31,0.28),inset_0_1px_0_rgba(255,255,255,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_11px_28px_rgba(217,134,31,0.36)]"
+            >
+              Get Started
+            </Link>
+          )}
       </div>
     </motion.div>
   );

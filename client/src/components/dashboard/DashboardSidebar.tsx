@@ -149,10 +149,10 @@ export default function DashboardSidebar() {
             </div>
             <div className="flex flex-col">
               <span className="text-[13px] font-bold text-white">
-                {dashboardData.user.name}
+                {user?.name}
               </span>
               <span className="text-[11px] text-white/60">
-                {dashboardData.user.role}
+                {user?.role}
               </span>
             </div>
           </div>

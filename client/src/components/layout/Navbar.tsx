@@ -3,10 +3,20 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Heart, Menu, Plane, Search, X } from "lucide-react";
+import {
+  ChevronDown,
+  Heart,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Plane,
+  Search,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
-import { authClient, useSession } from "@/lib/auth-client";
+import { signOut, useSession } from "@/lib/auth-client";
 import { Avatar } from "@heroui/react";
+import { showLogoutToast } from "@/components/TripPlanToast";
 
 /* ============================================================
    TYPES
@@ -45,8 +55,16 @@ const exploreItems: DropdownItem[] = [
 
 const destinationItems: DropdownItem[] = [
   {
-    label: "Popular Destinations",
+    label: "Top Destinations",
     href: "/destinations",
+  },
+  {
+    label: "Travel Styles",
+    href: "/destinations/styles",
+  },
+  {
+    label: "Interactive Map",
+    href: "/destinations/map",
   },
 ];
 
@@ -74,25 +92,33 @@ export default function Navbar() {
 
   const router = useRouter();
 
-  const { data } = useSession();
+  const { data, isPending } = useSession();
   const user = data?.user;
+  const userRole = (user as (typeof user & { role?: string }) | undefined)?.role;
+  const dashboardHref =
+    userRole?.toLowerCase() === "admin" ? "/admin-panel" : "/dashboard";
 
   const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push('/');
-          // window.location.href = '/';
-        }
-      }
-    });
-  }
+    const logoutUserName = user?.name ?? "Traveler";
+    const { error } = await signOut();
+
+    if (error) {
+      console.error("Logout failed:", error);
+      return;
+    }
+
+    setUserMenuOpen(false);
+    showLogoutToast(logoutUserName);
+    router.replace("/");
+    router.refresh();
+  };
 
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [exploreOpen, setExploreOpen] = useState(false);
   const [destinationsOpen, setDestinationsOpen] = useState(false);
   const [inspirationOpen, setInspirationOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   /* ============================================================
      ACTIVE ROUTES
@@ -129,6 +155,7 @@ export default function Navbar() {
     setExploreOpen(false);
     setDestinationsOpen(false);
     setInspirationOpen(false);
+    setUserMenuOpen(false);
   }, [pathname]);
 
   return (
@@ -240,11 +267,55 @@ export default function Navbar() {
                 DESTINATIONS
             ================================================== */}
 
-            <NavItem
-              href="/destinations"
-              label="Destinations"
-              active={isDestinationsActive}
-            />
+            <div className="relative flex h-full items-center">
+              <button
+                type="button"
+                aria-expanded={destinationsOpen}
+                onClick={() => {
+                  setDestinationsOpen((prev) => !prev);
+                  setExploreOpen(false);
+                  setInspirationOpen(false);
+                }}
+                className={`
+                  relative flex h-full items-center
+                  px-[14px]
+                  text-[14px]
+                  font-medium
+                  tracking-[-0.01em]
+                  transition-colors duration-200
+                  ${isDestinationsActive || destinationsOpen
+                    ? "text-[#087F5B]"
+                    : "text-[#30483F] hover:text-[#B86D1B]"
+                  }
+                `}
+              >
+                <span className="flex items-center gap-[5px]">
+                  Destinations
+                  <ChevronDown
+                    size={12}
+                    strokeWidth={2}
+                    className={`
+                      transition-transform duration-200
+                      ${destinationsOpen ? "rotate-180" : ""}
+                    `}
+                  />
+                </span>
+
+                {/* Active underline */}
+
+                {(isDestinationsActive || destinationsOpen) && (
+                  <span className="absolute bottom-[17px] left-[14px] right-[14px] h-[2px] rounded-full bg-[#F4A934]" />
+                )}
+              </button>
+
+              {destinationsOpen && (
+                <Dropdown
+                  items={destinationItems}
+                  pathname={pathname}
+                  onClose={() => setDestinationsOpen(false)}
+                />
+              )}
+            </div>
 
             {/* ==================================================
                 PLAN MY TRIP
@@ -368,42 +439,112 @@ export default function Navbar() {
               <Heart size={21} strokeWidth={1.8} />
             </Link>
 
-            {/* Login */}
-
-            {user ? (
-              <button
-                onClick={handleLogout}
-                className="ml-4 flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+            {isPending ? (
+              <div
+                aria-hidden="true"
+                className="ml-3 flex h-[44px] w-[168px] animate-pulse items-center gap-2 rounded-full border border-[#C8D9D2] bg-white/55 p-1 pr-3"
               >
-                Logout
-              </button>
+                <span className="h-9 w-9 shrink-0 rounded-full bg-[#DCE7E2]" />
+                <span className="h-3 w-[86px] rounded-full bg-[#DCE7E2]" />
+              </div>
+            ) : user ? (
+              <div className="relative ml-3">
+                <button
+                  type="button"
+                  aria-label="Open user menu"
+                  aria-expanded={userMenuOpen}
+                  onClick={() => setUserMenuOpen((previous) => !previous)}
+                  className="flex h-[44px] max-w-[210px] items-center gap-2 rounded-full border border-[#C8D9D2] bg-white/70 py-1 pl-1 pr-3 text-left shadow-[0_5px_16px_rgba(7,38,30,0.08),inset_0_1px_0_rgba(255,255,255,0.85)] transition-all duration-200 hover:border-[#087F5B]/45 hover:bg-[#F5FAF8]"
+                >
+                  <Avatar className="h-9 w-9 shrink-0">
+                    <Avatar.Image
+                      alt={user.name}
+                      src={user.image ?? undefined}
+                    />
+                    <Avatar.Fallback>{user.name.charAt(0)}</Avatar.Fallback>
+                  </Avatar>
+
+                  <span className="max-w-[120px] truncate text-[13px] font-semibold text-[#243D34]">
+                    {user.name}
+                  </span>
+
+                  <ChevronDown
+                    size={15}
+                    strokeWidth={2.2}
+                    className={`shrink-0 text-[#63766E] transition-transform duration-200 ${
+                      userMenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                <AnimatePresence>
+                  {userMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute right-0 top-[52px] z-[120] w-[300px] overflow-hidden rounded-[20px] border border-white/80 bg-white/[0.96] p-3 shadow-[0_20px_50px_rgba(7,38,30,0.20),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-2xl"
+                    >
+                      <div className="flex items-center gap-3 rounded-[15px] bg-[#F3F8F5] p-3">
+                        <Avatar className="h-12 w-12 shrink-0">
+                          <Avatar.Image
+                            alt={user.name}
+                            src={user.image ?? undefined}
+                          />
+                          <Avatar.Fallback>{user.name.charAt(0)}</Avatar.Fallback>
+                        </Avatar>
+
+                        <div className="min-w-0">
+                          <p className="truncate text-[14px] font-bold text-[#17332A]">
+                            {user.name}
+                          </p>
+                          <p className="mt-0.5 truncate text-[12px] text-[#6B7D75]">
+                            {user.email}
+                          </p>
+                        </div>
+                      </div>
+
+                      <Link
+                        href={dashboardHref}
+                        onClick={() => setUserMenuOpen(false)}
+                        className="mt-2 flex h-11 items-center gap-3 rounded-[13px] px-3 text-[13px] font-semibold text-[#29483D] transition-colors hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+                      >
+                        <LayoutDashboard size={18} strokeWidth={1.9} />
+                        {userRole?.toLowerCase() === "admin"
+                          ? "Admin Dashboard"
+                          : "My Dashboard"}
+                      </Link>
+
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="flex h-11 w-full items-center gap-3 rounded-[13px] px-3 text-[13px] font-semibold text-[#B23A32] transition-colors hover:bg-[#FFF1EF]"
+                      >
+                        <LogOut size={18} strokeWidth={1.9} />
+                        Logout
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ) : (
-              <Link
-                href="/login"
-                className="ml-4 flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
-              >
-                Login
-              </Link>
-            )}
+              <>
+                <Link
+                  href="/login"
+                  className="ml-4 flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+                >
+                  Login
+                </Link>
 
-            {/* Get Started */}
-
-            {user ? (
-              (
-                <Avatar>
-                  <Avatar.Image alt="John Doe" src={user.image ?? undefined} />
-                  <Avatar.Fallback>{user.name.charAt(0)}</Avatar.Fallback>
-                </Avatar>
-              )
-            )
-              : (
                 <Link
                   href="/signup"
                   className="ml-[9px] flex h-[38px] items-center justify-center rounded-full border border-[#FFD078]/55 bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] px-[18px] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_8px_22px_rgba(217,134,31,0.28),inset_0_1px_0_rgba(255,255,255,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_11px_28px_rgba(217,134,31,0.36)]"
                 >
                   Get Started
                 </Link>
-              )}
+              </>
+            )}
           </div>
 
           {/* ====================================================
@@ -568,19 +709,26 @@ function MobileMenu({
 
   const router = useRouter();
 
-  const { data } = useSession();
+  const { data, isPending } = useSession();
   const user = data?.user;
+  const userRole = (user as (typeof user & { role?: string }) | undefined)?.role;
+  const dashboardHref =
+    userRole?.toLowerCase() === "admin" ? "/admin-panel" : "/dashboard";
 
   const handleLogout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push('/');
-          // window.location.href = '/';
-        }
-      }
-    });
-  }
+    const logoutUserName = user?.name ?? "Traveler";
+    const { error } = await signOut();
+
+    if (error) {
+      console.error("Logout failed:", error);
+      return;
+    }
+
+    onClose();
+    showLogoutToast(logoutUserName);
+    router.replace("/");
+    router.refresh();
+  };
   const mobileItems = [
     {
       label: "Home",
@@ -655,39 +803,75 @@ function MobileMenu({
 
       {/* Mobile buttons */}
 
-      <div className="mt-4 flex justify-between gap-2 border-t border-[#DDE9E3] pt-4">
-        {user ? (
-          <button
-            onClick={handleLogout}
-            className="flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+      <div className="mt-4 border-t border-[#DDE9E3] pt-4">
+        {isPending ? (
+          <div
+            aria-hidden="true"
+            className="flex animate-pulse items-center gap-3 rounded-[18px] border border-[#DCE8E2] bg-[#F7FAF8] p-3"
           >
-            Logout
-          </button>
-        ) : (
-          <Link
-            href="/login"
-            className="ml-4 flex h-[38px] items-center justify-center rounded-full border border-[#B9CEC5] bg-white/55 px-[17px] text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] shadow-[inset_0_1px_0_rgba(255,255,255,0.75)] transition-all duration-200 hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
-          >
-            Login
-          </Link>
-        )}
+            <span className="h-11 w-11 shrink-0 rounded-full bg-[#DCE7E2]" />
+            <div className="flex-1 space-y-2">
+              <div className="h-3 w-28 rounded-full bg-[#DCE7E2]" />
+              <div className="h-2.5 w-40 max-w-full rounded-full bg-[#E4ECE8]" />
+            </div>
+          </div>
+        ) : user ? (
+          <div className="rounded-[18px] border border-[#DCE8E2] bg-[#F7FAF8] p-3">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-11 w-11 shrink-0">
+                <Avatar.Image alt={user.name} src={user.image ?? undefined} />
+                <Avatar.Fallback>{user.name.charAt(0)}</Avatar.Fallback>
+              </Avatar>
 
-        {user ? (
-          (
-            <Avatar>
-              <Avatar.Image alt="John Doe" src={user.image ?? undefined} />
-              <Avatar.Fallback>{user.name.charAt(0)}</Avatar.Fallback>
-            </Avatar>
-          )
-        )
-          : (
+              <div className="min-w-0">
+                <p className="truncate text-[14px] font-bold text-[#17332A]">
+                  {user.name}
+                </p>
+                <p className="truncate text-[12px] text-[#6B7D75]">
+                  {user.email}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2">
+              <Link
+                href={dashboardHref}
+                onClick={onClose}
+                className="flex h-10 items-center justify-center gap-2 rounded-full bg-[#E6F3ED] text-[12px] font-semibold text-[#087F5B] transition-colors hover:bg-[#D9EDE4]"
+              >
+                <LayoutDashboard size={16} strokeWidth={2} />
+                {userRole?.toLowerCase() === "admin" ? "Admin" : "Dashboard"}
+              </Link>
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex h-10 items-center justify-center gap-2 rounded-full border border-[#F0D2CE] bg-white text-[12px] font-semibold text-[#B23A32] transition-colors hover:bg-[#FFF1EF]"
+              >
+                <LogOut size={16} strokeWidth={2} />
+                Logout
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">
+            <Link
+              href="/login"
+              onClick={onClose}
+              className="flex h-10 items-center justify-center rounded-full border border-[#B9CEC5] bg-white/70 text-[14px] font-semibold tracking-[-0.01em] text-[#263D34] transition-colors hover:border-[#087F5B]/55 hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+            >
+              Login
+            </Link>
+
             <Link
               href="/signup"
-              className="ml-[9px] flex h-[38px] items-center justify-center rounded-full border border-[#FFD078]/55 bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] px-[18px] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_8px_22px_rgba(217,134,31,0.28),inset_0_1px_0_rgba(255,255,255,0.45)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-105 hover:shadow-[0_11px_28px_rgba(217,134,31,0.36)]"
+              onClick={onClose}
+              className="flex h-10 items-center justify-center rounded-full bg-gradient-to-br from-[#FFC65A] via-[#F4A934] to-[#D9861F] text-[14px] font-semibold tracking-[-0.01em] text-[#17332A] shadow-[0_7px_18px_rgba(217,134,31,0.25)]"
             >
               Get Started
             </Link>
-          )}
+          </div>
+        )}
       </div>
     </motion.div>
   );

@@ -5,7 +5,7 @@ export const rangamatiData = {
   country: "Bangladesh",
   subtitle: "Lake City.",
   description: "Discover Rangamati through lakes and tribal culture. Experience the best of what nature has to offer.",
-  heroImage: "/assets/Rangamati/cover-1.jpg",
+  heroImage: "/assets/Sajek/cover-1.jpg",
   rating: 4.7,
   reviewCount: "850",
   aiMatch: 92,
@@ -20,7 +20,7 @@ export const rangamatiData = {
       "Rangamati is one of the most stunning destinations in Bangladesh, famous for its lakes and tribal culture.",
       "Whether you're looking for an adventure or a peaceful retreat, Rangamati offers breathtaking landscapes and unforgettable experiences for every traveler."
     ],
-    image: "/assets/Rangamati/cover-1.jpg"
+    image: "/assets/Sajek/cover-1.jpg"
   },
 
   whyLoveIt: [
@@ -45,9 +45,9 @@ export const rangamatiData = {
   ],
 
   thingsToDo: [
-    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Rangamati/cover-1.jpg", type: "Nature" },
-    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Rangamati/cover-1.jpg", type: "Culinary" },
-    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Rangamati/cover-1.jpg", type: "Creative" }
+    { id: 1, title: "Sightseeing", description: "Explore the main attractions.", time: "2-4 hrs", image: "/assets/Sajek/cover-1.jpg", type: "Nature" },
+    { id: 2, title: "Local Food", description: "Taste traditional dishes.", time: "1-2 hrs", image: "/assets/Sajek/cover-1.jpg", type: "Culinary" },
+    { id: 3, title: "Photography", description: "Capture memories.", time: "Flexible", image: "/assets/Sajek/cover-1.jpg", type: "Creative" }
   ],
 
   placesToExplore: [
@@ -57,7 +57,7 @@ export const rangamatiData = {
       title: "Rangamati Main Spot",
       description: "The most famous attraction here.",
       longDescription: "This is the heart of Rangamati, offering incredible views of lakes and tribal culture. Visitors from all over the country come here to experience the serene beauty and majestic atmosphere.",
-      image: "/assets/Rangamati/cover-1.jpg",
+      image: "/assets/Sajek/cover-1.jpg",
       rating: 4.8,
       tags: ["Must Visit", "Scenic"]
     }
@@ -66,14 +66,14 @@ export const rangamatiData = {
   marineDriveFeature: {
     title: "The Journey to Rangamati",
     description: "The road to Rangamati is as beautiful as the destination itself.",
-    image: "/assets/Rangamati/cover-1.jpg",
+    image: "/assets/Sajek/cover-1.jpg",
     highlights: ["Scenic routes", "Photo stops", "Nature views", "Local life", "Memorable journey"]
   },
 
   itinerary: [
-    { day: "DAY 01", title: "Arrival & Exploration", description: "Check in and explore nearby areas.", image: "/assets/Rangamati/cover-1.jpg" },
-    { day: "DAY 02", title: "Main Attractions", description: "Visit the top spots.", image: "/assets/Rangamati/cover-1.jpg" },
-    { day: "DAY 03", title: "Relaxation & Departure", description: "Enjoy a quiet morning before leaving.", image: "/assets/Rangamati/cover-1.jpg" }
+    { day: "DAY 01", title: "Arrival & Exploration", description: "Check in and explore nearby areas.", image: "/assets/Sajek/cover-1.jpg" },
+    { day: "DAY 02", title: "Main Attractions", description: "Visit the top spots.", image: "/assets/Sajek/cover-1.jpg" },
+    { day: "DAY 03", title: "Relaxation & Departure", description: "Enjoy a quiet morning before leaving.", image: "/assets/Sajek/cover-1.jpg" }
   ],
 
   budget: {
@@ -85,13 +85,13 @@ export const rangamatiData = {
   },
 
   hotels: [
-    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Rangamati/cover-1.jpg", amenities: ["Views", "WiFi", "Pool"] },
-    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Rangamati/cover-1.jpg", amenities: ["Nature Walk", "Breakfast"] }
+    { id: 1, name: "Premium Resort", category: "Luxury", rating: 4.8, location: "Central Area", priceFrom: 5000, image: "/assets/Sajek/cover-1.jpg", amenities: ["Views", "WiFi", "Pool"] },
+    { id: 2, name: "Eco Lodge", category: "Budget", rating: 4.5, location: "Nature Trail", priceFrom: 2500, image: "/assets/Sajek/cover-1.jpg", amenities: ["Nature Walk", "Breakfast"] }
   ],
 
   foods: [
-    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Rangamati/cover-1.jpg", type: "Lunch" },
-    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Rangamati/cover-1.jpg", type: "Dinner" }
+    { id: 1, title: "Traditional Thali", description: "Local authentic meal.", price: "$$", image: "/assets/Sajek/cover-1.jpg", type: "Lunch" },
+    { id: 2, title: "BBQ Dinner", description: "Enjoy BBQ under the stars.", price: "$$$", image: "/assets/Sajek/cover-1.jpg", type: "Dinner" }
   ],
 
   reviews: {
@@ -99,8 +99,8 @@ export const rangamatiData = {
     count: 850,
     breakdown: { 5: 60, 4: 30, 3: 5, 2: 3, 1: 2 },
     list: [
-      { id: 1, name: "Sarah M.", avatar: "/assets/Rangamati/cover-1.jpg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The lakes and tribal culture are mesmerizing." },
-      { id: 2, name: "Rahul D.", avatar: "/assets/Rangamati/cover-1.jpg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Nature." }
+      { id: 1, name: "Sarah M.", avatar: "/assets/Sajek/cover-1.jpg", rating: 5, date: "2 months ago", tripType: "Solo Trip", text: "Absolutely stunning place! The lakes and tribal culture are mesmerizing." },
+      { id: 2, name: "Rahul D.", avatar: "/assets/Sajek/cover-1.jpg", rating: 4, date: "3 months ago", tripType: "Family Trip", text: "Great experience, highly recommended for Nature." }
     ],
     aiSummary: {
       loved: ["Natural beauty", "Local food", "Peaceful environment", "Friendly locals", "Stunning landscapes"],
@@ -110,10 +110,10 @@ export const rangamatiData = {
   },
 
   gallery: [
-    "/assets/Rangamati/cover-1.jpg",
-    "/assets/Rangamati/cover-1.jpg",
-    "/assets/Rangamati/cover-1.jpg",
-    "/assets/Rangamati/cover-1.jpg"
+    "/assets/Sajek/cover-1.jpg",
+    "/assets/Sajek/cover-1.jpg",
+    "/assets/Sajek/cover-1.jpg",
+    "/assets/Sajek/cover-1.jpg"
   ],
 
   travelInfo: {

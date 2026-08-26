@@ -20,6 +20,8 @@ import {
   ChevronDown
 } from "lucide-react";
 import { dashboardData } from "@/data/dashboardData";
+import { useSession } from "@/lib/auth-client";
+import { Avatar } from "@heroui/react";
 
 const navigation = [
   {
@@ -32,7 +34,7 @@ const navigation = [
     section: "TRAVEL",
     items: [
       { name: "My Trips", href: "/dashboard/trips", icon: Map },
-      { name: "Plan a Trip", href: "/dashboard/plan", icon: Compass },
+      { name: "Plan a Trip", href: "/plan-trip", icon: Compass },
       { name: "Saved", href: "/dashboard/saved", icon: Heart },
       { name: "Budget Tracker", href: "/dashboard/budget", icon: Wallet },
       { name: "Calendar", href: "/dashboard/calendar", icon: CalendarDays },
@@ -57,6 +59,10 @@ const navigation = [
 
 export default function DashboardSidebar() {
   const pathname = usePathname();
+  const userdata = useSession();
+  console.log(userdata);
+  const user = userdata?.data?.user;
+  console.log(user);
 
   return (
     <div className="flex h-full w-full flex-col bg-[#04271C] text-white">
@@ -80,7 +86,7 @@ export default function DashboardSidebar() {
       {/* Main CTA */}
       <div className="px-5 mb-6">
         <Link
-          href="/dashboard/plan"
+          href="/plan-trip"
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#F4A934] py-3 text-[13px] font-bold text-[#17211D] transition-transform hover:scale-[1.02] active:scale-[0.98]"
         >
           <Plus size={16} />
@@ -102,18 +108,16 @@ export default function DashboardSidebar() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`group flex items-center justify-between rounded-xl px-3 py-2.5 text-[13px] font-medium transition-colors ${
-                      isActive
-                        ? "bg-[#0B3D2E] text-white"
-                        : "text-white/70 hover:bg-[#0A382A]/50 hover:text-white"
-                    }`}
+                    className={`group flex items-center justify-between rounded-xl px-3 py-2.5 text-[13px] font-medium transition-colors ${isActive
+                      ? "bg-[#0B3D2E] text-white"
+                      : "text-white/70 hover:bg-[#0A382A]/50 hover:text-white"
+                      }`}
                   >
                     <div className="flex items-center gap-3">
                       <item.icon
                         size={18}
-                        className={`${
-                          isActive ? "text-white" : "text-white/50 group-hover:text-white/80"
-                        }`}
+                        className={`${isActive ? "text-white" : "text-white/50 group-hover:text-white/80"
+                          }`}
                       />
                       {item.name}
                     </div>
@@ -135,21 +139,20 @@ export default function DashboardSidebar() {
         <div className="flex w-full cursor-pointer items-center justify-between rounded-2xl bg-[#0B3D2E] p-3 transition-colors hover:bg-[#0A382A]">
           <div className="flex items-center gap-3">
             <div className="relative h-10 w-10 overflow-hidden rounded-full border border-[#04271C]">
-              <img
-                src={dashboardData.user.avatar}
-                alt={dashboardData.user.name}
-                className="h-full w-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Rifat+Ahmed&background=F4A934&color=04271C";
-                }}
-              />
+              <Avatar className="h-9 w-9 shrink-0">
+                <Avatar.Image
+                  alt={user?.name}
+                  src={user?.image ?? undefined}
+                />
+                <Avatar.Fallback>{user?.name?.charAt(0)}</Avatar.Fallback>
+              </Avatar>
             </div>
             <div className="flex flex-col">
               <span className="text-[13px] font-bold text-white">
-                {dashboardData.user.name}
+                {user?.name}
               </span>
               <span className="text-[11px] text-white/60">
-                {dashboardData.user.role}
+                {user?.role}
               </span>
             </div>
           </div>

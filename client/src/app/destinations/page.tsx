@@ -8,8 +8,6 @@ import DestinationSidebar from "@/components/destinations/layout/DestinationSide
 import FeaturedDestinations from "@/components/destinations/listings/FeaturedDestinations";
 import AllDestinations from "@/components/destinations/listings/AllDestinations";
 import TrendingDestinations from "@/components/destinations/listings/TrendingDestinations";
-import ExploreByExperience from "@/components/destinations/listings/ExploreByExperience";
-import MapCompareSection from "@/components/destinations/interactive/MapCompareSection";
 import ReviewIntelligence from "@/components/destinations/reviews/ReviewIntelligence";
 import { destinationsData } from "@/data/destinations";
 
@@ -52,12 +50,6 @@ export default function DestinationsPage() {
 
             {/* Trending Destinations */}
             <TrendingDestinations destinations={destinationsData} />
-
-            {/* Explore by Experience */}
-            <ExploreByExperience />
-
-            {/* Map & Compare */}
-            <MapCompareSection destinations={destinationsData} />
 
             {/* AI Review Intelligence */}
             <ReviewIntelligence />

@@ -55,8 +55,16 @@ const exploreItems: DropdownItem[] = [
 
 const destinationItems: DropdownItem[] = [
   {
-    label: "Popular Destinations",
+    label: "Top Destinations",
     href: "/destinations",
+  },
+  {
+    label: "Travel Styles",
+    href: "/destinations/styles",
+  },
+  {
+    label: "Interactive Map",
+    href: "/destinations/map",
   },
 ];
 
@@ -259,11 +267,55 @@ export default function Navbar() {
                 DESTINATIONS
             ================================================== */}
 
-            <NavItem
-              href="/destinations"
-              label="Destinations"
-              active={isDestinationsActive}
-            />
+            <div className="relative flex h-full items-center">
+              <button
+                type="button"
+                aria-expanded={destinationsOpen}
+                onClick={() => {
+                  setDestinationsOpen((prev) => !prev);
+                  setExploreOpen(false);
+                  setInspirationOpen(false);
+                }}
+                className={`
+                  relative flex h-full items-center
+                  px-[14px]
+                  text-[14px]
+                  font-medium
+                  tracking-[-0.01em]
+                  transition-colors duration-200
+                  ${isDestinationsActive || destinationsOpen
+                    ? "text-[#087F5B]"
+                    : "text-[#30483F] hover:text-[#B86D1B]"
+                  }
+                `}
+              >
+                <span className="flex items-center gap-[5px]">
+                  Destinations
+                  <ChevronDown
+                    size={12}
+                    strokeWidth={2}
+                    className={`
+                      transition-transform duration-200
+                      ${destinationsOpen ? "rotate-180" : ""}
+                    `}
+                  />
+                </span>
+
+                {/* Active underline */}
+
+                {(isDestinationsActive || destinationsOpen) && (
+                  <span className="absolute bottom-[17px] left-[14px] right-[14px] h-[2px] rounded-full bg-[#F4A934]" />
+                )}
+              </button>
+
+              {destinationsOpen && (
+                <Dropdown
+                  items={destinationItems}
+                  pathname={pathname}
+                  onClose={() => setDestinationsOpen(false)}
+                />
+              )}
+            </div>
 
             {/* ==================================================
                 PLAN MY TRIP

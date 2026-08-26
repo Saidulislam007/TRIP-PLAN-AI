@@ -32,7 +32,7 @@ const navigation = [
     section: "TRAVEL",
     items: [
       { name: "My Trips", href: "/dashboard/trips", icon: Map },
-      { name: "Plan a Trip", href: "/dashboard/plan", icon: Compass },
+      { name: "Plan a Trip", href: "/plan-trip", icon: Compass },
       { name: "Saved", href: "/dashboard/saved", icon: Heart },
       { name: "Budget Tracker", href: "/dashboard/budget", icon: Wallet },
       { name: "Calendar", href: "/dashboard/calendar", icon: CalendarDays },
@@ -80,7 +80,7 @@ export default function DashboardSidebar() {
       {/* Main CTA */}
       <div className="px-5 mb-6">
         <Link
-          href="/dashboard/plan"
+          href="/plan-trip"
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#F4A934] py-3 text-[13px] font-bold text-[#17211D] transition-transform hover:scale-[1.02] active:scale-[0.98]"
         >
           <Plus size={16} />

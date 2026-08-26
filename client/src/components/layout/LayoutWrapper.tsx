@@ -10,13 +10,14 @@ export default function LayoutWrapper({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isDashboard = pathname?.startsWith("/dashboard");
+  const isAppShell =
+    pathname?.startsWith("/dashboard") || pathname?.startsWith("/plan-trip");
 
   return (
     <body className="flex min-h-full flex-col font-sans">
-      {!isDashboard && <Navbar />}
+      {!isAppShell && <Navbar />}
       <main className="flex-1 h-full">{children}</main>
-      {!isDashboard && <Footer />}
+      {!isAppShell && <Footer />}
     </body>
   );
 }

@@ -4,6 +4,8 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Search, Bell, Heart, Menu, ChevronDown } from "lucide-react";
 import { dashboardData } from "@/data/dashboardData";
+import { useSession } from "@/lib/auth-client";
+import { Avatar } from "@heroui/react";
 
 interface DashboardHeaderProps {
   onMenuClick?: () => void;
@@ -11,6 +13,10 @@ interface DashboardHeaderProps {
 
 export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
   const pathname = usePathname();
+  const userdata = useSession();
+  console.log(userdata);
+  const user = userdata?.data?.user;
+  console.log(user);
 
   return (
     <header className="sticky top-0 z-30 flex h-20 w-full items-center justify-between bg-[#F7F7F2] px-6 lg:px-10">
@@ -58,14 +64,13 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
         {/* User Avatar */}
         <div className="flex items-center gap-2 cursor-pointer transition-all hover:opacity-80">
           <div className="relative h-9 w-9 overflow-hidden rounded-full ring-2 ring-transparent">
-            <img
-              src={dashboardData.user.avatar}
-              alt={dashboardData.user.name}
-              className="h-full w-full object-cover"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "https://ui-avatars.com/api/?name=Rifat+Ahmed&background=073D31&color=fff";
-              }}
-            />
+            <Avatar className="h-9 w-9 shrink-0">
+              <Avatar.Image
+                alt={user?.name}
+                src={user?.image ?? undefined}
+              />
+              <Avatar.Fallback>{user?.name ? user.name.charAt(0) : 'U'}</Avatar.Fallback>
+            </Avatar>
           </div>
           <ChevronDown size={14} className="text-[#17211D]" />
         </div>

@@ -11,8 +11,10 @@ import {
   Plane,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import toast from "react-hot-toast";
+import { showLoginToast } from "@/components/TripPlanToast";
 
 interface FormData {
   email: string;
@@ -31,6 +33,7 @@ const initialFormData: FormData = {
 export default function LoginForm({
   prefersReducedMotion,
 }: LoginFormProps) {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -60,11 +63,16 @@ export default function LoginForm({
     const { data, error } = await authClient.signIn.email({
       email: userData.email,
       password: userData.password,
-      callbackURL: "/",
     });
 
     console.log("signin data", { data, error });
     console.log("signin data", data);
+
+    if (!error && data?.user) {
+      showLoginToast(data.user.name ?? "Traveler");
+      router.replace("/");
+      router.refresh();
+    }
 
     setErrorMessage("");
 

@@ -14,6 +14,10 @@ import {
   Users,
   Waves,
 } from "lucide-react";
+import {
+  getTravelCategories,
+  type TravelCategory as ApiTravelCategory,
+} from "@/lib/api/travelCategoriesApi";
 
 type TrustItem = {
   title: string;
@@ -21,13 +25,8 @@ type TrustItem = {
   icon: React.ReactNode;
 };
 
-type TravelCategory = {
-  title: string;
-  description: string;
-  slug: string;
-  image: string;
+type TravelCategory = ApiTravelCategory & {
   icon: React.ReactNode;
-  destinations: number;
 };
 
 const trustItems: TrustItem[] = [
@@ -48,65 +47,57 @@ const trustItems: TrustItem[] = [
   },
 ];
 
-const travelCategories: TravelCategory[] = [
-  {
-    title: "Adventure",
-    description: "For thrill seekers",
-    slug: "adventure",
-    image: "/images/categories/adventure.jpg",
-    icon: <Compass size={18} strokeWidth={2.2} />,
-    destinations: 24,
-  },
-  {
-    title: "Beach",
-    description: "Sun, sea & relaxation",
-    slug: "beach",
-    image: "/images/categories/beach.jpg",
-    icon: <Waves size={18} strokeWidth={2.2} />,
-    destinations: 18,
-  },
-  {
-    title: "Family",
-    description: "Trips everyone can enjoy",
-    slug: "family",
-    image: "/images/categories/family.jpg",
-    icon: <Users size={18} strokeWidth={2.2} />,
-    destinations: 15,
-  },
-  {
-    title: "Romantic",
-    description: "Beautiful escapes for two",
-    slug: "romantic",
-    image: "/images/categories/romantic.jpg",
-    icon: <Heart size={18} strokeWidth={2.2} />,
-    destinations: 12,
-  },
-  {
-    title: "Backpacking",
-    description: "Travel freely & independently",
-    slug: "backpacking",
-    image: "/images/categories/backpacking.jpg",
-    icon: <Backpack size={18} strokeWidth={2.2} />,
-    destinations: 20,
-  },
-  {
-    title: "Nature",
-    description: "Green landscapes & peaceful places",
-    slug: "nature",
-    image: "/images/categories/nature.jpg",
-    icon: <Leaf size={18} strokeWidth={2.2} />,
-    destinations: 16,
-  },
-];
+const categoryIconMap: Record<string, React.ReactNode> = {
+  adventure: <Compass size={18} strokeWidth={2.2} />,
+  beach: <Waves size={18} strokeWidth={2.2} />,
+  family: <Users size={18} strokeWidth={2.2} />,
+  romantic: <Heart size={18} strokeWidth={2.2} />,
+  backpacking: <Backpack size={18} strokeWidth={2.2} />,
+  nature: <Leaf size={18} strokeWidth={2.2} />,
+  cultural: <Compass size={18} strokeWidth={2.2} />,
+  relaxation: <Leaf size={18} strokeWidth={2.2} />,
+  food: <Heart size={18} strokeWidth={2.2} />,
+  luxury: <Sparkles size={18} strokeWidth={2.2} />,
+};
 
 const revealEase = [0.22, 1, 0.36, 1] as const;
 
 export default function TravelCategories() {
+  const [travelCategories, setTravelCategories] = useState<TravelCategory[]>([]);
   const [activeCategory, setActiveCategory] = useState(0);
   const [isCarouselPaused, setIsCarouselPaused] = useState(false);
 
   useEffect(() => {
-    if (isCarouselPaused) return;
+    let isMounted = true;
+
+    const loadTravelCategories = async () => {
+      try {
+        const data = await getTravelCategories();
+
+        if (!isMounted) return;
+
+        setTravelCategories(
+          data.map((category) => ({
+            ...category,
+            icon: categoryIconMap[category.slug] ?? (
+              <Compass size={18} strokeWidth={2.2} />
+            ),
+          })),
+        );
+      } catch (error) {
+        console.error("Failed to load travel categories:", error);
+      }
+    };
+
+    loadTravelCategories();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isCarouselPaused || travelCategories.length === 0) return;
 
     const autoplay = window.setInterval(() => {
       setActiveCategory((current) =>
@@ -115,19 +106,22 @@ export default function TravelCategories() {
     }, 3600);
 
     return () => window.clearInterval(autoplay);
-  }, [isCarouselPaused]);
+  }, [isCarouselPaused, travelCategories.length]);
 
-  const visibleCategories = [-2, -1, 0, 1, 2].map((offset) => {
-    const index =
-      (activeCategory + offset + travelCategories.length) %
-      travelCategories.length;
+  const visibleCategories =
+    travelCategories.length > 0
+      ? [-2, -1, 0, 1, 2].map((offset) => {
+          const index =
+            (activeCategory + offset + travelCategories.length) %
+            travelCategories.length;
 
-    return {
-      category: travelCategories[index],
-      index,
-      offset,
-    };
-  });
+          return {
+            category: travelCategories[index],
+            index,
+            offset,
+          };
+        })
+      : [];
 
   return (
     <section className="relative bg-linear-to-b from-white via-[#FBFCFA] to-[#F4F8F5]">

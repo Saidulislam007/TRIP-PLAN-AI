@@ -12,9 +12,14 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
+import {
+  TripPlanToaster,
+  showSignupToast,
+} from "@/components/TripPlanToast";
 
 interface RegisterFormData {
   fullName: string;
@@ -37,6 +42,7 @@ const initialFormData: RegisterFormData = {
 export default function RegisterForm({
   prefersReducedMotion,
 }: RegisterFormProps) {
+  const router = useRouter();
   const [formData, setFormData] =
     useState<RegisterFormData>(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
@@ -67,13 +73,24 @@ export default function RegisterForm({
       name: userData.fullName,
       email: userData.email,
       password: userData.password,
-      callbackURL: "/",
     });
 
     console.log("signup data", { data, error });
     console.log("signup data", data);
 
+    if (error) {
+      setErrorMessage(error.message ?? "Unable to create your account.");
+      return;
+    }
+
     setErrorMessage("");
+
+    await authClient.signOut();
+    showSignupToast(data?.user?.name ?? userData.fullName);
+
+    window.setTimeout(() => {
+      router.replace("/login");
+    }, 1800);
 
     // TODO: The backend developer will connect account registration here.
     // Available values: fullName, email, formData.password, and acceptTerms.
@@ -100,6 +117,8 @@ export default function RegisterForm({
 
   return (
     <>
+      <TripPlanToaster />
+
       <form
         className="mt-6"
         onSubmit={handleRegister}

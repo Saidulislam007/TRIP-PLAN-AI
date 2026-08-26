@@ -14,10 +14,11 @@ import {
   Users,
   Waves,
 } from "lucide-react";
-import {
-  getTravelCategories,
-  type TravelCategory as ApiTravelCategory,
-} from "@/lib/api/travelCategoriesApi";
+import { getTravelCategories } from "@/lib/api/server";
+// import {
+//   getTravelCategories,
+//   type TravelCategory as ApiTravelCategory,
+// } from "@/lib/api/travelCategoriesApi";
 
 type TrustItem = {
   title: string;

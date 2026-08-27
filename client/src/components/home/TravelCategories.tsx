@@ -15,10 +15,7 @@ import {
   Waves,
 } from "lucide-react";
 import { getTravelCategories } from "@/lib/api/server";
-// import {
-//   getTravelCategories,
-//   type TravelCategory as ApiTravelCategory,
-// } from "@/lib/api/travelCategoriesApi";
+import type { TravelCategory as ApiTravelCategory } from "@/types/travelCategory";
 
 type TrustItem = {
   title: string;

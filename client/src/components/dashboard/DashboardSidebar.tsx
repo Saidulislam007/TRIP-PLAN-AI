@@ -23,6 +23,12 @@ import { dashboardData } from "@/data/dashboardData";
 import { useSession } from "@/lib/auth-client";
 import { Avatar } from "@heroui/react";
 
+type SessionUser = {
+  name?: string | null;
+  image?: string | null;
+  role?: string | null;
+};
+
 const navigation = [
   {
     section: "OVERVIEW",
@@ -61,7 +67,7 @@ export default function DashboardSidebar() {
   const pathname = usePathname();
   const userdata = useSession();
   console.log(userdata);
-  const user = userdata?.data?.user;
+  const user = userdata?.data?.user as SessionUser | undefined;
   console.log(user);
 
   return (
@@ -141,7 +147,7 @@ export default function DashboardSidebar() {
             <div className="relative h-10 w-10 overflow-hidden rounded-full border border-[#04271C]">
               <Avatar className="h-9 w-9 shrink-0">
                 <Avatar.Image
-                  alt={user?.name}
+                  alt={user?.name ?? undefined}
                   src={user?.image ?? undefined}
                 />
                 <Avatar.Fallback>{user?.name?.charAt(0)}</Avatar.Fallback>

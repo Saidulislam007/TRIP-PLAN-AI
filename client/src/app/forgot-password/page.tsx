@@ -15,7 +15,7 @@ export default function ForgotPassword() {
       // Replace with your actual backend URL or environment variable
       const { data, error } = await authClient.requestPasswordReset({
         email: email,
-        redirectTo: "http://localhost:3000/reset-password", // Where the email link should go
+        redirectTo: `${process.env.BETTER_AUTH_URL}/reset-password`, // Where the email link should go
       });
 
 

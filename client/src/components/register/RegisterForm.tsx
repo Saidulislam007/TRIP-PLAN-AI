@@ -67,7 +67,7 @@ export default function RegisterForm({
       formData.entries(),
     ) as unknown as RegisterFormData;
 
-    console.log("userData", userData);
+    // console.log("userData", userData);
 
     const { data, error } = await authClient.signUp.email({
       name: userData.fullName,
@@ -75,8 +75,8 @@ export default function RegisterForm({
       password: userData.password,
     });
 
-    console.log("signup data", { data, error });
-    console.log("signup data", data);
+    // console.log("signup data", { data, error });
+    // console.log("signup data", data);
 
     if (error) {
       setErrorMessage(error.message ?? "Unable to create your account.");
@@ -111,7 +111,7 @@ export default function RegisterForm({
       toast.success("Redirecting to google!");
     }
 
-    console.log("signup data", { data, error });
+    // console.log("signup data", { data, error });
 
   };
 

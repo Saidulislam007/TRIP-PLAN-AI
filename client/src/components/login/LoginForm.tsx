@@ -58,15 +58,15 @@ export default function LoginForm({
       formData.entries(),
     ) as unknown as FormData;
 
-    console.log("userData", userData);
+    // console.log("userData", userData);
 
     const { data, error } = await authClient.signIn.email({
       email: userData.email,
       password: userData.password,
     });
 
-    console.log("signin data", { data, error });
-    console.log("signin data", data);
+    // console.log("signin data", { data, error });
+    // console.log("signin data", data);
 
     if (!error && data?.user) {
       showLoginToast(data.user.name ?? "Traveler");
@@ -93,7 +93,7 @@ export default function LoginForm({
       toast.success("Redirecting to google!");
     }
 
-    console.log("signup data", { data, error });
+    // console.log("signup data", { data, error });
 
   };
 

@@ -124,7 +124,7 @@ export default function TravelCategories() {
       : [];
 
   return (
-    <section className="relative overflow-x-hidden bg-linear-to-b from-white via-[#FBFCFA] to-[#F4F8F5]">
+    <section className="relative overflow-x-hidden bg-linear-to-b from-white via-[#FBFCFA] to-[#F4F8F5] pt-24 sm:pt-28 lg:pt-32">
       <div className="pointer-events-none absolute -left-28 top-36 h-72 w-72 rounded-full bg-[#087F5B]/[0.06] blur-[100px]" />
       <div className="pointer-events-none absolute -right-24 top-64 h-72 w-72 rounded-full bg-[#F4B942]/[0.08] blur-[110px]" />
 

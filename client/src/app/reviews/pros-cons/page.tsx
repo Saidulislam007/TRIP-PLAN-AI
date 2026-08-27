@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
@@ -202,7 +203,7 @@ const reviewQuotes: ReviewQuote[] = [
    MOTION
 ============================================================ */
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: {},
   visible: {
     transition: {
@@ -211,7 +212,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: {
     opacity: 0,
     y: 20,

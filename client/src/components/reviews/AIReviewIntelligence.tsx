@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants } from "framer-motion";
 
 import {
   ArrowRight,
@@ -145,7 +146,7 @@ const recommendations: Recommendation[] = [
    MOTION
 ============================================================ */
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: {
     opacity: 0,
     y: 24,
@@ -162,7 +163,7 @@ const cardVariants = {
   }),
 };
 
-const rowVariants = {
+const rowVariants: Variants = {
   hidden: {
     opacity: 0,
     x: -8,

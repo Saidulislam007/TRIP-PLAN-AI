@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
@@ -194,7 +195,7 @@ const preferences = [
    MOTION
 ============================================================ */
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: {
     opacity: 0,
     y: 22,

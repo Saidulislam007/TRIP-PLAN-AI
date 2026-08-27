@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
@@ -192,7 +193,7 @@ const reviewQuotes = [
    MOTION
 ============================================================ */
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: {},
   visible: {
     transition: {
@@ -201,7 +202,7 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   hidden: {
     opacity: 0,
     y: 22,

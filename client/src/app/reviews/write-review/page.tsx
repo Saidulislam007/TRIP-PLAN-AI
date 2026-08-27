@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import type { Variants } from "framer-motion";
 
 import {
   ArrowLeft,
@@ -126,7 +127,7 @@ const initialCategories: RatingCategory[] = [
    MOTION
 ============================================================ */
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: {
     opacity: 0,
     y: 24,
@@ -141,7 +142,7 @@ const fadeUp = {
   },
 };
 
-const cardMotion = {
+const cardMotion: Variants = {
   hidden: {
     opacity: 0,
     y: 20,

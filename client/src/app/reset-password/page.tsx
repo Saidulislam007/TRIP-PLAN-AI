@@ -1,9 +1,9 @@
 "use client";
-import { useState } from "react";
-import {  useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
-export default function ResetPassword() {
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -35,7 +35,7 @@ export default function ResetPassword() {
     } else {
       setStatus("success");
       setMessage("Password reset successfully! Redirecting...");
-      setTimeout(() => router.push("/login"), 3000);
+      setTimeout(() => router.push("/login"), 2000);
     }
   };
 
@@ -86,5 +86,21 @@ export default function ResetPassword() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function ResetPassword() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
+          <div className="w-full max-w-md rounded-xl border bg-white p-8 text-center shadow-lg">
+            <p className="text-sm text-gray-600">Loading reset form...</p>
+          </div>
+        </div>
+      }
+    >
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

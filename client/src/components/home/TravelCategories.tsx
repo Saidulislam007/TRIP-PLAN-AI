@@ -15,10 +15,7 @@ import {
   Waves,
 } from "lucide-react";
 import { getTravelCategories } from "@/lib/api/server";
-// import {
-//   getTravelCategories,
-//   type TravelCategory as ApiTravelCategory,
-// } from "@/lib/api/travelCategoriesApi";
+import type { TravelCategory as ApiTravelCategory } from "@/types/travelCategory";
 
 type TrustItem = {
   title: string;
@@ -125,7 +122,7 @@ export default function TravelCategories() {
       : [];
 
   return (
-    <section className="relative bg-linear-to-b from-white via-[#FBFCFA] to-[#F4F8F5]">
+    <section className="relative overflow-x-hidden bg-linear-to-b from-white via-[#FBFCFA] to-[#F4F8F5] pt-24 sm:pt-28 lg:pt-32">
       <div className="pointer-events-none absolute -left-28 top-36 h-72 w-72 rounded-full bg-[#087F5B]/[0.06] blur-[100px]" />
       <div className="pointer-events-none absolute -right-24 top-64 h-72 w-72 rounded-full bg-[#F4B942]/[0.08] blur-[110px]" />
 
@@ -265,7 +262,7 @@ export default function TravelCategories() {
               );
             }
           }}
-          className="relative mt-3 h-[390px] w-full overflow-hidden [perspective:1400px] sm:h-[445px] lg:mt-5 lg:h-[500px]"
+          className="relative mt-3 h-[390px] w-full overflow-hidden [contain:paint] [perspective:1400px] sm:h-[445px] lg:mt-5 lg:h-[500px]"
           role="region"
           aria-label="Travel categories carousel"
         >
@@ -419,6 +416,7 @@ export default function TravelCategories() {
           </Link>
         </div>
       </div>
+      
     </section>
   );
 }

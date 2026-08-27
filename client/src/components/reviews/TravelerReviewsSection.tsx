@@ -35,6 +35,7 @@ import {
   X,
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
+import type { Variants } from "framer-motion";
 
 /* ============================================================
    TYPES
@@ -275,7 +276,7 @@ const experiences = [
    ANIMATION
 ============================================================ */
 
-const reviewCardVariants = {
+const reviewCardVariants: Variants = {
   hidden: {
     opacity: 0,
     y: 22,

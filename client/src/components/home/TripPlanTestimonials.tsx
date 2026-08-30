@@ -20,41 +20,41 @@ type TripPlanTestimonialsProps = {
 };
 
 // Replace these examples with verified traveller feedback before production.
-// const sampleTestimonials: TripPlanTestimonial[] = [
-//   {
-//     id: "family-coxs-bazar",
-//     quote:
-//       "TripPlan AI made our family trip much easier. We compared total stay costs, checked family facilities and added the right hotel to our plan without opening multiple websites.",
-//     name: "Family Traveller",
-//     role: "Dhaka · Cox’s Bazar trip",
-//     tag: "FAMILY TRIP",
-//     initials: "FT",
-//     rating: 5,
-//   },
-//   {
-//     id: "solo-sajek",
-//     quote:
-//       "The BDT budget view gave me a clear picture before I left. Hotel, food and transport estimates stayed together, so adjusting my Sajek itinerary was simple.",
-//     name: "Solo Traveller",
-//     role: "Chattogram · Sajek trip",
-//     tag: "SOLO TRIP",
-//     initials: "ST",
-//     rating: 5,
-//   },
-//   {
-//     id: "friends-sylhet",
-//     quote:
-//       "Local transport notes and destination essentials helped our group prepare properly. Everyone could understand the plan and the expected shared cost before the journey.",
-//     name: "Friends Group",
-//     role: "Khulna · Sylhet trip",
-//     tag: "GROUP TRIP",
-//     initials: "FG",
-//     rating: 5,
-//   },
-// ];
+const sampleTestimonials: TripPlanTestimonial[] = [
+  {
+    id: "family-coxs-bazar",
+    quote:
+      "TripPlan AI made our family trip much easier. We compared total stay costs, checked family facilities and added the right hotel to our plan without opening multiple websites.",
+    name: "Family Traveller",
+    role: "Dhaka - Cox's Bazar trip",
+    tag: "FAMILY TRIP",
+    initials: "FT",
+    rating: 5,
+  },
+  {
+    id: "solo-sajek",
+    quote:
+      "The BDT budget view gave me a clear picture before I left. Hotel, food and transport estimates stayed together, so adjusting my Sajek itinerary was simple.",
+    name: "Solo Traveller",
+    role: "Chattogram - Sajek trip",
+    tag: "SOLO TRIP",
+    initials: "ST",
+    rating: 5,
+  },
+  {
+    id: "friends-sylhet",
+    quote:
+      "Local transport notes and destination essentials helped our group prepare properly. Everyone could understand the plan and the expected shared cost before the journey.",
+    name: "Friends Group",
+    role: "Khulna - Sylhet trip",
+    tag: "GROUP TRIP",
+    initials: "FG",
+    rating: 5,
+  },
+];
 
-const sampleTestimonials = await getFeatReviews();
-console.log(sampleTestimonials);
+// const sampleTestimonials = await getFeatReviews();
+// console.log(sampleTestimonials);
 
 export default function TripPlanTestimonials({
   testimonials = sampleTestimonials,
@@ -160,7 +160,7 @@ function TestimonialCard({
       </div>
 
       <blockquote className="mt-7 flex-1 font-serif text-lg italic leading-8 text-[#48433f] sm:text-xl sm:leading-9">
-        “{testimonial.quote}”
+        "{testimonial.quote}"
       </blockquote>
 
       <div className="mt-8 border-t border-[#ece9e6] pt-6">

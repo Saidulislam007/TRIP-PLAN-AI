@@ -10,7 +10,6 @@ import ThingsToDo from "@/components/destinations/content/ThingsToDo";
 import TopPlacesToExplore from "@/components/destinations/content/TopPlacesToExplore";
 import MarineDriveFeature from "@/components/destinations/content/MarineDriveFeature";
 import RecommendedItinerary from "@/components/destinations/content/RecommendedItinerary";
-import BudgetEstimator from "@/components/destinations/interactive/BudgetEstimator";
 import AccommodationSection from "@/components/destinations/content/AccommodationSection";
 import FoodDiningSection from "@/components/destinations/content/FoodDiningSection";
 import ReviewsSection from "@/components/destinations/reviews/ReviewsSection";
@@ -95,7 +94,6 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
           <div className="w-full lg:w-[32%] flex flex-col gap-8">
              <WhyLoveIt data={data.whyLoveIt} />
              <RecommendedItinerary data={data.itinerary} />
-             <BudgetEstimator data={data.budget} />
              <SmartTravelTips data={data.travelTips} />
           </div>
           
@@ -116,3 +114,4 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
     </div>
   );
 }
+

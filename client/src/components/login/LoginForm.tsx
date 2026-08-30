@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { showLoginToast } from "@/components/TripPlanToast";
+import { FcGoogle } from "react-icons/fc";
 
 interface FormData {
   email: string;
@@ -229,9 +230,7 @@ export default function LoginForm({
         onClick={handleGoogleLogin}
         className="flex h-13 w-full items-center justify-center gap-2.5 rounded-[14px] border border-[#D8E2DD] bg-white text-[12px] font-bold text-[#203C32] shadow-sm transition-colors hover:border-[#B7CEC4] hover:bg-[#FBFCFA] disabled:cursor-not-allowed disabled:opacity-65 sm:h-14 sm:text-[13px]"
       >
-        <span className="grid h-5 w-5 place-items-center rounded-full bg-linear-to-br from-[#4285F4] via-[#34A853] to-[#EA4335] text-[10px] font-black text-white">
-          G
-        </span>
+       <FcGoogle size={20} />
         Continue with Google
       </motion.button>
 

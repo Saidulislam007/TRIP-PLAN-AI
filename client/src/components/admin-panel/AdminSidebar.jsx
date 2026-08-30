@@ -108,7 +108,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
            
     lg:sticky
     lg:top-[80px]
-    lg:h-[calc(100vh-80px)]
+    lg:h-screen
     lg:z-40
     lg:translate-x-0
   

@@ -55,8 +55,27 @@ export default function AdminPanelPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <div className="p-4 sm:p-6 lg:p-8">
+
+return (
+  <div className="relative min-h-screen overflow-hidden bg-[#F3F7F5]">
+
+    {/* Blurred Background Image */}
+    <div className="pointer-events-none absolute inset-0 -z-20">
+      <img
+        src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1800&q=90"
+        alt=""
+        className="h-full w-full scale-110 object-cover blur-[8px]"
+      />
+    </div>
+
+    {/* Dark Green Overlay */}
+    <div className="pointer-events-none absolute inset-0 -z-10 bg-[#071815]/80" />
+
+    {/* Soft Green Gradient */}
+    <div className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(90deg,#071815_0%,rgba(7,24,21,0.82)_45%,rgba(8,127,91,0.35)_100%)]" />
+
+    {/* Dashboard Content */}
+    <div className="relative z-10 p-4 pt-6 sm:p-6 sm:pt-8 lg:ml-10 lg:p-8 lg:pt-[100px]">
 
       {/* Welcome Section */}
       <div
@@ -67,7 +86,7 @@ export default function AdminPanelPage() {
         }`}
       >
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+          <h1 className="text-2xl font-bold text-green-900 sm:text-3xl">
             Welcome back, Admin
           </h1>
 
@@ -76,7 +95,7 @@ export default function AdminPanelPage() {
           </span>
         </div>
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-green-700">
           Here&apos;s what&apos;s happening with your travel
           platform today.
         </p>
@@ -99,7 +118,6 @@ export default function AdminPanelPage() {
                 transitionDelay: `${index * 120}ms`,
               }}
             >
-              {/* Card Top */}
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-500">
@@ -111,13 +129,11 @@ export default function AdminPanelPage() {
                   </h3>
                 </div>
 
-                {/* Icon */}
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-green-50 text-green-600 transition-all duration-300 group-hover:rotate-6 group-hover:bg-green-600 group-hover:text-white">
                   <Icon size={21} strokeWidth={2} />
                 </div>
               </div>
 
-              {/* Card Bottom */}
               <div className="mt-5 flex items-center gap-2">
                 <span className="flex items-center gap-1 rounded-lg bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">
                   <ArrowUpRight size={13} />
@@ -147,7 +163,6 @@ export default function AdminPanelPage() {
             transitionDelay: "550ms",
           }}
         >
-          {/* Header */}
           <div className="mb-5 flex items-start justify-between">
             <div>
               <h2 className="text-lg font-bold text-gray-900">
@@ -171,7 +186,6 @@ export default function AdminPanelPage() {
             </div>
           </div>
 
-          {/* Chart */}
           <DashboardChart />
         </div>
 
@@ -278,11 +292,13 @@ export default function AdminPanelPage() {
             </p>
           </div>
         </div>
-
       </div>
 
-      <RecentActivity/>
+      {/* Recent Activity */}
+      <RecentActivity />
 
     </div>
-  );
+  </div>
+);
+
 }

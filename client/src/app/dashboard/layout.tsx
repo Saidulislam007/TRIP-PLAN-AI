@@ -23,9 +23,8 @@ export default function DashboardLayout({
 
       {/* Sidebar (Desktop Fixed, Mobile Drawer) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-[260px] transform transition-transform duration-300 lg:static lg:translate-x-0 ${
-          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 w-[280px] shrink-0 transform transition-transform duration-300 lg:static lg:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <DashboardSidebar />
       </aside>
@@ -34,7 +33,7 @@ export default function DashboardLayout({
       <main className="flex flex-1 flex-col overflow-hidden">
         <DashboardHeader onMenuClick={() => setIsMobileMenuOpen(true)} />
         <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-          <div className="mx-auto max-w-7xl p-6 lg:p-10">
+          <div className="w-full p-6 lg:p-10">
             {children}
           </div>
         </div>

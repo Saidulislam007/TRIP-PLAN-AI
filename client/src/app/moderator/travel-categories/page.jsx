@@ -1,6 +1,11 @@
 "use client";
 
 import { Map, Plus, Search } from "lucide-react";
+import { useState, useEffect } from "react";
+import EditPostModal from "@/components/moderators/EditPostModal";
+import DeleteConfirmModal from "@/components/moderators/DeleteConfirmModal";
+import AddPostModal from "../../../components/moderators/AddPostModal";
+import Toast from "@/components/moderators/Toast";
 
 const travelCategories = [
   {
@@ -54,6 +59,96 @@ const travelCategories = [
 ];
 
 export default function TravelCategoriesPage() {
+    const [categories, setCategories] = useState(travelCategories);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredCategories = categories.filter((category) => {
+  const search = searchTerm.toLowerCase().trim();
+
+  return (
+    category.title.toLowerCase().includes(search) ||
+    category.description.toLowerCase().includes(search) ||
+    category.slug.toLowerCase().includes(search)
+  );
+});
+
+const [currentPage, setCurrentPage] = useState(1);
+
+const ITEMS_PER_PAGE = 6;
+
+const totalPages = Math.ceil(
+  filteredCategories.length / ITEMS_PER_PAGE
+);
+
+const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+
+const paginatedCategories = filteredCategories.slice(
+  startIndex,
+  startIndex + ITEMS_PER_PAGE
+);
+useEffect(() => {
+  setCurrentPage(1);
+}, [searchTerm]);
+
+  const handleEdit = (category) => {
+    setSelectedCategory(category);
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdate = (updatedCategory) => {
+    setCategories((previousCategories) =>
+      previousCategories.map((category) =>
+        category.id === updatedCategory.id
+          ? updatedCategory
+          : category
+      )
+    );
+     showToast("Travel category updated successfully.");
+  };
+
+  const [toast, setToast] = useState({
+  message: "",
+  type: "success",
+});
+const showToast = (message, type = "success") => {
+  setToast({
+    message,
+    type,
+  });
+
+  setTimeout(() => {
+    setToast({
+      message: "",
+      type: "success",
+    });
+  }, 3000);
+};
+  const handleDelete = (category) => {
+  setSelectedCategory(category);
+  setIsDeleteModalOpen(true);
+};
+
+const handleConfirmDelete = () => {
+  setCategories((previousCategories) =>
+    previousCategories.filter(
+      (category) => category.id !== selectedCategory.id
+    )
+  );
+  showToast("Travel category deleted successfully.");
+  setIsDeleteModalOpen(false);
+  setSelectedCategory(null);
+};
+
+const handleAdd = (newCategory) => {
+  setCategories((previousCategories) => [
+    ...previousCategories,
+    newCategory,
+  ]);
+   showToast("New travel category added successfully.");
+};
   return (
     <div className="min-h-screen bg-[#F5F8F6] p-6 pt-24 md:p-8 md:pt-24">
 
@@ -73,7 +168,8 @@ export default function TravelCategoriesPage() {
         {/* Add Button */}
         <button
           type="button"
-          className="inline-flex w-fit items-center gap-2 rounded-xl bg-[#087F5B] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#066B4C]"
+              onClick={() => setIsAddModalOpen(true)}
+          className="inline-flex w-fit items-center gap-2 rounded-xl bg-[#087F5B] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#066B4C] cursor-pointer"
         >
           <Plus size={18} />
           Add New Post
@@ -100,12 +196,13 @@ export default function TravelCategoriesPage() {
             size={17}
             className="absolute left-3 top-1/2 -translate-y-1/2 text-[#809088]"
           />
-
-          <input
-            type="text"
-            placeholder="Search categories..."
-            className="w-full rounded-xl border border-[#DCE9E3] bg-[#F8FAF9] py-2.5 pl-10 pr-4 text-sm text-[#17211D] outline-none transition placeholder:text-[#9AA9A2] focus:border-[#087F5B] focus:ring-2 focus:ring-[#087F5B]/10"
-          />
+<input
+  type="text"
+  value={searchTerm}
+  onChange={(event) => setSearchTerm(event.target.value)}
+  placeholder="Search categories..."
+  className="w-full rounded-xl border border-[#DCE9E3] bg-white pl-8 py-3 text-sm text-[#17211D] outline-none transition placeholder:text-[#9AA9A2] focus:border-[#087F5B] focus:ring-2 focus:ring-[#087F5B]/10"
+/>
         </div>
 
       </div>
@@ -113,7 +210,7 @@ export default function TravelCategoriesPage() {
       {/* Category Cards */}
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
 
-        {travelCategories.map((category) => (
+        {paginatedCategories.map((category) => (
           <div
             key={category.id}
             className="overflow-hidden rounded-2xl border border-[#DCE9E3] bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md"
@@ -162,19 +259,21 @@ export default function TravelCategoriesPage() {
               {/* Actions */}
               <div className="flex gap-3 border-t border-[#E8EFEB] pt-4">
 
-                <button
-                  type="button"
-                  className="flex-1 rounded-xl border border-[#087F5B] px-4 py-2 text-sm font-semibold text-[#087F5B] transition hover:bg-[#E3F6EE]"
-                >
-                  Edit
-                </button>
+              <button
+  type="button"
+  onClick={() => handleEdit(category)}
+  className="flex-1 rounded-xl border border-[#087F5B] px-4 py-2 text-sm font-semibold text-[#087F5B] transition hover:bg-[#E3F6EE] cursor-pointer"
+>
+  Edit
+</button>
 
-                <button
-                  type="button"
-                  className="flex-1 rounded-xl border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-50"
-                >
-                  Delete
-                </button>
+               <button
+  type="button"
+  onClick={() => handleDelete(category)}
+  className="flex-1 rounded-xl border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-100 cursor-pointer"
+>
+  Delete
+</button>
 
               </div>
 
@@ -183,6 +282,82 @@ export default function TravelCategoriesPage() {
         ))}
 
       </div>
+
+      {totalPages > 1 && (
+  <div className="mt-8 flex items-center justify-center gap-2">
+
+    <button
+      type="button"
+      disabled={currentPage === 1}
+      onClick={() => setCurrentPage((page) => page - 1)}
+      className="rounded-lg border border-[#DCE9E3] px-4 py-2 text-sm font-medium text-[#607169] transition hover:bg-[#F1F5F3] disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      Previous
+    </button>
+
+    {Array.from({ length: totalPages }, (_, index) => {
+      const pageNumber = index + 1;
+
+      return (
+        <button
+          key={pageNumber}
+          type="button"
+          onClick={() => setCurrentPage(pageNumber)}
+          className={`h-9 w-9 rounded-lg text-sm font-semibold transition ${
+            currentPage === pageNumber
+              ? "bg-[#087F5B] text-white"
+              : "border border-[#DCE9E3] text-[#607169] hover:bg-[#F1F5F3]"
+          }`}
+        >
+          {pageNumber}
+        </button>
+      );
+    })}
+
+    <button
+      type="button"
+      disabled={currentPage === totalPages}
+      onClick={() => setCurrentPage((page) => page + 1)}
+      className="rounded-lg border border-[#DCE9E3] px-4 py-2 text-sm font-medium text-[#607169] transition hover:bg-[#F1F5F3] disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      Next
+    </button>
+
+  </div>
+)}
+
+       <EditPostModal
+        category={selectedCategory}
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onUpdate={handleUpdate}
+      />
+
+      <DeleteConfirmModal
+  category={selectedCategory}
+  isOpen={isDeleteModalOpen}
+  onClose={() => {
+    setIsDeleteModalOpen(false);
+    setSelectedCategory(null);
+  }}
+  onConfirm={handleConfirmDelete}
+/>
+
+<AddPostModal
+  isOpen={isAddModalOpen}
+  onClose={() => setIsAddModalOpen(false)}
+  onAdd={handleAdd}
+/>
+<Toast
+  message={toast.message}
+  type={toast.type}
+  onClose={() =>
+    setToast({
+      message: "",
+      type: "success",
+    })
+  }
+/>
 
     </div>
   );

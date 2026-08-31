@@ -12,13 +12,14 @@ interface MarineDriveProps {
 }
 
 export default function MarineDriveFeature({ data }: MarineDriveProps) {
+  if (!data) return null;
   return (
     <div className="relative w-full rounded-2xl overflow-hidden mt-8">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
           src={data.image}
-          alt="Marine Drive"
+          alt={data.title}
           fill
           className="object-cover"
         />
@@ -46,9 +47,10 @@ export default function MarineDriveFeature({ data }: MarineDriveProps) {
         <Button
           className="bg-[#F4A62A] hover:bg-[#F4B942] text-[#17211D] font-bold px-8 py-6 rounded-lg text-sm"
         >
-          Explore Marine Drive <ArrowRight className="w-4 h-4 ml-2" />
+          Explore {data.title} <ArrowRight className="w-4 h-4 ml-2" />
         </Button>
       </div>
     </div>
   );
 }
+

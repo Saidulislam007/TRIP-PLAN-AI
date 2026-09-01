@@ -80,7 +80,7 @@ export default function DestinationHeroDetails({ data }: DestinationHeroProps) {
             </div>
             <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full shadow-lg font-bold">
               <Sparkles className="w-4 h-4 text-[#F4A62A]" />
-              {data.tags[0]}
+              {data.tags}
             </div>
           </div>
 

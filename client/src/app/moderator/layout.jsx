@@ -9,7 +9,8 @@ export default function ModeratorLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#F5F8F6] pt-[80px] lg:pt-0">
+    <div className="flex min-h-screen bg-[#F5F8F6]">
+      
       {/* Sidebar */}
       <ModeratorSidebar
         isOpen={isSidebarOpen}
@@ -17,7 +18,7 @@ export default function ModeratorLayout({ children }) {
       />
 
       {/* Main Content */}
-      <div className="lg:pl-64">
+      <div className="flex flex-1 flex-col min-w-0">
         
         {/* Mobile Header */}
         <div className="sticky top-0 z-30 flex h-16 items-center border-b border-[#DCE9E3]  px-4 shadow-sm backdrop-blur lg:hidden bg-green-900">
@@ -42,7 +43,9 @@ export default function ModeratorLayout({ children }) {
         </div>
 
         {/* Page Content */}
-        <main className="pt-0">
+       
+      
+        <main className="flex-1 min-w-0" >
           {children}
         </main>
 

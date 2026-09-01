@@ -4,7 +4,7 @@ import { Map, Plus, Tags } from "lucide-react";
 
 export default function ModeratorDashboard() {
   return (
-    <div className="min-h-screen bg-[#F5F8F6] p-6 md:p-8 pt-24 md:pt-24">
+    <div className="min-h-screen bg-[#F5F8F6] p-6 md:p-8 md:pt-25 ">
       
       {/* Header */}
       <div className="mb-8">

@@ -1,4 +1,4 @@
-import { getDestinationBySlug } from "@/data/destinationRegistry";
+// import { getDestinationBySlug } from "@/data/destinationRegistry";
 import DestinationHeroDetails from "@/components/destinations/hero/DestinationHeroDetails";
 import DestinationStatsStrip from "@/components/destinations/hero/DestinationStatsStrip";
 import DestinationStickyNav from "@/components/destinations/layout/DestinationStickyNav";
@@ -22,14 +22,20 @@ import FinalCTA from "@/components/destinations/layout/FinalCTA";
 import StickyCTAs from "@/components/destinations/layout/StickyCTAs";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import { fetchDestinationBySlug } from "@/lib/api/destination";
 
 export default async function DestinationDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
-  const data = getDestinationBySlug(slug);
+  // const data = getDestinationBySlug(slug);
+  const uniqueData = await fetchDestinationBySlug(slug);
+  // console.log(data);
+  const data = uniqueData.data;
   
   if (!data) {
     return notFound();
+  } else {
+    console.log("data fetched from server!")
   }
 
   return (

@@ -1,4 +1,4 @@
-import { getDestinationBySlug } from "@/data/destinationRegistry";
+// import { getDestinationBySlug } from "@/data/destinationRegistry";
 import DestinationHeroDetails from "@/components/destinations/hero/DestinationHeroDetails";
 import DestinationStatsStrip from "@/components/destinations/hero/DestinationStatsStrip";
 import DestinationStickyNav from "@/components/destinations/layout/DestinationStickyNav";
@@ -10,7 +10,6 @@ import ThingsToDo from "@/components/destinations/content/ThingsToDo";
 import TopPlacesToExplore from "@/components/destinations/content/TopPlacesToExplore";
 import MarineDriveFeature from "@/components/destinations/content/MarineDriveFeature";
 import RecommendedItinerary from "@/components/destinations/content/RecommendedItinerary";
-import BudgetEstimator from "@/components/destinations/interactive/BudgetEstimator";
 import AccommodationSection from "@/components/destinations/content/AccommodationSection";
 import FoodDiningSection from "@/components/destinations/content/FoodDiningSection";
 import ReviewsSection from "@/components/destinations/reviews/ReviewsSection";
@@ -23,14 +22,20 @@ import FinalCTA from "@/components/destinations/layout/FinalCTA";
 import StickyCTAs from "@/components/destinations/layout/StickyCTAs";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import { fetchDestinationBySlug } from "@/lib/api/destination";
 
 export default async function DestinationDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
-  const data = getDestinationBySlug(slug);
+  // const data = getDestinationBySlug(slug);
+  const uniqueData = await fetchDestinationBySlug(slug);
+  // console.log(data);
+  const data = uniqueData.data;
   
   if (!data) {
     return notFound();
+  } else {
+    console.log("data fetched from server!")
   }
 
   return (
@@ -95,7 +100,6 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
           <div className="w-full lg:w-[32%] flex flex-col gap-8">
              <WhyLoveIt data={data.whyLoveIt} />
              <RecommendedItinerary data={data.itinerary} />
-             <BudgetEstimator data={data.budget} />
              <SmartTravelTips data={data.travelTips} />
           </div>
           
@@ -116,3 +120,4 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
     </div>
   );
 }
+

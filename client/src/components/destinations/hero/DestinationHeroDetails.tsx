@@ -1,4 +1,4 @@
-import { Star, MapPin, Sparkles, Heart, Share2, ChevronRight } from "lucide-react";
+import { Star, MapPin, Sparkles, Heart, Share2, ChevronRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@heroui/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,9 +19,9 @@ interface DestinationHeroProps {
 
 export default function DestinationHeroDetails({ data }: DestinationHeroProps) {
   return (
-    <div className="relative w-full h-[85vh] min-h-[600px] flex flex-col justify-end">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+    <div className="relative w-full h-[85vh] min-h-[650px] flex flex-col justify-end overflow-hidden group">
+      {/* Background Image with subtle zoom effect */}
+      <div className="absolute inset-0 z-0 transition-transform duration-[10000ms] group-hover:scale-105">
         <Image
           src={data.heroImage}
           alt={data.name}
@@ -29,106 +29,104 @@ export default function DestinationHeroDetails({ data }: DestinationHeroProps) {
           className="object-cover"
           priority
         />
-        {/* Gradient Overlays */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B2522]/90 via-[#0B2522]/40 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0B2522]/70 via-transparent to-transparent" />
+        {/* Premium Cinematic Gradients */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#020C0A] via-[#041714]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#020C0A]/90 via-[#0B2522]/30 to-transparent" />
       </div>
 
-      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-4 md:px-8 pb-12 md:pb-16 flex flex-col md:flex-row justify-between items-end gap-8">
+      <div className="relative z-10 w-full max-w-[1440px] mx-auto px-4 md:px-8 pb-16 md:pb-20 flex flex-col md:flex-row justify-between items-end gap-12">
         
         {/* Left Content */}
-        <div className="max-w-2xl w-full">
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-white/80 mb-6 font-medium">
-            <Link href="/" className="hover:text-white transition-colors">Home</Link>
-            <ChevronRight className="w-4 h-4 text-white/50" />
-            <Link href="/destinations" className="hover:text-white transition-colors">Destinations</Link>
-            <ChevronRight className="w-4 h-4 text-white/50" />
-            <span className="text-white">{data.name}</span>
+        <div className="max-w-3xl w-full">
+          {/* Glassmorphism Breadcrumb */}
+          <nav className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/10 text-xs text-white/90 mb-8 font-medium shadow-lg">
+            <Link href="/" className="hover:text-[#F4A62A] transition-colors">Home</Link>
+            <ChevronRight className="w-3.5 h-3.5 text-white/50" />
+            <Link href="/destinations" className="hover:text-[#F4A62A] transition-colors">Destinations</Link>
+            <ChevronRight className="w-3.5 h-3.5 text-white/50" />
+            <span className="text-white font-bold">{data.name}</span>
           </nav>
 
           {/* Country Badge */}
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-5 h-3 bg-green-600 rounded-[2px] relative overflow-hidden">
-               {/* Simple BD flag representation */}
+            <div className="w-6 h-4 bg-green-600 rounded-[2px] shadow-sm relative overflow-hidden">
                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-2 h-2 rounded-full bg-red-500" />
+                  <div className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-sm" />
                </div>
             </div>
-            <span className="text-white font-bold tracking-wider text-xs uppercase">{data.country}</span>
+            <span className="text-white font-extrabold tracking-[0.2em] text-xs uppercase text-shadow-sm">{data.country}</span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-serif text-white mb-4 leading-tight">
+          <h1 className="text-6xl md:text-8xl font-serif text-white mb-4 leading-[1.1] drop-shadow-lg">
             {data.name}
           </h1>
-          <p className="text-xl md:text-2xl text-[#F4A62A] font-serif italic mb-6">
+          <p className="text-2xl md:text-3xl text-[#F4A62A] font-serif italic mb-8 drop-shadow-md">
             {data.subtitle}
           </p>
-          <p className="text-white/90 text-base md:text-lg mb-8 leading-relaxed max-w-xl">
+          <p className="text-white/80 text-lg md:text-xl mb-10 leading-relaxed max-w-2xl font-light drop-shadow-sm">
             {data.description}
           </p>
 
-          {/* Metadata */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-white/90 font-medium mb-8">
-            <div className="flex items-center gap-1 text-[#F4A62A]">
-              <Star className="w-4 h-4 fill-current" />
-              <span className="font-bold text-white ml-1">{data.rating}</span>
-              <span className="text-white/70 font-normal">({data.reviewCount} Reviews)</span>
+          {/* Metadata Badges */}
+          <div className="flex flex-wrap items-center gap-3 text-sm text-white mb-10">
+            <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full shadow-lg">
+              <Star className="w-4 h-4 fill-[#F4A62A] text-[#F4A62A]" />
+              <span className="font-bold text-white">{data.rating}</span>
+              <span className="text-white/60 font-medium">({data.reviewCount} Reviews)</span>
             </div>
-            <div className="w-1 h-1 rounded-full bg-white/30" />
-            <div className="flex items-center gap-1">
-              <MapPin className="w-4 h-4 text-[#087F5B]" />
-              <span>{data.country}</span>
+            <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full shadow-lg">
+              <MapPin className="w-4 h-4 text-[#4DB6AC]" />
+              <span className="font-bold">{data.country}</span>
             </div>
-            <div className="w-1 h-1 rounded-full bg-white/30" />
-            <span>{data.tags[0]}</span>
+            <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full shadow-lg font-bold">
+              <Sparkles className="w-4 h-4 text-[#F4A62A]" />
+              {data.tags}
+            </div>
           </div>
 
           {/* Actions */}
           <div className="flex flex-wrap items-center gap-4">
             <Link href="/plan-trip">
               <Button
-                className="bg-[#F4A62A] hover:bg-[#F4B942] text-[#17211D] font-bold px-8 py-6 rounded-lg text-base"
+                className="bg-gradient-to-r from-[#F4A62A] to-[#E67E22] hover:shadow-[0_0_20px_rgba(244,166,42,0.4)] text-white font-extrabold px-10 py-7 rounded-full text-base border-none transition-all duration-300 hover:scale-105"
               >
-                <Sparkles className="w-5 h-5 mr-2" /> Plan My Trip
+                <Sparkles className="w-5 h-5 mr-2" /> Plan Your Trip
               </Button>
             </Link>
             
             <Button
-              variant="outline"
-              className="border-white/30 text-white hover:bg-white/10 font-bold px-6 py-6 rounded-lg backdrop-blur-sm"
+              className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 font-bold px-8 py-7 rounded-full transition-all duration-300 hover:scale-105 shadow-xl"
             >
-              <Heart className="w-5 h-5 mr-2" /> Save Destination
-            </Button>
-
-            <Button
-              variant="ghost"
-              className="text-white hover:bg-white/10 font-bold px-4 py-6 rounded-lg"
-            >
-              <Share2 className="w-5 h-5 mr-2" /> Share
+              <Heart className="w-5 h-5 mr-2" /> Save
             </Button>
           </div>
         </div>
 
-        {/* Right Content - AI Match Card */}
-        <div className="hidden lg:block w-80 shrink-0">
-          <div className="bg-[#163D36]/80 backdrop-blur-md rounded-2xl p-6 border border-white/10 text-white shadow-2xl">
-            <div className="flex items-center gap-2 text-[#F4A62A] font-bold text-sm mb-4">
-              <Sparkles className="w-4 h-4" />
-              AI Match
+        {/* Right Content - Floating AI Match Card */}
+        <div className="hidden lg:block w-80 shrink-0 relative z-20">
+          <div className="absolute -inset-1 bg-gradient-to-br from-[#087F5B] to-[#F4A62A] rounded-[2rem] blur opacity-30 animate-pulse" />
+          <div className="relative bg-[#051412]/60 backdrop-blur-xl rounded-[2rem] p-8 border border-white/10 text-white shadow-2xl transform transition-transform duration-500 hover:-translate-y-2">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2 text-[#F4A62A] font-extrabold text-sm uppercase tracking-widest">
+                <Sparkles className="w-4 h-4" />
+                AI Match
+              </div>
+              <Share2 className="w-4 h-4 text-white/40 hover:text-white cursor-pointer transition-colors" />
             </div>
-            <div className="text-5xl font-bold font-serif mb-2">{data.aiMatch}%</div>
-            <p className="text-sm text-white/70 mb-6">Matched to your preferences</p>
             
-            <div className="space-y-3">
-              {["Beach", "Relaxation", "Family-friendly", "Nature", "Food experiences"].map((pref, i) => (
-                <div key={i} className="flex items-center gap-3 text-sm">
-                  <div className="w-4 h-4 rounded-full bg-[#087F5B] flex items-center justify-center shrink-0">
-                    <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
+            <div className="flex items-baseline gap-2 mb-2">
+              <div className="text-7xl font-bold font-serif bg-clip-text text-transparent bg-gradient-to-r from-white to-white/70">{data.aiMatch}</div>
+              <span className="text-3xl font-bold text-[#F4A62A]">%</span>
+            </div>
+            <p className="text-xs text-[#4DB6AC] mb-8 font-bold uppercase tracking-wider">Matched to your profile</p>
+            
+            <div className="space-y-4">
+              {["Perfect for Relaxation", "Top Family Destination", "Amazing Seafood", "Nature Trails"].map((pref, i) => (
+                <div key={i} className="flex items-center gap-3 text-sm group">
+                  <div className="w-5 h-5 rounded-full bg-[#087F5B]/20 border border-[#087F5B]/50 flex items-center justify-center shrink-0 group-hover:bg-[#087F5B] transition-colors">
+                    <CheckCircle2 className="w-3 h-3 text-[#4DB6AC] group-hover:text-white transition-colors" />
                   </div>
-                  <span className="text-white/90">{pref}</span>
+                  <span className="text-white/80 font-medium group-hover:text-white transition-colors">{pref}</span>
                 </div>
               ))}
             </div>

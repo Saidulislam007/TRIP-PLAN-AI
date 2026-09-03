@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { signOut, useSession } from "@/lib/auth-client";
 import { Avatar } from "@heroui/react";
 import { showLogoutToast } from "@/components/TripPlanToast";
+import { getUserSession } from "@/lib/core/session";
 
 /* ============================================================
    TYPES

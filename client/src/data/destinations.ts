@@ -1,3 +1,5 @@
+
+
 export type DestinationData = {
   id: string;
   slug: string;

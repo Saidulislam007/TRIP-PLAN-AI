@@ -64,6 +64,35 @@ function DestinationsPage() {
         ) : error ? (
           <div className="flex items-center justify-center py-12">
             <p className="text-lg text-red-600">Error: {error}</p>
+      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-16 py-12">
+        {/* 03. Destination Toolbar */}
+        <DestinationToolbar
+          resultCount={destinationsData.length}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          onOpenMobileFilters={() => setIsMobileFiltersOpen(true)}
+        />
+
+        <div className="flex items-start gap-10">
+          {/* 04. Filter Sidebar */}
+          <DestinationSidebar
+            isOpen={isMobileFiltersOpen}
+            onClose={() => setIsMobileFiltersOpen(false)}
+          />
+
+          {/* 05. Main Destination Listing */}
+          <div className="flex-1 min-w-0">
+            {/* Featured Destinations */}
+            <FeaturedDestinations destinations={destinationsData} />
+
+            {/* All Destinations Grid/List/Map */}
+            <AllDestinations destinations={destinationsData} viewMode={viewMode} />
+
+            {/* Trending Destinations */}
+            <TrendingDestinations destinations={destinationsData} />
+
+            {/* AI Review Intelligence */}
+            <ReviewIntelligence />
           </div>
         ) : (
           <>

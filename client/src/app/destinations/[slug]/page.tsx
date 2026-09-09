@@ -20,29 +20,67 @@ import AITravelAssistant from "@/components/destinations/ai/AITravelAssistant";
 import RelatedDestinations from "@/components/destinations/layout/RelatedDestinations";
 import FinalCTA from "@/components/destinations/layout/FinalCTA";
 import StickyCTAs from "@/components/destinations/layout/StickyCTAs";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import { fetchDestinationBySlug } from "@/lib/api/destination";
+import { getUserSession } from "@/lib/core/session";
+import { addBookmark } from "@/lib/actions/destinations";
 
 export default async function DestinationDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  
+
   // const data = getDestinationBySlug(slug);
   const uniqueData = await fetchDestinationBySlug(slug);
   // console.log(data);
   const data = uniqueData.data;
-  
+  const user = await getUserSession();
+
   if (!data) {
     return notFound();
   } else {
     console.log("data fetched from server!")
   }
 
+  const handleBookmark = async () => {
+    'use server'
+
+    if (!user) {
+      redirect('/auth/login');
+    }
+    const { _id, ...restDestination } = data;
+
+    const bookmarkData = {
+      ...restDestination,
+      destinationId: _id,
+      user: user.id
+    }
+
+    console.log("Bookmark Data:", bookmarkData);
+
+    try {
+      const res = await addBookmark(bookmarkData);
+
+      if (res.error) {
+        return { success: false, message: res.message };
+      }
+
+      if (res.insertedId) {
+        return { success: true, message: `${data.name} added to your bookmark!` };
+      }
+
+      return { success: false, message: "Something went wrong!" };
+
+    } catch (error) {
+      console.error(error);
+      return { success: false, message: "Failed to connect to server." };
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F7F7F2]">
 
-      <DestinationHeroDetails data={data} />
-      <DestinationStatsStrip 
+      <DestinationHeroDetails data={data}  handleBookmark={handleBookmark} />
+      <DestinationStatsStrip
         rating={data.rating}
         reviews={data.reviewCount}
         recommendedStay={data.recommendedStay}
@@ -53,11 +91,11 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
 
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-12 md:py-16">
         <div className="flex flex-col lg:flex-row gap-12">
-          
+
           <div className="w-full lg:w-[68%] flex flex-col gap-16">
-            
+
             <DestinationOverview data={data.overview} />
-            
+
             <section id="ai-insights" className="scroll-mt-32">
               <AIDestinationGuide data={data.aiGuide} />
             </section>
@@ -86,7 +124,7 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
             <section id="reviews" className="scroll-mt-32">
               <ReviewsSection data={data.reviews} />
             </section>
-            
+
             <section className="scroll-mt-32">
               <PhotoGallery data={data.gallery} destinationName={data.name} />
             </section>
@@ -98,20 +136,20 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
           </div>
 
           <div className="w-full lg:w-[32%] flex flex-col gap-8">
-             <WhyLoveIt data={data.whyLoveIt} />
-             <RecommendedItinerary data={data.itinerary} />
-             <SmartTravelTips data={data.travelTips} />
+            <WhyLoveIt data={data.whyLoveIt} />
+            <RecommendedItinerary data={data.itinerary} />
+            <SmartTravelTips data={data.travelTips} />
           </div>
-          
+
         </div>
-        
+
         <RelatedDestinations data={data.relatedDestinations} />
-        
+
         <FinalCTA name={data.name} image={data.heroImage} />
 
       </div>
 
-      <StickyCTAs 
+      <StickyCTAs
         name={data.name}
         aiMatch={data.aiMatch}
         priceFrom={data.estimatedBudget}

@@ -21,7 +21,6 @@ import RelatedDestinations from "@/components/destinations/layout/RelatedDestina
 import FinalCTA from "@/components/destinations/layout/FinalCTA";
 import StickyCTAs from "@/components/destinations/layout/StickyCTAs";
 import { notFound, redirect } from "next/navigation";
-import Image from "next/image";
 import { fetchDestinationBySlug } from "@/lib/api/destination";
 import { getUserSession } from "@/lib/core/session";
 import { addBookmark } from "@/lib/actions/destinations";
@@ -89,7 +88,7 @@ export default async function DestinationDetailsPage({ params }: { params: Promi
       />
       <DestinationStickyNav />
 
-      <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-12 md:py-16">
+      <div className="max-w-360 mx-auto px-4 md:px-8 py-12 md:py-16">
         <div className="flex flex-col lg:flex-row gap-12">
 
           <div className="w-full lg:w-[68%] flex flex-col gap-16">

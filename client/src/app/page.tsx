@@ -1,13 +1,16 @@
 import AboutSection from "@/components/home/AboutSection";
 import HeroSection from "@/components/home/HeroSection";
+import HotelDecisionSection from "@/components/home/HotelDecisionSection";
 import NextAdventureCTA from "@/components/home/NextAdventureCTA";
 import PopularDestinations from "@/components/home/PopularDestinations";
+import RegionalFoodSection from "@/components/home/RegionalFoodSection";
 import TravelCategories from "@/components/home/TravelCategories";
-import TravelFeatures from "@/components/home/TravelFeatures";
-import TravelInsights from "@/components/home/TravelInsights";
+
+
 import TravelJourney from "@/components/home/TravelJourney";
+import TravelStoriesSection from "@/components/home/TravelStoriesSection";
 import TripPlanNewsletter from "@/components/home/TripPlanNewsletter";
-import TripPlanTestimonials from "@/components/home/TripPlanTestimonials";
+
 import { Toaster } from "react-hot-toast";
 
 export default function Home() {
@@ -16,12 +19,12 @@ export default function Home() {
       <HeroSection />
       <TravelCategories />
       <PopularDestinations />
-      <TravelInsights />
-      <NextAdventureCTA plannerHref="/destinations" />
+       <RegionalFoodSection/>
+      <HotelDecisionSection/>
+      <TravelStoriesSection/>
       <TravelJourney />
+      <NextAdventureCTA plannerHref="/destinations" />
       <AboutSection/>
-      <TravelFeatures />
-      <TripPlanTestimonials/>
       <TripPlanNewsletter/>
       <Toaster />
     </div>

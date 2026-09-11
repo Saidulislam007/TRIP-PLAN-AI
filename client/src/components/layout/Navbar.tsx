@@ -77,11 +77,7 @@ const inspirationItems: DropdownItem[] = [
   {
     label: "Travel Stories",
     href: "/inspiration/stories",
-  },
-  {
-    label: "Travel Tips",
-    href: "/inspiration/tips",
-  },
+  }
 ];
 
 /* ============================================================

@@ -14,15 +14,27 @@ export interface Notification {
 }
 
 export const fetchNotifications = async (userId: string): Promise<Notification[]> => {
-  const response = await fetch(`${getBaseUrl()}/${userId}`);
-  const data = await response.json();
-  return data.data;
+  try {
+    const response = await fetch(`${getBaseUrl()}/${userId}`);
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    console.warn("Could not fetch notifications, backend might be down.");
+    return [];
+  }
 };
 
 export const fetchUnreadCount = async (userId: string): Promise<number> => {
-  const response = await fetch(`${getBaseUrl()}/${userId}/unread`);
-  const data = await response.json();
-  return data.data.count;
+  try {
+    const response = await fetch(`${getBaseUrl()}/${userId}/unread`);
+    if (!response.ok) return 0;
+    const data = await response.json();
+    return data.data.count || 0;
+  } catch (error) {
+    console.warn("Could not fetch unread count, backend might be down.");
+    return 0;
+  }
 };
 
 export const markNotificationAsRead = async (id: string): Promise<void> => {

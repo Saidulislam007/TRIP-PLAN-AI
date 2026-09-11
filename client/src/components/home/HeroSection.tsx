@@ -58,7 +58,7 @@ export default function HeroSection() {
         transition={{ duration: 18, ease: "easeInOut", repeat: Infinity }}
       >
         <Image
-          src="https://images.unsplash.com/photo-1582650625119-3a31f8fa2699?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          src="/travel-planning-group.svg"
           alt="Beautiful mountain travel destination"
           fill
           priority
@@ -96,7 +96,7 @@ export default function HeroSection() {
               </motion.span>
 
               <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-white/88 sm:text-[11px]">
-                AI-powered travel platform
+                Plan your group trip,together
               </span>
             </motion.div>
 
@@ -108,12 +108,12 @@ export default function HeroSection() {
               transition={{ duration: 0.75, delay: 0.08, ease: revealEase }}
               className="mx-auto max-w-[920px] [font-family:Georgia,'Times_New_Roman',serif] text-[43px] font-normal leading-[0.98] tracking-[-0.045em] text-white [text-shadow:0_3px_28px_rgba(0,0,0,0.28)] sm:text-[55px] lg:text-[66px]"
             >
-              One prompt.
+              The Free Group 
               <br />
               <span className="text-white">
-                A journey made for{" "}
+                Trip Planner-Plan Together,{" "}
                 <span className="bg-gradient-to-r from-[#FFD078] via-[#F4AD3F] to-[#DF8425] bg-clip-text italic text-transparent [filter:drop-shadow(0_2px_12px_rgba(244,173,63,0.22))]">
-                  you.
+                  Decide Together.
                 </span>
               </span>
             </motion.h1>

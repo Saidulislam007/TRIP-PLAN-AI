@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Heart, Star, Sparkles } from "lucide-react";
 import { DestinationData } from "@/data/destinations";
+import { useState } from "react";
+import { addBookmark } from "@/lib/api/bookmarks";
 
 interface DestinationCardProps {
   destination: DestinationData;
@@ -12,6 +14,32 @@ interface DestinationCardProps {
 }
 
 export default function DestinationCard({ destination, featured, featuredType }: DestinationCardProps) {
+
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleBookmark = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      await addBookmark(destination.id);
+      alert("Destination saved successfully!");
+    } catch (error) {
+      console.error("Bookmark error:", error);
+
+      if (
+        error instanceof Error &&
+        error.message === "Already in bookmark"
+      ) {
+        alert("This destination is already saved.");
+      } else {
+        alert("Failed to save destination.");
+      }
+    }
+  };
   return (
     <Link
       href={`/destinations/${destination.slug}`} 
@@ -37,13 +65,13 @@ export default function DestinationCard({ destination, featured, featuredType }:
       )}
 
       {/* Top Right Wishlist */}
-      <button
-        className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/30 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-[#F4A62A] hover:text-[#0B2522] hover:border-[#F4A62A] transition-all z-20"
-        aria-label="Add to wishlist"
-        onClick={(e) => e.preventDefault()}
-      >
-        <Heart size={16} />
-      </button>
+   <button
+  className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/30 backdrop-blur-md border border-white/20 flex items-center justify-center text-white hover:bg-[#F4A62A] hover:text-[#0B2522] hover:border-[#F4A62A] transition-all z-20"
+  aria-label="Add to wishlist"
+  onClick={handleBookmark}
+>
+  <Heart size={16} />
+</button>
 
       {/* Content Positioned at Bottom */}
       <div className="absolute bottom-0 left-0 w-full p-5 flex flex-col z-10">

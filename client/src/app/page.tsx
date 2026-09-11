@@ -8,6 +8,7 @@ import TravelCategories from "@/components/home/TravelCategories";
 
 
 import TravelJourney from "@/components/home/TravelJourney";
+import TravelStoriesSection from "@/components/home/TravelStoriesSection";
 import TripPlanNewsletter from "@/components/home/TripPlanNewsletter";
 
 import { Toaster } from "react-hot-toast";
@@ -20,6 +21,7 @@ export default function Home() {
       <PopularDestinations />
        <RegionalFoodSection/>
       <HotelDecisionSection/>
+      <TravelStoriesSection/>
       <TravelJourney />
       <NextAdventureCTA plannerHref="/destinations" />
       <AboutSection/>

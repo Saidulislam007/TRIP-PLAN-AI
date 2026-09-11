@@ -18,7 +18,7 @@ const benefits = ["Local-first ideas", "Budget-aware plans", "One clear itinerar
 
 export default function NextAdventureCTA({
   plannerHref,
-  backgroundSrc = "/images/next-adventure-river.webp",
+  backgroundSrc = "https://images.unsplash.com/photo-1562658601-0ae4a690ae1f?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   className = "",
   priority = false,
 }: NextAdventureCTAProps) {

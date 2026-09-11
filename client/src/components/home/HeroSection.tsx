@@ -58,7 +58,7 @@ export default function HeroSection() {
         transition={{ duration: 18, ease: "easeInOut", repeat: Infinity }}
       >
         <Image
-          src="/images/travel-hero.jpg"
+          src="https://images.unsplash.com/photo-1582650625119-3a31f8fa2699?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Beautiful mountain travel destination"
           fill
           priority

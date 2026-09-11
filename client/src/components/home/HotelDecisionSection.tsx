@@ -2,145 +2,213 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, BedDouble, Clock3, Star, WalletCards } from "lucide-react";
+import {
+  animate,
+  motion,
+  useMotionValue,
+} from "framer-motion";
+import { BedDouble, MapPin } from "lucide-react";
+import { useEffect, useRef } from "react";
 
-const decisionPoints = [
+type Hotel = {
+  id: number;
+  name: string;
+  location: string;
+  slug: string;
+  image: string;
+  shape: string;
+};
+
+const hotels: Hotel[] = [
   {
-    title: "Room-level details",
-    description: "AC, hot water and backup power",
-    icon: BedDouble,
+    id: 1,
+    name: "Sea Pearl Beach Resort",
+    location: "Cox’s Bazar",
+    slug: "sea-pearl-beach-resort",
+    image:
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200&auto=format&fit=crop",
+    shape: "rounded-[40px_40px_18px_18px]",
   },
   {
-    title: "Guest signals",
-    description: "Cleanliness and staff scores",
-    icon: Star,
+    id: 2,
+    name: "Grand Sylhet Hotel",
+    location: "Sylhet",
+    slug: "grand-sylhet-hotel",
+    image:
+      "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?q=80&w=1200&auto=format&fit=crop",
+    shape: "rounded-[50%_50%_18px_18px]",
   },
   {
-    title: "True total",
-    description: "VAT and discounts made clear",
-    icon: WalletCards,
+    id: 3,
+    name: "The Palace Resort",
+    location: "Habiganj",
+    slug: "the-palace-resort",
+    image:
+      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?q=80&w=1200&auto=format&fit=crop",
+    shape: "rounded-[20px_20px_45px_45px]",
   },
   {
-    title: "Flexible policy",
-    description: "Cancellation terms made visible",
-    icon: Clock3,
+    id: 4,
+    name: "InterContinental Dhaka",
+    location: "Dhaka",
+    slug: "intercontinental-dhaka",
+    image:
+      "https://images.unsplash.com/photo-1522798514-97ceb8c4f1c8?q=80&w=1200&auto=format&fit=crop",
+    shape: "rounded-[42px_18px_42px_18px]",
+  },
+  {
+    id: 5,
+    name: "Sayeman Beach Resort",
+    location: "Cox’s Bazar",
+    slug: "sayeman-beach-resort",
+    image:
+      "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1200&auto=format&fit=crop",
+    shape: "rounded-[24px_48px_24px_48px]",
+  },
+  {
+    id: 6,
+    name: "Nazimgarh Resort",
+    location: "Sylhet",
+    slug: "nazimgarh-resort",
+    image:
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1200&auto=format&fit=crop",
+    shape: "rounded-[48px_48px_16px_16px]",
   },
 ];
 
-const revealEase = [0.22, 1, 0.36, 1] as const;
+const loopHotels = [...hotels, ...hotels];
 
-export default function HotelDecisionSection() {
-  const reduceMotion = useReducedMotion();
+export default function HotelSection() {
+  const x = useMotionValue("0%");
+
+  const animationRef = useRef<ReturnType<typeof animate> | null>(null);
+
+  useEffect(() => {
+    animationRef.current = animate(x, ["0%", "-50%"], {
+      duration: 32,
+      ease: "linear",
+      repeat: Infinity,
+    });
+
+    return () => {
+      animationRef.current?.stop();
+    };
+  }, [x]);
+
+  const pauseAnimation = () => {
+    animationRef.current?.pause();
+  };
+
+  const resumeAnimation = () => {
+    animationRef.current?.play();
+  };
 
   return (
-    <section
-      aria-labelledby="hotel-decision-heading"
-      className="overflow-hidden bg-[#f6f3ed] py-14 sm:py-20 lg:py-24"
-    >
-      <div className="mx-auto grid max-w-[1664px] items-stretch gap-10 px-5 sm:px-8 lg:grid-cols-[0.86fr_1.04fr] lg:gap-10 lg:px-12 xl:gap-12">
-        <motion.div
-          initial={{ opacity: 0, x: -28 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.25 }}
-          transition={{ duration: reduceMotion ? 0 : 0.7, ease: revealEase }}
-          className="group relative min-h-[440px] overflow-hidden rounded-[32px] bg-[#123d34] motion-reduce:opacity-100! motion-reduce:transform-none! sm:min-h-[540px] lg:min-h-[580px]"
-        >
-          <Image
-            src="/assets/Coxs/Resort/Ocean Haven Resort.jpg"
-            alt="A hotel beside a swimming pool in Cox's Bazar"
-            fill
-            sizes="(min-width: 1024px) 44vw, 100vw"
-            className="object-cover object-center transition-transform duration-1000 ease-out group-hover:scale-[1.035] motion-reduce:transform-none motion-reduce:transition-none"
-          />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-t from-[#07392f]/95 via-[#0a3c31]/18 to-transparent"
-          />
+    <section className="overflow-hidden bg-[#fcfaf6] py-16 md:py-20">
+      {/* Heading */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-10 text-center md:mb-14">
+          <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#d9d2c3] bg-white px-4 py-1.5 text-xs font-medium uppercase tracking-[0.25em] text-[#7a6f5a]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#c8a96b]" />
 
-          <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-9 lg:p-10">
-            <span className="inline-flex rounded-full bg-[#f1a82c] px-4 py-2 text-[11px] font-extrabold text-[#173d34] shadow-[0_8px_28px_rgba(0,0,0,0.18)] sm:text-xs">
-              Transparent total price
-            </span>
-            <h3 className="mt-5 max-w-xl font-serif text-[32px] font-normal leading-tight tracking-[-0.025em] sm:text-[38px]">
-              Stay close to what matters.
-            </h3>
-            <p className="mt-3 max-w-xl text-sm leading-7 text-white/85 sm:text-base">
-              Check location, cleanliness, washroom, safety and hidden charges
-              before you decide.
-            </p>
-          </div>
-        </motion.div>
+            Recommended stays
+          </p>
 
-        <div className="flex min-w-0 flex-col justify-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: reduceMotion ? 0 : 0.65, ease: revealEase }}
-            className="motion-reduce:opacity-100! motion-reduce:transform-none!"
-          >
-            <p className="text-[11px] font-bold uppercase tracking-[0.26em] text-[#c86e05] sm:text-xs">
-              Hotel decision assistant
-            </p>
-            <h2
-              id="hotel-decision-heading"
-              className="mt-4 max-w-3xl font-serif text-[38px] font-normal leading-[1.04] tracking-[-0.045em] text-[#123d34] sm:text-[48px] lg:text-[54px] xl:text-[60px]"
-            >
-              Not the cheapest room.<br /> The right room.
-            </h2>
-          </motion.div>
+          <h2 className="mx-auto max-w-3xl text-3xl font-semibold tracking-tight text-[#1f1a14] sm:text-4xl md:text-5xl">
+            Stays worth checking in for
+          </h2>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:mt-9">
-            {decisionPoints.map((point, index) => {
-              const Icon = point.icon;
-
-              return (
-                <motion.article
-                  key={point.title}
-                  initial={{ opacity: 0, y: 18 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.25 }}
-                  transition={{
-                    duration: reduceMotion ? 0 : 0.5,
-                    delay: reduceMotion ? 0 : index * 0.07,
-                    ease: revealEase,
-                  }}
-                  whileHover={reduceMotion ? undefined : { y: -4 }}
-                  className="rounded-[22px] border border-[#ddd5c8] bg-white px-6 py-7 shadow-[0_14px_36px_rgba(36,55,48,0.025)] motion-reduce:opacity-100! motion-reduce:transform-none! sm:min-h-[156px] sm:px-7 sm:py-6"
-                >
-                  <Icon size={25} strokeWidth={1.8} className="text-[#d57708]" aria-hidden="true" />
-                  <h3 className="mt-6 text-[17px] font-semibold text-[#183f37] sm:text-lg">
-                    {point.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-6 text-[#71817c]">
-                    {point.description}
-                  </p>
-                </motion.article>
-              );
-            })}
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: reduceMotion ? 0 : 0.5, delay: reduceMotion ? 0 : 0.28 }}
-            className="mt-7 motion-reduce:opacity-100! motion-reduce:transform-none!"
-          >
-            <Link
-              href="/hotels"
-              className="group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#0c4b3f] px-6 text-sm font-bold text-white shadow-[0_12px_26px_rgba(12,75,63,0.14)] transition-colors hover:bg-[#093d34] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#d57708] motion-reduce:transition-none"
-            >
-              Find a smarter stay
-              <ArrowRight
-                size={17}
-                aria-hidden="true"
-                className="transition-transform group-hover:translate-x-1 motion-reduce:transform-none motion-reduce:transition-none"
-              />
-            </Link>
-          </motion.div>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#6f675b] sm:text-base">
+            Discover handpicked hotels across Bangladesh — from beachside
+            resorts to peaceful hillside retreats.
+          </p>
         </div>
+      </div>
+
+      {/* Slider */}
+      <div
+        className="relative"
+        onMouseEnter={pauseAnimation}
+        onMouseLeave={resumeAnimation}
+      >
+        <motion.div
+          style={{ x }}
+          className="flex w-max gap-5 px-4 sm:px-6 lg:px-8"
+        >
+          {loopHotels.map((hotel, index) => (
+            <Link
+              key={`${hotel.id}-${index}`}
+              href={`/hotels/${hotel.slug}`}
+              className="group block shrink-0"
+            >
+              <div className="w-[210px] sm:w-[230px] md:w-[250px] lg:w-[270px]">
+                {/* Hotel Image */}
+                <div
+                  className={`relative h-[280px] overflow-hidden bg-[#eee8dd] ${hotel.shape}`}
+                >
+                  <Image
+                    src={hotel.image}
+                    alt={hotel.name}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                    sizes="
+                      (max-width: 640px) 210px,
+                      (max-width: 768px) 230px,
+                      (max-width: 1024px) 250px,
+                      270px
+                    "
+                  />
+                </div>
+
+                {/* Hotel Info */}
+                <div className="px-1 pt-4">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f1ebdf] text-[#8a6a35]">
+                      <BedDouble
+                        size={17}
+                        strokeWidth={1.7}
+                      />
+                    </div>
+
+                    <div className="min-w-0">
+                      <h3 className="truncate text-[15px] font-semibold text-[#201a14] transition-colors duration-300 group-hover:text-[#8a6a35]">
+                        {hotel.name}
+                      </h3>
+
+                      <p className="mt-1 flex items-center gap-1.5 text-sm text-[#81786c]">
+                        <MapPin
+                          size={14}
+                          strokeWidth={1.7}
+                        />
+
+                        <span>{hotel.location}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </motion.div>
+      </div>
+
+      {/* Explore Button */}
+      <div className="mx-auto mt-12 flex max-w-7xl justify-center px-4">
+        <Link
+          href="/hotels"
+          className="
+            rounded-full
+            border border-[#28231d]
+            px-6 py-3
+            text-sm font-medium
+            text-[#28231d]
+            transition-all duration-300
+            hover:bg-[#28231d]
+            hover:text-white
+          "
+        >
+          Explore all hotels
+        </Link>
       </div>
     </section>
   );

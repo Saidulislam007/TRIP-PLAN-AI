@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Search, MapPin } from "lucide-react";
-import { destinationsData } from "@/data/destinations";
+
 
 export default function DestinationSearch() {
   const [query, setQuery] = useState("");

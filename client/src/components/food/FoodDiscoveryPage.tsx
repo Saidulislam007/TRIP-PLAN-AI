@@ -13,12 +13,22 @@ import {
   WalletCards,
 } from "lucide-react";
 import Link from "next/link";
-import { formatBdt, restaurantSpotlights } from "@/data/food";
+import { formatBdt } from "@/data/services/food";
+import { fetchFood } from "@/lib/api/food";
 import { FoodSearchBar } from "./FoodSearchBar";
 import { PopularFoodDestinations } from "./PopularFoodDestinations";
 import { SmartFoodCollections } from "./SmartFoodCollections";
+import { useState, useEffect } from "react";
+import type { RestaurantSpotlight } from "@/types/food";
 
 export function FoodDiscoveryPage() {
+  const [restaurantSpotlights, setRestaurantSpotlights] = useState<RestaurantSpotlight[]>([]);
+
+  useEffect(() => {
+    fetchFood().then(res => {
+      if (res?.success) setRestaurantSpotlights(res.data.restaurants);
+    });
+  }, []);
   return (
     <main className="min-h-screen bg-[#f7f7f2] text-[#173b31]">
       <section className="relative isolate flex min-h-[720px] items-end overflow-hidden px-4 pb-14 pt-28 sm:px-6 lg:px-8">

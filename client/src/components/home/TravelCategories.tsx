@@ -14,7 +14,7 @@ import {
   Users,
   Waves,
 } from "lucide-react";
-import { getTravelCategories } from "@/lib/api/server";
+import { getTravelCategories } from "@/lib/api/slug";
 import type { TravelCategory as ApiTravelCategory } from "@/types/travelCategory";
 
 type TrustItem = {
@@ -134,13 +134,13 @@ export default function TravelCategories() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.7, ease: revealEase }}
-          className="relative -top-5 z-20 -mt-8 overflow-hidden rounded-[22px] border border-[#DCE9E3]/80 bg-gradient-to-r from-[#F2FAF6]/95 via-white/95 to-[#FFF7E8]/95 px-4 py-3 shadow-[0_18px_48px_rgba(23,33,29,0.12),inset_0_1px_0_rgba(255,255,255,0.90)] backdrop-blur-xl sm:px-5 lg:-mt-10 lg:px-6 lg:py-3.5"
+          className="relative -top-5 z-20 -mt-8 overflow-hidden rounded-[22px] border border-[#DCE9E3]/80 bg-linear-to-r from-[#F2FAF6]/95 via-white/95 to-[#FFF7E8]/95 px-4 py-3 shadow-[0_18px_48px_rgba(23,33,29,0.12),inset_0_1px_0_rgba(255,255,255,0.90)] backdrop-blur-xl sm:px-5 lg:-mt-10 lg:px-6 lg:py-3.5"
         >
           <motion.div
             aria-hidden="true"
             animate={{ opacity: [0.45, 1, 0.45], scaleX: [0.75, 1, 0.75] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute inset-x-8 top-0 h-px origin-center bg-gradient-to-r from-transparent via-[#F4B942] to-transparent"
+            className="absolute inset-x-8 top-0 h-px origin-center bg-linear-to-r from-transparent via-[#F4B942] to-transparent"
           />
 
           <div className="grid grid-cols-1 divide-y divide-[#DCE9E3]/80 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
@@ -158,7 +158,7 @@ export default function TravelCategories() {
                 }}
                 className="group relative flex items-center gap-3 rounded-xl px-2 py-3 transition-colors duration-300 hover:bg-white/65 sm:px-5 lg:px-7"
               >
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#BFE4D5]/70 bg-gradient-to-br from-[#E3F6EE] to-[#FFF0D0] text-[#087F5B] shadow-[0_6px_18px_rgba(8,127,91,0.09)] transition-all duration-300 group-hover:rotate-6 group-hover:scale-110 group-hover:border-[#F4B942]/60 group-hover:text-[#C87920]">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#BFE4D5]/70 bg-linear-to-br from-[#E3F6EE] to-[#FFF0D0] text-[#087F5B] shadow-[0_6px_18px_rgba(8,127,91,0.09)] transition-all duration-300 group-hover:rotate-6 group-hover:scale-110 group-hover:border-[#F4B942]/60 group-hover:text-[#C87920]">
                   {item.icon}
                 </div>
 
@@ -172,7 +172,7 @@ export default function TravelCategories() {
                   </p>
                 </div>
 
-                <span className="absolute inset-x-5 bottom-0 h-px origin-left scale-x-0 bg-gradient-to-r from-[#087F5B] via-[#F4B942] to-transparent transition-transform duration-500 group-hover:scale-x-100" />
+                <span className="absolute inset-x-5 bottom-0 h-px origin-left scale-x-0 bg-linear-to-r from-[#087F5B] via-[#F4B942] to-transparent transition-transform duration-500 group-hover:scale-x-100" />
               </motion.div>
             ))}
           </div>
@@ -190,7 +190,7 @@ export default function TravelCategories() {
           <div>
             <h2 className="[font-family:Georgia,'Times_New_Roman',serif] text-[30px] font-normal leading-tight tracking-[-0.035em] text-[#17211D] sm:text-[36px] lg:text-[42px]">
               Find Your Way to{" "}
-              <span className="bg-gradient-to-r from-[#D98B26] via-[#F4AD3F] to-[#B9691B] bg-clip-text italic text-transparent">
+              <span className="bg-linear-to-r from-[#D98B26] via-[#F4AD3F] to-[#B9691B] bg-clip-text italic text-transparent">
                 Travel
               </span>
             </h2>

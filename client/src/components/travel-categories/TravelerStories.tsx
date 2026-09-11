@@ -4,12 +4,25 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, CalendarDays, MapPin, Star, Tag, Wallet } from "lucide-react";
-import { travelerStories } from "@/data/travelStories";
+import { useEffect, useState } from "react";
+import { fetchStories } from "@/lib/api/stories";
+import type { TravelerStory } from "@/types/travelerStory";
 
 const revealEase = [0.22, 1, 0.36, 1] as const;
 
 export default function TravelerStories() {
   const shouldReduceMotion = useReducedMotion();
+  const [stories, setStories] = useState<TravelerStory[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStories().then((res) => {
+      if (res?.success) setStories(res.data);
+      setIsLoading(false);
+    });
+  }, []);
+
+  if (isLoading) return <div className="min-h-[400px] flex items-center justify-center">Loading stories...</div>;
 
   return (
     <section className="mx-auto w-full max-w-[1440px] px-5 py-14 sm:px-8 sm:py-16 lg:px-12 lg:py-20 xl:px-16">
@@ -47,7 +60,7 @@ export default function TravelerStories() {
 
         {/* Stories Grid */}
         <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {travelerStories.map((story, index) => (
+          {stories.map((story, index) => (
             <motion.article
               key={story.id}
               initial={{ opacity: 0, y: 16 }}

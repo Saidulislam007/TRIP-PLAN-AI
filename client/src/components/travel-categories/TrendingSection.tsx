@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, TrendingUp } from "lucide-react";
-import { trendingStyles } from "@/data/trendingStyles";
+import { trendingStyles } from "@/data/config/trendingStyles";
 
 const revealEase = [0.22, 1, 0.36, 1] as const;
 

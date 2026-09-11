@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { formatBdt } from "@/data/food";
+import { formatBdt } from "@/data/services/food";
 import type { RestaurantSpotlight } from "@/types/food";
 
 const menuItems = [

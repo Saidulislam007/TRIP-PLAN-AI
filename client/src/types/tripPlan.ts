@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import type { DestinationData } from "@/data/destinations";
+import type { DestinationData } from "@/types/destination-card";
 
 /* ============================================================
    WIZARD / FORM STATE

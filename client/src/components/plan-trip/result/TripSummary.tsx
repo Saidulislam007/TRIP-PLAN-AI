@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { CalendarDays, MapPin, Sparkles, Users } from "lucide-react";
-import { getDestinationBySlug } from "@/data/destinationRegistry";
-import { DESTINATION_REGION_LABELS } from "@/data/tripPlanOptions";
+
+import { DESTINATION_REGION_LABELS } from "@/data/config/tripPlanOptions";
 import type { GeneratedTrip, ResultTabId } from "@/types/tripPlan";
 
 const TABS: { id: ResultTabId; label: string }[] = [
@@ -24,7 +24,7 @@ interface TripSummaryProps {
 
 export default function TripSummary({ trip, activeTab, onTabChange, onPlanNewTrip }: TripSummaryProps) {
   const travelerCount = trip.formState.travelers.adults + trip.formState.travelers.children;
-  const heroImage = getDestinationBySlug(trip.destination.slug)?.heroImage ?? trip.destination.image;
+  const heroImage = trip.destination.image;
   const region = DESTINATION_REGION_LABELS[trip.destination.slug] ?? trip.destination.region;
 
   return (

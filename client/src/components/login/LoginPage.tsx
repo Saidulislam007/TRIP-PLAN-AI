@@ -1,11 +1,12 @@
 "use client";
 
-import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import {
-  ArrowLeft,
-  MapPin,
-  Plane,
-} from "lucide-react";
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+} from "framer-motion";
+import { ArrowLeft, MapPin, Plane } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { MouseEvent } from "react";
@@ -26,19 +27,19 @@ const destinationCards = [
   {
     name: "Sajek Valley",
     note: "Cloud-kissed mountains",
-    image: "/images/destinations/sajek.jpg",
+    image: "/assets/Sajek/cover-1.jpg",
     className: "right-[5%] top-[8%]",
   },
   {
     name: "Cox's Bazar",
     note: "World's longest sea beach",
-    image: "/images/destinations/coxs-bazar.jpg",
+    image: "/assets/Coxs/cover-1.jpg",
     className: "left-[5%] top-[49%]",
   },
   {
     name: "Saint Martin",
     note: "Coral island paradise",
-    image: "/images/destinations/saint-martin.jpg",
+    image: "/assets/Saintmartin/cover-1.jpg",
     className: "bottom-[5%] right-[5%]",
   },
 ] as const;
@@ -156,9 +157,21 @@ export default function LoginPage() {
               <Plane size={21} fill="currentColor" strokeWidth={1.5} />
             </motion.div>
 
-            <MapMarker label="Sajek Valley" className="left-[64%] top-[20%]" delay={0.55} />
-            <MapMarker label="Cox's Bazar" className="left-[49%] top-[52%]" delay={0.75} />
-            <MapMarker label="Saint Martin" className="bottom-[11%] left-[44%]" delay={0.95} />
+            <MapMarker
+              label="Sajek Valley"
+              className="left-[64%] top-[20%]"
+              delay={0.55}
+            />
+            <MapMarker
+              label="Cox's Bazar"
+              className="left-[49%] top-[52%]"
+              delay={0.75}
+            />
+            <MapMarker
+              label="Saint Martin"
+              className="bottom-[11%] left-[44%]"
+              delay={0.95}
+            />
 
             <div className="block">
               {destinationCards.map((destination, index) => (
@@ -293,9 +306,7 @@ export default function LoginPage() {
               journey.
             </p>
 
-            <LoginForm
-              prefersReducedMotion={Boolean(prefersReducedMotion)}
-            />
+            <LoginForm prefersReducedMotion={Boolean(prefersReducedMotion)} />
           </div>
         </motion.div>
       </section>
@@ -303,11 +314,17 @@ export default function LoginPage() {
   );
 }
 
-function LoginNavbar({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
+function LoginNavbar({
+  prefersReducedMotion,
+}: {
+  prefersReducedMotion: boolean;
+}) {
   return (
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 lg:px-7">
       <motion.nav
-        initial={prefersReducedMotion ? false : { opacity: 0, y: -22, scale: 0.985 }}
+        initial={
+          prefersReducedMotion ? false : { opacity: 0, y: -22, scale: 0.985 }
+        }
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.65, ease: revealEase }}
         className="mx-auto flex h-[64px] w-full max-w-[1420px] items-center rounded-[22px] border border-white/75 bg-white/[0.78] px-3 shadow-[0_14px_40px_rgba(7,26,22,0.12),inset_0_1px_0_rgba(255,255,255,0.92)] backdrop-blur-2xl sm:rounded-full sm:px-5 lg:px-7"

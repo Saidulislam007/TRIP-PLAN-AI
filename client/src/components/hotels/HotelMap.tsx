@@ -2,7 +2,7 @@
 
 import { LocateFixed, MapPin, Minus, Plus } from "lucide-react";
 import type { Hotel } from "@/types/hotel";
-import { formatBdt } from "@/data/hotels";
+import { formatBdt } from "@/data/services/hotels";
 
 export function HotelMap({ hotels }: { hotels: Hotel[] }) {
   return (

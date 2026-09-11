@@ -1,6 +1,6 @@
-import { destinationsData, type DestinationData } from "@/data/destinations";
-import { getDestinationBySlug } from "@/data/destinationRegistry";
-import { BUDGET_CATEGORY_COLORS, BUDGET_TIER_OPTIONS, TRAVEL_STYLE_OPTIONS } from "@/data/tripPlanOptions";
+import { fetchDestinationBySlug } from "@/lib/api/destination";
+import type { DestinationData } from "@/types/destination-card";
+import { BUDGET_CATEGORY_COLORS, BUDGET_TIER_OPTIONS, TRAVEL_STYLE_OPTIONS } from "@/data/config/tripPlanOptions";
 import type {
   AIRecommendation,
   BudgetBreakdown,
@@ -58,6 +58,9 @@ interface RawItineraryTemplate {
 }
 
 interface RawDestinationDetail {
+  id?: string;
+  name?: string;
+  region?: string;
   heroImage: string;
   aiMatch: number;
   recommendedStay: string;
@@ -81,11 +84,14 @@ interface RawDestinationDetail {
   travelTips: string[];
 }
 
-function normalizeDestinationDetail(slug: string): RawDestinationDetail | null {
-  const raw = getDestinationBySlug(slug);
+async function normalizeDestinationDetail(slug: string): Promise<RawDestinationDetail | null> {
+  const raw = await fetchDestinationBySlug(slug);
   if (!raw) return null;
 
   return {
+    id: raw._id ?? raw.id ?? slug,
+    name: raw.name ?? slug,
+    region: raw.region ?? "",
     heroImage: raw.heroImage ?? "",
     aiMatch: raw.aiMatch ?? 85,
     recommendedStay: raw.recommendedStay ?? "3–5 Days",
@@ -430,7 +436,7 @@ function buildAIRecommendation(
   budget: BudgetBreakdown,
 ): AIRecommendation {
   const styleLabels = travelStyleLabels(form);
-  const destinationTags = [...destination.styles, ...raw.tags].map((tag) => tag.toLowerCase());
+  const destinationTags = [...(destination.styles ?? []), ...(raw.tags ?? [])].map((tag) => tag.toLowerCase());
   const matchedStyleLabels = styleLabels.filter((label) =>
     destinationTags.some((tag) => tag.includes(label.toLowerCase()) || label.toLowerCase().includes(tag)),
   );
@@ -477,14 +483,24 @@ function buildAIRecommendation(
    PUBLIC API
 ============================================================ */
 
-export function generateTrip(form: TripPlanFormState, seedOffset = 0): GeneratedTrip | null {
+export async function generateTrip(form: TripPlanFormState, seedOffset = 0): Promise<GeneratedTrip | null> {
   if (!form.destinationSlug) return null;
 
-  const destination = destinationsData.find((entry) => entry.slug === form.destinationSlug);
-  if (!destination) return null;
-
-  const raw = normalizeDestinationDetail(form.destinationSlug);
+  const raw = await normalizeDestinationDetail(form.destinationSlug);
   if (!raw) return null;
+
+  const destination = {
+    id: raw.id || form.destinationSlug,
+    name: raw.name || form.destinationSlug,
+    slug: form.destinationSlug,
+    image: raw.heroImage || "",
+    region: raw.region || "",
+    match: raw.aiMatch || 85,
+    rating: 4.5,
+    reviewCount: 100,
+    budget: "$$",
+    budgetNumber: 8000
+  } as unknown as DestinationData;
 
   const days = computeDurationDays(form);
   const nights = Math.max(1, days - 1);

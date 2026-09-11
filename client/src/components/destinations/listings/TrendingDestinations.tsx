@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Star } from "lucide-react";
-import { DestinationData } from "@/data/destinations";
+import { DestinationData } from "@/types/destination-card";
 
 interface TrendingDestinationsProps {
   destinations: DestinationData[];

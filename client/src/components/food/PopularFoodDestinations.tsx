@@ -4,13 +4,26 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { foodDestinations, formatBdt } from "@/data/food";
+import { formatBdt } from "@/data/services/food";
+import { fetchFood } from "@/lib/api/food";
 
 export function PopularFoodDestinations() {
+  const [foodDestinations, setFoodDestinations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [slide, setSlide] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(4);
   const [paused, setPaused] = useState(false);
   const lastSlide = Math.max(0, foodDestinations.length - cardsPerView);
+
+  useEffect(() => {
+    fetchFood().then((res) => {
+      if (res?.success && res.data) {
+        setFoodDestinations(res.data.destinations);
+      }
+      setLoading(false);
+    });
+  }, []);
 
   useEffect(() => {
     const updateCardsPerView = () => {

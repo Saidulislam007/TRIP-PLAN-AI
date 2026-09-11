@@ -6,7 +6,7 @@ import {
   FOOD_PREFERENCE_OPTIONS,
   TRANSPORT_OPTIONS,
   TRAVEL_PACE_OPTIONS,
-} from "@/data/tripPlanOptions";
+} from "@/data/config/tripPlanOptions";
 import type {
   AccommodationType,
   ActivityTag,

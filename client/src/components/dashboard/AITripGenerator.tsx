@@ -1,10 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
-import { dashboardData } from "@/data/dashboardData";
+import { Sparkles, ArrowRight } from "lucide-react";
+import { useDashboard } from "@/components/dashboard/DashboardContext";
 
 export default function AITripGenerator() {
+  const { dashboardData, isLoading } = useDashboard();
+
+  if (isLoading || !dashboardData) {
+    return <div className="h-full flex items-center justify-center bg-white rounded-2xl">Loading...</div>;
+  }
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -63,7 +68,7 @@ export default function AITripGenerator() {
           Quick suggestions
         </p>
         <div className="flex flex-wrap gap-2">
-          {dashboardData.quickSuggestions.map((suggestion) => (
+          {dashboardData.quickSuggestions.map((suggestion: any) => (
             <button
               key={suggestion}
               onClick={() => setPrompt(`I want a ${suggestion.toLowerCase()}...`)}

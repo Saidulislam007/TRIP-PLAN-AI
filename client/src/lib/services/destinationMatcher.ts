@@ -1,12 +1,12 @@
-import { destinationsData } from "@/data/destinations";
 import type { DestinationMatch, ExperienceTag } from "@/types/tripPlan";
+import type { DestinationData } from "@/types/destination-card";
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, value));
 }
 
-export function matchDestinations(tags: ExperienceTag[]): DestinationMatch[] {
-  if (tags.length === 0) return [];
+export function matchDestinations(tags: ExperienceTag[], destinationsData: DestinationData[]): DestinationMatch[] {
+  if (tags.length === 0 || destinationsData.length === 0) return [];
 
   const lowerTags = tags.map((tag) => tag.toLowerCase());
 

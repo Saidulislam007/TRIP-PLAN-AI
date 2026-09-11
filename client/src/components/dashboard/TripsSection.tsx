@@ -2,18 +2,24 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { dashboardData } from "@/data/dashboardData";
-import TripCard from "./TripCard";
+import { Plus, Filter, ArrowRight } from "lucide-react";
+import TripCard from "@/components/dashboard/TripCard";
+import { TripStatus } from "@/types/dashboardTrip";
+import { useDashboard } from "@/components/dashboard/DashboardContext";
 
 const tabs = ["All", "Drafts", "Upcoming", "Completed", "Cancelled"];
 
 export default function TripsSection() {
-  const [activeTab, setActiveTab] = useState("All");
+  const [activeFilter, setActiveFilter] = useState<"All" | TripStatus>("All");
+  const { dashboardData, isLoading } = useDashboard();
 
-  const filteredTrips = dashboardData.myTrips.filter((trip) => {
-    if (activeTab === "All") return true;
-    return trip.status === activeTab;
+  if (isLoading || !dashboardData) {
+    return <div className="h-64 flex items-center justify-center">Loading trips...</div>;
+  }
+
+  const filteredTrips = dashboardData.myTrips.filter((trip: any) => {
+    if (activeFilter === "All") return true;
+    return trip.status === activeFilter;
   });
 
   return (
@@ -25,9 +31,9 @@ export default function TripsSection() {
             {tabs.map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => setActiveFilter(tab as any)}
                 className={`text-[12px] font-medium transition-colors ${
-                  activeTab === tab
+                  activeFilter === tab
                     ? "border-b-2 border-[#087F5B] pb-1 text-[#087F5B]"
                     : "border-b-2 border-transparent pb-1 text-[#66736D] hover:text-[#17211D]"
                 }`}
@@ -47,7 +53,7 @@ export default function TripsSection() {
 
       <div className="mt-6 flex gap-4 overflow-x-auto pb-4 custom-scrollbar lg:grid lg:grid-cols-2 xl:grid-cols-3 xl:overflow-visible xl:pb-0">
         {filteredTrips.length > 0 ? (
-          filteredTrips.map((trip) => <TripCard key={trip.id} trip={trip} />)
+          filteredTrips.map((trip: any) => <TripCard key={trip.id} trip={trip} />)
         ) : (
           <div className="col-span-full flex h-[200px] w-full items-center justify-center rounded-xl border border-dashed border-[#E2E7E3] bg-[#F7F7F2]">
             <p className="text-[13px] font-medium text-[#66736D]">

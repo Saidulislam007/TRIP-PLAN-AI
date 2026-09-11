@@ -13,9 +13,10 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import { formatBdt, hotels } from "@/data/hotels";
+import { formatBdt } from "@/data/services/hotels";
+import { fetchHotels } from "@/lib/api/hotels";
 import type { Hotel } from "@/types/hotel";
 
 const comparisonRows = [
@@ -33,6 +34,18 @@ const comparisonRows = [
 
 export function HotelComparePage() {
   const searchParams = useSearchParams();
+  const [hotels, setHotels] = useState<Hotel[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchHotels().then(res => {
+      if (res?.success) setHotels(res.data.hotels);
+      setIsLoading(false);
+    });
+  }, []);
+
+  if (isLoading) return <div className="min-h-screen bg-[#f8f8f4] flex items-center justify-center">Loading...</div>;
+
   const requestedSlugs = (searchParams.get("hotels") ?? "")
     .split(",")
     .map((slug) => slug.trim())

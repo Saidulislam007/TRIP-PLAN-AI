@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Download, Pencil, Save, Share2 } from "lucide-react";
 import { showTripPlanToast } from "@/components/TripPlanToast";
 import { saveTrip } from "@/lib/services/tripStorage";
@@ -14,10 +15,12 @@ interface TripActionsProps {
 
 export default function TripActions({ trip, onEdit }: TripActionsProps) {
   const [isDownloading, setIsDownloading] = useState(false);
+  const router = useRouter();
 
-  const handleSave = () => {
-    saveTrip(trip);
+  const handleSave = async () => {
+    await saveTrip(trip);
     showTripPlanToast({ title: "Trip saved", message: "Your trip is saved to this device." });
+    router.push("/dashboard/trips");
   };
 
   const handleShare = async () => {

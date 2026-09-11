@@ -1,6 +1,6 @@
 "use client";
 
-import { TRAVEL_STYLE_OPTIONS } from "@/data/tripPlanOptions";
+import { TRAVEL_STYLE_OPTIONS } from "@/data/config/tripPlanOptions";
 import type { TravelStyleId } from "@/types/tripPlan";
 import ToggleChip from "@/components/plan-trip/shared/ToggleChip";
 

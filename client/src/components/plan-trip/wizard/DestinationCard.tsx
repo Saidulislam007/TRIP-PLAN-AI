@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { Check } from "lucide-react";
-import type { DestinationData } from "@/data/destinations";
-import { getDestinationBySlug } from "@/data/destinationRegistry";
-import { DESTINATION_REGION_LABELS } from "@/data/tripPlanOptions";
+import type { DestinationData } from "@/types/destination-card";
+
+import { DESTINATION_REGION_LABELS } from "@/data/config/tripPlanOptions";
 
 interface DestinationCardProps {
   destination: DestinationData;
@@ -13,7 +13,7 @@ interface DestinationCardProps {
 }
 
 export default function DestinationCard({ destination, selected, onSelect }: DestinationCardProps) {
-  const heroImage = getDestinationBySlug(destination.slug)?.heroImage ?? destination.image;
+  const heroImage = destination.image || destination.heroImage || "/assets/placeholder.jpg";
   const region = DESTINATION_REGION_LABELS[destination.slug] ?? destination.region;
 
   return (
@@ -21,20 +21,24 @@ export default function DestinationCard({ destination, selected, onSelect }: Des
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      aria-label={`${destination.name}: ${destination.styles.join(", ")}`}
+      aria-label={`${destination.name}: ${(destination.styles ?? []).join(", ")}`}
       className={`group relative h-[168px] overflow-hidden rounded-[18px] border-2 text-left transition-all ${
         selected
           ? "border-[#087F5B] shadow-[0_10px_28px_rgba(8,127,91,0.22)]"
           : "border-transparent hover:border-[#DCE6E1]"
       }`}
     >
-      <Image
-        src={heroImage}
-        alt={destination.name}
-        fill
-        sizes="(max-width: 640px) 50vw, 220px"
-        className="object-cover transition-transform duration-500 group-hover:scale-105"
-      />
+      {heroImage ? (
+        <Image
+          src={heroImage}
+          alt={destination.name}
+          fill
+          sizes="(max-width: 640px) 50vw, 220px"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-br from-[#1a4a3a] to-[#087F5B]" />
+      )}
       <div
         className={`absolute inset-0 bg-gradient-to-t from-[#031D16]/90 via-black/10 to-transparent transition-colors ${
           selected ? "from-[#053D2C]/92" : ""

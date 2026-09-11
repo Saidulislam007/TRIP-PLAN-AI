@@ -1,8 +1,14 @@
 import Link from "next/link";
-import { MoreHorizontal, ArrowRight } from "lucide-react";
-import { dashboardData } from "@/data/dashboardData";
+import { Wallet, TrendingUp, PiggyBank, ArrowUpRight, MoreHorizontal, ArrowRight } from "lucide-react";
+import { useDashboard } from "@/components/dashboard/DashboardContext";
 
 export default function BudgetTracker() {
+  const { dashboardData, isLoading } = useDashboard();
+
+  if (isLoading || !dashboardData) {
+    return <div className="h-full flex items-center justify-center bg-white rounded-2xl">Loading...</div>;
+  }
+
   const { budgetOverview } = dashboardData;
   const radius = 40;
   const circumference = 2 * Math.PI * radius;
@@ -83,7 +89,7 @@ export default function BudgetTracker() {
 
       {/* Categories Legend */}
       <div className="mt-6 flex flex-col gap-2.5 border-t border-[#E2E7E3] pt-5">
-        {budgetOverview.breakdown.map((item) => (
+        {budgetOverview.breakdown.map((item: any) => (
           <div key={item.category} className="flex items-center justify-between text-[11px]">
             <div className="flex items-center gap-2">
               <span className="h-2 w-2 rounded-full" style={{ backgroundColor: item.color }} />

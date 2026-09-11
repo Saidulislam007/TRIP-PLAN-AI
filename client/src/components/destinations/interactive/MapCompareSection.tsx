@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { DestinationData } from "@/data/destinations";
+import { DestinationData } from "@/types/destination-card";
 import { Check, X, Scale, Sparkles, Star, Wallet, Calendar, Clock, MapPin, Plus } from "lucide-react";
 
 interface MapCompareSectionProps {

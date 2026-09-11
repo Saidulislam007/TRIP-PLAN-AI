@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Search } from "lucide-react";
-import { destinationsData } from "@/data/destinations";
+import { fetchDestinations } from "@/lib/api/destination";
+import type { DestinationData } from "@/types/destination-card";
 import DestinationCard from "@/components/plan-trip/wizard/DestinationCard";
 import AIDestinationMatcher from "@/components/plan-trip/wizard/AIDestinationMatcher";
 
@@ -13,6 +14,13 @@ interface DestinationSelectorProps {
 
 export default function DestinationSelector({ destinationSlug, onSelect }: DestinationSelectorProps) {
   const [query, setQuery] = useState("");
+  const [destinationsData, setDestinationsData] = useState<DestinationData[]>([]);
+
+  useEffect(() => {
+    fetchDestinations().then(res => {
+      if (Array.isArray(res)) setDestinationsData(res);
+    });
+  }, []);
 
   const filtered = useMemo(() => {
     const term = query.trim().toLowerCase();
@@ -22,7 +30,7 @@ export default function DestinationSelector({ destinationSlug, onSelect }: Desti
         destination.name.toLowerCase().includes(term) ||
         destination.styles.some((style) => style.toLowerCase().includes(term)),
     );
-  }, [query]);
+  }, [query, destinationsData]);
 
   return (
     <div className="space-y-6">

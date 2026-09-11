@@ -363,7 +363,9 @@ export default function WriteReviewPage() {
      SUBMIT
   ========================================================== */
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (
@@ -376,7 +378,30 @@ export default function WriteReviewPage() {
       return;
     }
 
-    setShowSuccess(true);
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          destination,
+          tripType,
+          rating: overallRating,
+          title,
+          reviewText: review
+        })
+      });
+
+      if (response.ok) {
+        setShowSuccess(true);
+      } else {
+        console.error("Failed to submit review");
+      }
+    } catch (error) {
+      console.error("Failed to submit review:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const reviewLength = review.length;

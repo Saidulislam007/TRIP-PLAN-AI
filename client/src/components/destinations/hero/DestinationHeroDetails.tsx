@@ -15,9 +15,10 @@ interface DestinationHeroProps {
     aiMatch: number;
     tags: string[];
   };
+  handleBookmark: () => Promise<{ success: boolean; message: string }>;
 }
 
-export default function DestinationHeroDetails({ data }: DestinationHeroProps) {
+export default function DestinationHeroDetails({ data, handleBookmark }: DestinationHeroProps) {
   return (
     <div className="relative w-full h-[85vh] min-h-[650px] flex flex-col justify-end overflow-hidden group">
       {/* Background Image with subtle zoom effect */}
@@ -80,7 +81,7 @@ export default function DestinationHeroDetails({ data }: DestinationHeroProps) {
             </div>
             <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full shadow-lg font-bold">
               <Sparkles className="w-4 h-4 text-[#F4A62A]" />
-              {data.tags[0]}
+              {data.tags}
             </div>
           </div>
 
@@ -95,6 +96,7 @@ export default function DestinationHeroDetails({ data }: DestinationHeroProps) {
             </Link>
             
             <Button
+            onClick={handleBookmark}
               className="bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 font-bold px-8 py-7 rounded-full transition-all duration-300 hover:scale-105 shadow-xl"
             >
               <Heart className="w-5 h-5 mr-2" /> Save

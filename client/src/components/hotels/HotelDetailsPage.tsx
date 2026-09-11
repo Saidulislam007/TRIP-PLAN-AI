@@ -25,7 +25,7 @@ import {
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { formatBdt } from "@/data/hotels";
+import { formatBdt } from "@/data/services/hotels";
 import type { Hotel, Room } from "@/types/hotel";
 
 export function HotelDetailsPage({ hotel }: { hotel: Hotel }) {

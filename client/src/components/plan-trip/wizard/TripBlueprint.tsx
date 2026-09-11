@@ -1,13 +1,13 @@
 "use client";
 
 import { Pencil } from "lucide-react";
-import type { DestinationData } from "@/data/destinations";
+import type { DestinationData } from "@/types/destination-card";
 import {
   BUDGET_TIER_OPTIONS,
   DESTINATION_REGION_LABELS,
   TRANSPORT_OPTIONS,
   TRAVEL_STYLE_OPTIONS,
-} from "@/data/tripPlanOptions";
+} from "@/data/config/tripPlanOptions";
 import type { TripPlanFormState, WizardStepId } from "@/types/tripPlan";
 import GenerateTripButton from "@/components/plan-trip/wizard/GenerateTripButton";
 

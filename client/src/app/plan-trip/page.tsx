@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
-import { WIZARD_STEPS } from "@/data/tripPlanOptions";
-import { destinationsData } from "@/data/destinations";
-import { getDestinationBySlug } from "@/data/destinationRegistry";
+import { WIZARD_STEPS } from "@/data/config/tripPlanOptions";
+import { fetchDestinations } from "@/lib/api/destination";
+import type { DestinationData } from "@/types/destination-card";
 import { generateTrip, isFormValid } from "@/lib/services/tripPlanner";
 import { showTripPlanToast } from "@/components/TripPlanToast";
 import type { GeneratedTrip, ResultTabId, TripPlanFormState, WizardStepId } from "@/types/tripPlan";
@@ -61,10 +61,34 @@ export default function PlanTripPage() {
   const [generatedTrip, setGeneratedTrip] = useState<GeneratedTrip | null>(null);
   const [activeResultTab, setActiveResultTab] = useState<ResultTabId>("itinerary");
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
+  const [destinationsData, setDestinationsData] = useState<DestinationData[]>([]);
+
+  useEffect(() => {
+    fetchDestinations().then(res => {
+      if (Array.isArray(res)) setDestinationsData(res);
+    });
+
+    const tripId = new URLSearchParams(window.location.search).get("tripId");
+    if (tripId) {
+      const loadTrip = async () => {
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/trips/${tripId}`);
+          const data = await res.json();
+          if (data.success && data.data?.formState) {
+            setFormState(data.data.formState);
+            setPhase("generating");
+          }
+        } catch (e) {
+          console.error("Failed to load trip:", e);
+        }
+      };
+      loadTrip();
+    }
+  }, []);
 
   const destination = useMemo(
     () => destinationsData.find((entry) => entry.slug === formState.destinationSlug) ?? null,
-    [formState.destinationSlug],
+    [formState.destinationSlug, destinationsData],
   );
 
   const days =
@@ -99,8 +123,8 @@ export default function PlanTripPage() {
     setPhase("generating");
   };
 
-  const handleGenerationComplete = () => {
-    const trip = generateTrip(formState);
+  const handleGenerationComplete = async () => {
+    const trip = await generateTrip(formState);
     if (!trip) {
       showTripPlanToast({ title: "Unable to generate trip", message: "Please try again." });
       setPhase("wizard");
@@ -111,12 +135,12 @@ export default function PlanTripPage() {
     setPhase("result");
   };
 
-  const handleOptimizeBudget = () => {
+  const handleOptimizeBudget = async () => {
     if (!generatedTrip) return;
     const cheapestHotel = [...generatedTrip.hotels].sort((a, b) => a.pricePerNight - b.pricePerNight)[0];
     if (!cheapestHotel) return;
     const nextForm = { ...generatedTrip.formState, budgetTier: "economy" as const, customBudget: null };
-    const regenerated = generateTrip(nextForm);
+    const regenerated = await generateTrip(nextForm);
     if (regenerated) {
       setGeneratedTrip(regenerated);
       showTripPlanToast({ title: "Budget optimized", message: "Switched to more economical options." });
@@ -288,7 +312,7 @@ export default function PlanTripPage() {
                 {destination && (
                   <div className="relative h-[160px] w-full sm:h-[200px]">
                     <Image
-                      src={getDestinationBySlug(destination.slug)?.heroImage ?? destination.image}
+                      src={destination.image}
                       alt={destination.name}
                       fill
                       sizes="(max-width: 1024px) 100vw, 700px"

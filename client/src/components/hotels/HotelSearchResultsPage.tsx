@@ -11,9 +11,9 @@ import {
   X,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { hotels } from "@/data/hotels";
+import { formatBdt } from "@/data/services/hotels";
 import { HotelCard } from "./HotelCard";
 import { HotelMap } from "./HotelMap";
 import { HotelSearchBar } from "./HotelSearchBar";
@@ -48,6 +48,23 @@ export function HotelSearchResultsPage() {
     return Math.max(1, Math.ceil((end - start) / 86_400_000));
   }, [checkIn, checkOut]);
 
+  const [hotels, setHotels] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/hotels`);
+        const data = await res.json();
+        if (data.success && data.data) {
+          setHotels(data.data.hotels);
+        }
+      } catch (error) {
+        console.error("Failed to fetch hotels:", error);
+      }
+    };
+    fetchHotels();
+  }, []);
+
   const filteredHotels = useMemo(() => {
     const result = hotels.filter((hotel) => {
       const destinationMatch = hotel.destination
@@ -56,8 +73,8 @@ export function HotelSearchResultsPage() {
       const amenityMatch =
         (!freeBreakfast || hotel.breakfastIncluded) &&
         (!freeCancellation || hotel.freeCancellation) &&
-        (!parking || hotel.amenities.some((item) => item.toLowerCase().includes("parking"))) &&
-        (!generator || hotel.amenities.some((item) => item.toLowerCase().includes("generator")));
+        (!parking || hotel.amenities.some((item: any) => item.toLowerCase().includes("parking"))) &&
+        (!generator || hotel.amenities.some((item: any) => item.toLowerCase().includes("generator")));
 
       return (
         (destinationMatch || destination.toLowerCase().includes("cox")) &&

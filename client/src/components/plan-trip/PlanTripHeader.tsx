@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { Bell, Heart, Plane, Search } from "lucide-react";
-import { dashboardData } from "@/data/dashboardData";
+import { useSession } from "@/lib/auth-client";
+import { Avatar } from "@heroui/react";
 
 const NAV_ITEMS: { label: string; href: string; active?: boolean }[] = [
   { label: "Explore", href: "/" },
@@ -14,6 +15,9 @@ const NAV_ITEMS: { label: string; href: string; active?: boolean }[] = [
 ];
 
 export default function PlanTripHeader() {
+  const { data } = useSession();
+  const user = data?.user;
+
   return (
     <header className="sticky top-0 z-30 flex h-20 w-full items-center justify-between border-b border-[#DCE6E1] bg-white px-5 lg:px-10">
       <Link href="/" className="flex shrink-0 items-center gap-2.5">
@@ -77,15 +81,10 @@ export default function PlanTripHeader() {
           aria-label="Your profile"
           className="ml-1 flex h-9 w-9 items-center justify-center overflow-hidden rounded-full ring-2 ring-[#EEF5F1] transition-opacity hover:opacity-80"
         >
-          <img
-            src={dashboardData.user.avatar}
-            alt={dashboardData.user.name}
-            className="h-full w-full object-cover"
-            onError={(event) => {
-              (event.target as HTMLImageElement).src =
-                "https://ui-avatars.com/api/?name=Rifat+Ahmed&background=073D31&color=fff";
-            }}
-          />
+          <Avatar className="h-full w-full">
+            <Avatar.Image src={user?.image ?? undefined} alt={user?.name ?? undefined} />
+            <Avatar.Fallback>{user?.name?.charAt(0) ?? "U"}</Avatar.Fallback>
+          </Avatar>
         </Link>
       </div>
     </header>

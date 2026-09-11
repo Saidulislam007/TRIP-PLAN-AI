@@ -41,14 +41,14 @@ import {
   readStoredValue,
   storeValue,
   STORAGE_KEYS,
-} from "@/data/travelStyles";
+} from "@/data/config/travelStyles";
 
 import type {
   FilterGroup,
   Filters,
   Category,
   TravelPreferences,
-} from "@/data/travelStyles";
+} from "@/data/config/travelStyles";
 
 import TrendingSection from "@/components/travel-categories/TrendingSection";
 import TravelStyleMatcher from "@/components/travel-categories/TravelStyleMatcher";

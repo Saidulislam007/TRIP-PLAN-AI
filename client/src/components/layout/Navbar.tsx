@@ -13,15 +13,15 @@ import {
   Search,
   X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { signOut, useSession } from "@/lib/auth-client";
 import { Avatar } from "@heroui/react";
 import { showLogoutToast } from "@/components/TripPlanToast";
+import { getUserSession } from "@/lib/core/session";
 
 /* ============================================================
    TYPES
 ============================================================ */
-
 
 type NavItemProps = {
   href: string;
@@ -94,7 +94,8 @@ export default function Navbar() {
 
   const { data, isPending } = useSession();
   const user = data?.user;
-  const userRole = (user as (typeof user & { role?: string }) | undefined)?.role;
+  const userRole = (user as (typeof user & { role?: string }) | undefined)
+    ?.role;
   const dashboardHref =
     userRole?.toLowerCase() === "admin" ? "/admin-panel" : "/dashboard";
 
@@ -113,12 +114,12 @@ export default function Navbar() {
     router.refresh();
   };
 
-
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [exploreOpen, setExploreOpen] = useState(false);
   const [destinationsOpen, setDestinationsOpen] = useState(false);
   const [inspirationOpen, setInspirationOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement | null>(null);
 
   /* ============================================================
      ACTIVE ROUTES
@@ -144,7 +145,7 @@ export default function Navbar() {
     pathname === "/search" || pathname.startsWith("/search/");
 
   const isWishlistActive =
-    pathname === "/wishlist" || pathname.startsWith("/wishlist/");
+    pathname === "/dashboard/saved" || pathname.startsWith("/dashboard/saved/");
 
   /* ============================================================
      CLOSE MENUS WHEN ROUTE CHANGES
@@ -157,6 +158,25 @@ export default function Navbar() {
     setInspirationOpen(false);
     setUserMenuOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!userMenuOpen) return;
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+    };
+  }, [userMenuOpen]);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50 w-full bg-transparent px-3 pt-2 font-sans antialiased sm:px-5 sm:pt-3">
@@ -229,9 +249,10 @@ export default function Navbar() {
                   font-medium
                   tracking-[-0.01em]
                   transition-colors duration-200
-                  ${isExploreActive || exploreOpen
-                    ? "text-[#087F5B]"
-                    : "text-[#30483F] hover:text-[#B86D1B]"
+                  ${
+                    isExploreActive || exploreOpen
+                      ? "text-[#087F5B]"
+                      : "text-[#30483F] hover:text-[#B86D1B]"
                   }
                 `}
               >
@@ -283,9 +304,10 @@ export default function Navbar() {
                   font-medium
                   tracking-[-0.01em]
                   transition-colors duration-200
-                  ${isDestinationsActive || destinationsOpen
-                    ? "text-[#087F5B]"
-                    : "text-[#30483F] hover:text-[#B86D1B]"
+                  ${
+                    isDestinationsActive || destinationsOpen
+                      ? "text-[#087F5B]"
+                      : "text-[#30483F] hover:text-[#B86D1B]"
                   }
                 `}
               >
@@ -353,9 +375,10 @@ export default function Navbar() {
                   font-medium
                   tracking-[-0.01em]
                   transition-colors duration-200
-                  ${isInspirationActive || inspirationOpen
-                    ? "text-[#087F5B]"
-                    : "text-[#30483F] hover:text-[#B86D1B]"
+                  ${
+                    isInspirationActive || inspirationOpen
+                      ? "text-[#087F5B]"
+                      : "text-[#30483F] hover:text-[#B86D1B]"
                   }
                 `}
               >
@@ -411,9 +434,10 @@ export default function Navbar() {
                 items-center justify-center
                 rounded-full
                 transition-colors duration-200
-                ${isSearchActive
-                  ? "bg-[#087F5B]/10 text-[#087F5B]"
-                  : "text-[#476057] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
+                ${
+                  isSearchActive
+                    ? "bg-[#087F5B]/10 text-[#087F5B]"
+                    : "text-[#476057] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
                 }
               `}
             >
@@ -423,16 +447,17 @@ export default function Navbar() {
             {/* Wishlist */}
 
             <Link
-              href="/wishlist"
+              href="/dashboard/saved"
               aria-label="Wishlist"
               className={`
                 ml-1 flex h-[40px] w-[40px]
                 items-center justify-center
                 rounded-full
                 transition-colors duration-200
-                ${isWishlistActive
-                  ? "bg-[#087F5B]/10 text-[#087F5B]"
-                  : "text-[#476057] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
+                ${
+                  isWishlistActive
+                    ? "bg-[#087F5B]/10 text-[#087F5B]"
+                    : "text-[#476057] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
                 }
               `}
             >
@@ -448,7 +473,7 @@ export default function Navbar() {
                 <span className="h-3 w-[86px] rounded-full bg-[#DCE7E2]" />
               </div>
             ) : user ? (
-              <div className="relative ml-3">
+              <div ref={userMenuRef} className="relative ml-3">
                 <button
                   type="button"
                   aria-label="Open user menu"
@@ -484,22 +509,24 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -6, scale: 0.98 }}
                       transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                      className="absolute right-0 top-[52px] z-[120] w-[300px] overflow-hidden rounded-[20px] border border-white/80 bg-white/[0.96] p-3 shadow-[0_20px_50px_rgba(7,38,30,0.20),inset_0_1px_0_rgba(255,255,255,0.95)] backdrop-blur-2xl"
+                      className="absolute right-0 top-[52px] z-[120] w-[300px] overflow-hidden rounded-[20px] border border-[#E3EDE7] bg-[#F7F9F4]/95 p-3 shadow-[0_20px_50px_rgba(7,38,30,0.16),inset_0_1px_0_rgba(255,255,255,0.92)] backdrop-blur-2xl"
                     >
-                      <div className="flex items-center gap-3 rounded-[15px] bg-[#F3F8F5] p-3">
-                        <Avatar className="h-12 w-12 shrink-0">
+                      <div className="flex items-center gap-3 rounded-[15px] bg-[#F3F8F4] p-3">
+                        <Avatar className="h-12 w-12 shrink-0 border border-[#DDEAE1] bg-gradient-to-br from-[#EEF7F1] via-[#F8F3E9] to-[#F0D39A] text-[#24463B] shadow-sm">
                           <Avatar.Image
                             alt={user.name}
                             src={user.image ?? undefined}
                           />
-                          <Avatar.Fallback>{user.name.charAt(0)}</Avatar.Fallback>
+                          <Avatar.Fallback className="bg-transparent text-[#24463B]">
+                            {user.name.charAt(0)}
+                          </Avatar.Fallback>
                         </Avatar>
 
                         <div className="min-w-0">
-                          <p className="truncate text-[14px] font-bold text-[#17332A]">
+                          <p className="truncate text-[14px] font-semibold text-[#35564F] transition-colors duration-200 group-hover:text-[#1D433C]">
                             {user.name}
                           </p>
-                          <p className="mt-0.5 truncate text-[12px] text-[#6B7D75]">
+                          <p className="mt-0.5 truncate text-[12px] text-[#7A8F89] transition-colors duration-200 group-hover:text-[#5A6F68]">
                             {user.email}
                           </p>
                         </div>
@@ -508,9 +535,13 @@ export default function Navbar() {
                       <Link
                         href={dashboardHref}
                         onClick={() => setUserMenuOpen(false)}
-                        className="mt-2 flex h-11 items-center gap-3 rounded-[13px] px-3 text-[13px] font-semibold text-[#29483D] transition-colors hover:bg-[#EDF7F3] hover:text-[#087F5B]"
+                        className="mt-2 flex h-11 items-center gap-3 rounded-[13px] px-3 text-[13px] font-medium text-[#5C7B71] transition-colors duration-200 hover:bg-[#EDF7F3] hover:text-[#0B7A5A]"
                       >
-                        <LayoutDashboard size={18} strokeWidth={1.9} />
+                        <LayoutDashboard
+                          size={18}
+                          strokeWidth={1.9}
+                          className="text-[#78A08D] transition-colors duration-200 hover:text-[#0B7A5A]"
+                        />
                         {userRole?.toLowerCase() === "admin"
                           ? "Admin Dashboard"
                           : "My Dashboard"}
@@ -519,9 +550,13 @@ export default function Navbar() {
                       <button
                         type="button"
                         onClick={handleLogout}
-                        className="flex h-11 w-full items-center gap-3 rounded-[13px] px-3 text-[13px] font-semibold text-[#B23A32] transition-colors hover:bg-[#FFF1EF]"
+                        className="flex h-11 w-full items-center gap-3 rounded-[13px] px-3 text-[13px] font-medium text-[#8A5C5A] transition-colors duration-200 hover:bg-[#FFF1EF] hover:text-[#C84E48]"
                       >
-                        <LogOut size={18} strokeWidth={1.9} />
+                        <LogOut
+                          size={18}
+                          strokeWidth={1.9}
+                          className="text-[#C17A76] transition-colors duration-200 hover:text-[#C84E48]"
+                        />
                         Logout
                       </button>
                     </motion.div>
@@ -624,9 +659,10 @@ function NavItem({ href, label, active = false }: NavItemProps) {
             rounded-full
             bg-linear-to-r from-[#087F5B] to-[#F4A934]
             transition-all duration-200
-            ${active
-              ? "scale-x-100 opacity-100"
-              : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100"
+            ${
+              active
+                ? "scale-x-100 opacity-100"
+                : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100"
             }
           `}
         />
@@ -676,9 +712,10 @@ function Dropdown({
                 font-medium
                 tracking-[-0.005em]
                 transition-colors
-                ${active
-                  ? "bg-[#EDF7F3] text-[#087F5B]"
-                  : "text-[#26342E] hover:bg-[#F4F8F6] hover:text-[#087F5B]"
+                ${
+                  active
+                    ? "bg-[#EDF7F3] text-[#087F5B]"
+                    : "text-[#26342E] hover:bg-[#F4F8F6] hover:text-[#087F5B]"
                 }
               `}
             >
@@ -706,12 +743,12 @@ function MobileMenu({
   pathname: string;
   onClose: () => void;
 }) {
-
   const router = useRouter();
 
   const { data, isPending } = useSession();
   const user = data?.user;
-  const userRole = (user as (typeof user & { role?: string }) | undefined)?.role;
+  const userRole = (user as (typeof user & { role?: string }) | undefined)
+    ?.role;
   const dashboardHref =
     userRole?.toLowerCase() === "admin" ? "/admin-panel" : "/dashboard";
 
@@ -784,9 +821,10 @@ function MobileMenu({
               text-[15px]
               font-medium
               tracking-[-0.01em]
-              ${item.active
-                ? "bg-[#087F5B]/10 text-[#087F5B]"
-                : "text-[#30483F] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
+              ${
+                item.active
+                  ? "bg-[#087F5B]/10 text-[#087F5B]"
+                  : "text-[#30483F] hover:bg-[#087F5B]/[0.07] hover:text-[#087F5B]"
               }
             `}
           >

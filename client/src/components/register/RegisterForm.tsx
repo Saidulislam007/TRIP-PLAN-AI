@@ -48,6 +48,7 @@ export default function RegisterForm({
   const [showPassword, setShowPassword] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -62,57 +63,77 @@ export default function RegisterForm({
 
   const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const userData = Object.fromEntries(
-      formData.entries(),
-    ) as unknown as RegisterFormData;
+    const name = formData.fullName.trim();
+    const email = formData.email.trim().toLowerCase();
 
-    // console.log("userData", userData);
-
-    const { data, error } = await authClient.signUp.email({
-      name: userData.fullName,
-      email: userData.email,
-      password: userData.password,
-    });
-
-    // console.log("signup data", { data, error });
-    // console.log("signup data", data);
-
-    if (error) {
-      setErrorMessage(error.message ?? "Unable to create your account.");
+    if (!name || !email || !formData.password || !formData.confirmPassword) {
+      setErrorMessage("Please complete every required field.");
       return;
     }
 
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage("Your passwords do not match.");
+      return;
+    }
+
+    if (!acceptTerms) {
+      setErrorMessage("Please accept the Terms and Privacy Policy to continue.");
+      return;
+    }
+
+    setIsSubmitting(true);
     setErrorMessage("");
 
-    await authClient.signOut();
-    showSignupToast(data?.user?.name ?? userData.fullName);
+    try {
+      const { data, error } = await authClient.signUp.email({
+        name,
+        email,
+        password: formData.password,
+      });
 
-    window.setTimeout(() => {
-      router.replace("/login");
-    }, 1800);
+      if (error) {
+        setErrorMessage(error.message ?? "Unable to create your account.");
+        return;
+      }
 
-    // TODO: The backend developer will connect account registration here.
-    // Available values: fullName, email, formData.password, and acceptTerms.
+      showSignupToast(data?.user?.name ?? name);
+      window.setTimeout(() => {
+        router.replace("/");
+        router.refresh();
+      }, 1800);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? `Unable to reach the authentication server: ${error.message}`
+          : "Unable to reach the authentication server. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoogleRegister = async () => {
     setErrorMessage("");
-
-    const { data, error } = await authClient.signIn.social({
-      provider: "google",
-      callbackURL: "/",
-    });
-    if (error) {
-      toast.error(error.message as string);
-      setErrorMessage(error.message as string);
-      return;
-    } else {
-      toast.success("Redirecting to google!");
+    setIsSubmitting(true);
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+      if (error) {
+        const message = error.message ?? "Unable to continue with Google.";
+        toast.error(message);
+        setErrorMessage(message);
+      }
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? `Unable to reach the authentication server: ${error.message}`
+          : "Unable to reach the authentication server. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // console.log("signup data", { data, error });
-
   };
 
   return (
@@ -281,10 +302,11 @@ export default function RegisterForm({
           }
           whileTap={{ scale: 0.985 }}
           type="submit"
+          disabled={isSubmitting}
           className="mt-5 flex h-12.5 w-full items-center justify-center gap-2 rounded-[14px] border border-[#FFD078]/60 bg-linear-to-r from-[#F4A934] via-[#F6AC32] to-[#E89022] px-5 text-[13px] font-bold text-white shadow-[0_10px_26px_rgba(232,144,34,0.27),inset_0_1px_0_rgba(255,255,255,0.35)] transition-[filter,box-shadow] hover:brightness-105 hover:shadow-[0_13px_30px_rgba(232,144,34,0.34)] sm:h-14 sm:text-[14px]"
         >
           <Plane size={17} fill="currentColor" />
-          Create My Account
+          {isSubmitting ? "Creating account..." : "Create My Account"}
         </motion.button>
       </form>
 
@@ -300,11 +322,12 @@ export default function RegisterForm({
         whileTap={{ scale: 0.985 }}
         type="button"
         onClick={handleGoogleRegister}
+        disabled={isSubmitting}
         className="flex h-12.5 w-full items-center justify-center gap-2.5 rounded-[14px] border border-[#D8E2DD] bg-white text-[12px] font-bold text-[#203C32] shadow-sm transition-colors hover:border-[#B7CEC4] hover:bg-[#FBFCFA] sm:h-13 sm:text-[13px]"
       >
         
           <FcGoogle size={20} />
-        Continue with Google
+        {isSubmitting ? "Please wait..." : "Continue with Google"}
       </motion.button>
 
       <p className="mt-4 text-center text-[11px] font-medium text-[#6E7D77] sm:text-[12px]">

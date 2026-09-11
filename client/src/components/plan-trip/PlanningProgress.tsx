@@ -1,7 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { WIZARD_STEPS } from "@/data/tripPlanOptions";
+import { WIZARD_STEPS } from "@/data/config/tripPlanOptions";
 import type { WizardStepId } from "@/types/tripPlan";
 
 interface PlanningProgressProps {

@@ -1,6 +1,6 @@
 "use client";
 
-import { DestinationData } from "@/data/destinations";
+import { DestinationData } from "@/types/destination-card";
 import DestinationCard from '@/components/destinations/listings/DestinationCard';
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -32,16 +32,16 @@ export default function AllDestinations({ destinations, viewMode }: AllDestinati
 
       {viewMode === "grid" && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {destinations.map((destination) => (
-            <DestinationCard key={destination.id} destination={destination} />
+          {destinations.map((destination, index) => (
+            <DestinationCard key={destination.slug || `dest-${index}`} destination={destination} />
           ))}
         </div>
       )}
 
       {viewMode === "list" && (
         <div className="flex flex-col gap-5">
-          {destinations.map((destination) => (
-            <div key={destination.id} className="max-w-3xl">
+          {destinations.map((destination, index) => (
+            <div key={destination.slug || `dest-${index}`} className="max-w-3xl">
               <DestinationCard destination={destination} />
             </div>
           ))}

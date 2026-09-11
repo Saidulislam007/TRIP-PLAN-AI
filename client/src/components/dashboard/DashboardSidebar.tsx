@@ -17,9 +17,10 @@ import {
   Settings,
   Plus,
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  Plane
 } from "lucide-react";
-import { dashboardData } from "@/data/dashboardData";
+
 import { useSession } from "@/lib/auth-client";
 import { Avatar } from "@heroui/react";
 
@@ -51,7 +52,7 @@ const navigation = [
     items: [
       { name: "Travel Profile", href: "/dashboard/profile", icon: UserCircle },
       { name: "My Stories", href: "/dashboard/stories", icon: BookOpen },
-      { name: "Notifications", href: "/dashboard/notifications", icon: Bell, badge: 3 },
+      { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
     ],
   },
   {
@@ -74,18 +75,18 @@ export default function DashboardSidebar() {
     <div className="flex h-full w-full flex-col bg-[#04271C] text-white">
       {/* Logo & Brand */}
       <div className="p-6 pb-4">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white">
-            <Sparkles size={18} className="text-[#04271C]" />
+        <Link href="/" className="group flex items-center gap-2.5">
+          <div className="relative flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD16F] via-[#F4A934] to-[#D9861F] shadow-[0_7px_18px_rgba(217,134,31,0.30),inset_0_1px_0_rgba(255,255,255,0.45)] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:rotate-[-5deg] group-hover:shadow-[0_10px_24px_rgba(217,134,31,0.38)]">
+            <span className="pointer-events-none absolute inset-[3px] rounded-full border border-[#FFF0C2]/70" />
+            <Plane
+              size={20}
+              strokeWidth={2.3}
+              className="relative rotate-[-45deg] text-[#123B31] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+            />
           </div>
-          <div className="flex flex-col">
-            <span className="text-xl font-bold font-serif tracking-wide leading-tight">
-              TripPlan <span className="text-[#F4A934]">AI</span>
-            </span>
-            <span className="text-[10px] text-white/60 tracking-wider">
-              Plan Smarter. Travel Better.
-            </span>
-          </div>
+          <span className="text-[20px] font-extrabold leading-none tracking-[-0.035em] text-white transition-colors duration-300">
+            TripPlan <span className="text-[#D88928]">AI</span>
+          </span>
         </Link>
       </div>
 
@@ -93,9 +94,9 @@ export default function DashboardSidebar() {
       <div className="px-5 mb-6">
         <Link
           href="/plan-trip"
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#F4A934] py-3 text-[13px] font-bold text-[#17211D] transition-transform hover:scale-[1.02] active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#F4A934] to-[#F19305] py-3 text-[14px] font-bold text-[#14151a] shadow-md transition-all hover:scale-[1.02] hover:shadow-[0_4px_14px_rgba(244,169,52,0.3)] active:scale-[0.98]"
         >
-          <Plus size={16} />
+          <Plus size={18} strokeWidth={2.5} className="text-[#14151a]" />
           Plan a New Trip ✨
         </Link>
       </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { DestinationData } from "@/data/destinations";
+import { DestinationData } from "@/types/destination-card";
 import DestinationCard from '@/components/destinations/listings/DestinationCard';
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";

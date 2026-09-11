@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Variants } from "framer-motion";
@@ -32,32 +33,32 @@ import {
    DATA
 ============================================================ */
 
-const highlights = [
-  {
-    icon: Waves,
-    title: "Beautiful Beaches",
-    percentage: 96,
-    color: "emerald",
-  },
-  {
-    icon: Sun,
-    title: "Stunning Sunsets",
-    percentage: 89,
-    color: "gold",
-  },
-  {
-    icon: Utensils,
-    title: "Fresh Seafood",
-    percentage: 91,
-    color: "emerald",
-  },
-  {
-    icon: Camera,
-    title: "Scenic Photography",
-    percentage: 87,
-    color: "gold",
-  },
-];
+// const highlights = [
+//   {
+//     icon: Waves,
+//     title: "Beautiful Beaches",
+//     percentage: 96,
+//     color: "emerald",
+//   },
+//   {
+//     icon: Sun,
+//     title: "Stunning Sunsets",
+//     percentage: 89,
+//     color: "gold",
+//   },
+//   {
+//     icon: Utensils,
+//     title: "Fresh Seafood",
+//     percentage: 91,
+//     color: "emerald",
+//   },
+//   {
+//     icon: Camera,
+//     title: "Scenic Photography",
+//     percentage: 87,
+//     color: "gold",
+//   },
+// ];
 
 const concerns = [
   {
@@ -428,6 +429,27 @@ function ReviewCard({
 
 export default function ReviewInsightsPage() {
   const shouldReduceMotion = useReducedMotion();
+
+  const [insightsData, setInsightsData] = useState<{
+    highlights: any[];
+    concerns: any[];
+    categories: any[];
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchInsights = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/reviews/insights`);
+        const data = await res.json();
+        if (data.success && data.data) {
+          setInsightsData(data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch insights:", error);
+      }
+    };
+    fetchInsights();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#F7F7F2] text-[#17211D]">
@@ -948,8 +970,8 @@ export default function ReviewInsightsPage() {
             </div>
 
             <div className="mt-6 space-y-5">
-              {highlights.map((item, index) => {
-                const Icon = item.icon;
+              {(insightsData?.highlights || []).map((item, index) => {
+                const Icon = item.icon === "Waves" ? Waves : item.icon === "Sun" ? Sun : item.icon === "Utensils" ? Utensils : Camera;
 
                 return (
                   <motion.div
@@ -1034,8 +1056,8 @@ export default function ReviewInsightsPage() {
             </div>
 
             <div className="mt-6 space-y-5">
-              {concerns.map((item, index) => {
-                const Icon = item.icon;
+              {(insightsData?.concerns || []).map((item, index) => {
+                const Icon = item.icon === "Users" ? Users : item.icon === "Car" ? Car : item.icon === "Clock3" ? Clock3 : CircleAlert;
 
                 return (
                   <motion.div
@@ -1134,7 +1156,7 @@ export default function ReviewInsightsPage() {
           </div>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {categories.map((category, index) => (
+            {(insightsData?.categories || []).map((category, index) => (
               <CategoryScore
                 key={category.label}
                 label={category.label}

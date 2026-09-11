@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { formatBdt } from "@/data/hotels";
+import { formatBdt } from "@/data/services/hotels";
 import type { Hotel } from "@/types/hotel";
 
 type HotelCardProps = {

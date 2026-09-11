@@ -1,7 +1,7 @@
 "use client";
 
 import { CalendarDays } from "lucide-react";
-import { DURATION_CHIPS } from "@/data/tripPlanOptions";
+import { DURATION_CHIPS } from "@/data/config/tripPlanOptions";
 
 interface DateSelectorProps {
   startDate: string | null;

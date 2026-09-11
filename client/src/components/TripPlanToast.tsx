@@ -17,6 +17,7 @@ export function TripPlanToaster() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    //eslint-disable-next-line
     setMounted(true);
   }, []);
 
@@ -53,7 +54,7 @@ export function showTripPlanToast({
         transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
         role="status"
         aria-live="polite"
-        className="w-[calc(100vw-32px)] max-w-[360px] overflow-hidden rounded-[18px] border border-white/15 bg-gradient-to-br from-[#073D31] to-[#0A5745] text-white shadow-[0_18px_44px_rgba(7,61,49,0.25)]"
+        className="w-[calc(100vw-32px)] max-w-90 overflow-hidden rounded-[18px] border border-white/15 bg-linear-to-br from-[#073D31] to-[#0A5745] text-white shadow-[0_18px_44px_rgba(7,61,49,0.25)]"
       >
         <div className="flex min-w-0 items-center gap-3 py-3.5 pl-3.5 pr-2.5">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD16F] to-[#F4A934] text-[#073D31] shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]">

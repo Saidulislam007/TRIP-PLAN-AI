@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { Eye, Edit2, Share2, Download, CalendarDays, Compass } from "lucide-react";
-import { Trip } from "@/data/dashboardData";
+import { CalendarDays, Compass, Eye, Edit2, Share2, Download } from "lucide-react";
+import { Trip } from "@/types/dashboardTrip";
 
 export default function TripCard({ trip }: { trip: Trip }) {
   const getStatusColor = (status: string) => {

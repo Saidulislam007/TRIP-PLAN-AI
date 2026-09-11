@@ -1,3 +1,5 @@
+"use client";
+
 import { CalendarDays, Heart, Briefcase, Wallet } from "lucide-react";
 import StatCard from "@/components/dashboard/StatCard";
 import NextAdventureCard from "@/components/dashboard/NextAdventureCard";
@@ -8,18 +10,31 @@ import AITravelInsight from "@/components/dashboard/AITravelInsight";
 import SavedForLater from "@/components/dashboard/SavedForLater";
 import TravelCalendar from "@/components/dashboard/TravelCalendar";
 import RecentActivity from "@/components/dashboard/RecentActivity";
-import { dashboardData } from "@/data/dashboardData";
+import { useDashboard } from "@/components/dashboard/DashboardContext";
+import { useSession } from "@/lib/auth-client";
 
 export default function DashboardOverview() {
-  const { stats, user } = dashboardData;
+  const { dashboardData, isLoading, error } = useDashboard();
+  const { data: session } = useSession();
+
+  if (isLoading) {
+    return <div className="flex h-full items-center justify-center p-10"><p className="text-[#66736D]">Loading dashboard...</p></div>;
+  }
+
+  if (error || !dashboardData) {
+    return <div className="flex h-full items-center justify-center p-10"><p className="text-red-500">{error || "Failed to load dashboard data"}</p></div>;
+  }
+
+  const { stats } = dashboardData;
+  const firstName = session?.user?.name ? session.user.name.split(" ")[0] : "Traveler";
 
   return (
-    <div className="flex flex-col gap-8 pb-10">
+    <div className="flex flex-col gap-8 pb-10 px-6 lg:px-10 pt-6">
       {/* Hero Welcome */}
       <div className="flex flex-col md:flex-row md:items-end md:justify-between">
         <div>
           <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#17211D]">
-            Welcome back, {user.firstName}! <span className="inline-block animate-wave origin-bottom-right">👋</span>
+            Welcome back, {firstName}! <span className="inline-block animate-wave origin-bottom-right">👋</span>
           </h1>
           <p className="mt-2 text-[14px] text-[#66736D]">
             Ready to plan your next Bangladesh adventure?

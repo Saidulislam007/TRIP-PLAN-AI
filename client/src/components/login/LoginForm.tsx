@@ -15,8 +15,9 @@ import { useRouter } from "next/navigation";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { showLoginToast } from "@/components/TripPlanToast";
+import { FcGoogle } from "react-icons/fc";
 
-interface FormData {
+interface LoginFormData {
   email: string;
   password: string;
 }
@@ -25,7 +26,7 @@ type LoginFormProps = {
   prefersReducedMotion: boolean;
 };
 
-const initialFormData: FormData = {
+const initialFormData: LoginFormData = {
   email: "",
   password: "",
 };
@@ -34,10 +35,11 @@ export default function LoginForm({
   prefersReducedMotion,
 }: LoginFormProps) {
   const router = useRouter();
-  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formData, setFormData] = useState<LoginFormData>(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -52,49 +54,64 @@ export default function LoginForm({
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const email = formData.email.trim().toLowerCase();
 
-    const formData = new FormData(event.currentTarget);
-    const userData = Object.fromEntries(
-      formData.entries(),
-    ) as unknown as FormData;
-
-    // console.log("userData", userData);
-
-    const { data, error } = await authClient.signIn.email({
-      email: userData.email,
-      password: userData.password,
-    });
-
-    // console.log("signin data", { data, error });
-    // console.log("signin data", data);
-
-    if (!error && data?.user) {
-      showLoginToast(data.user.name ?? "Traveler");
-      router.replace("/");
-      router.refresh();
+    if (!email || !formData.password) {
+      setErrorMessage("Enter your email address and password.");
+      return;
     }
 
     setErrorMessage("");
+    setIsSubmitting(true);
 
+    try {
+      const { data, error } = await authClient.signIn.email({
+        email,
+        password: formData.password,
+        rememberMe,
+      });
+
+      if (error || !data?.user) {
+        setErrorMessage(error?.message ?? "Unable to sign in. Please try again.");
+        return;
+      }
+
+      showLoginToast(data.user.name ?? "Traveler");
+      router.replace("/");
+      router.refresh();
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? `Unable to reach the authentication server: ${error.message}`
+          : "Unable to reach the authentication server. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleGoogleLogin = async () => {
     setErrorMessage("");
-
-    const { data, error } = await authClient.signIn.social({
-      provider: "google",
-      callbackURL: "/",
-    });
-    if (error) {
-      toast.error(error.message as string);
-      setErrorMessage(error.message as string);
-      return;
-    } else {
-      toast.success("Redirecting to google!");
+    setIsSubmitting(true);
+    try {
+      const { error } = await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+      if (error) {
+        const message = error.message ?? "Unable to continue with Google.";
+        toast.error(message);
+        setErrorMessage(message);
+      }
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? `Unable to reach the authentication server: ${error.message}`
+          : "Unable to reach the authentication server. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // console.log("signup data", { data, error });
-
   };
 
   return (
@@ -208,10 +225,11 @@ export default function LoginForm({
           }
           whileTap={{ scale: 0.985 }}
           type="submit"
+          disabled={isSubmitting}
           className="mt-5 flex h-13 w-full items-center justify-center gap-2 rounded-[14px] border border-[#FFD078]/60 bg-linear-to-r from-[#F4A934] via-[#F6AC32] to-[#E89022] px-5 text-[13px] font-bold text-white shadow-[0_10px_26px_rgba(232,144,34,0.27),inset_0_1px_0_rgba(255,255,255,0.35)] transition-[filter,box-shadow] hover:brightness-105 hover:shadow-[0_13px_30px_rgba(232,144,34,0.34)] disabled:cursor-not-allowed disabled:opacity-65 sm:h-14 sm:text-[14px]"
         >
           <Plane size={17} fill="currentColor" />
-          Continue Planning
+          {isSubmitting ? "Signing in..." : "Continue Planning"}
         </motion.button>
       </form>
 
@@ -227,12 +245,11 @@ export default function LoginForm({
         whileTap={{ scale: 0.985 }}
         type="button"
         onClick={handleGoogleLogin}
+        disabled={isSubmitting}
         className="flex h-13 w-full items-center justify-center gap-2.5 rounded-[14px] border border-[#D8E2DD] bg-white text-[12px] font-bold text-[#203C32] shadow-sm transition-colors hover:border-[#B7CEC4] hover:bg-[#FBFCFA] disabled:cursor-not-allowed disabled:opacity-65 sm:h-14 sm:text-[13px]"
       >
-        <span className="grid h-5 w-5 place-items-center rounded-full bg-linear-to-br from-[#4285F4] via-[#34A853] to-[#EA4335] text-[10px] font-black text-white">
-          G
-        </span>
-        Continue with Google
+       <FcGoogle size={20} />
+        {isSubmitting ? "Please wait..." : "Continue with Google"}
       </motion.button>
 
       <p className="mt-5 text-center text-[11px] font-medium text-[#6E7D77] sm:text-[12px]">

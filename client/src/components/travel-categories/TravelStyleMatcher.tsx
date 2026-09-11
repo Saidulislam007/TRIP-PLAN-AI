@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { Clock3, Compass, MapPin, Sparkles, Wallet } from "lucide-react";
-import { moods, getRecommendation } from "@/data/aiMatches";
-import type { AIMatchResult } from "@/data/aiMatches";
+import { moods, getRecommendation } from "@/data/config/aiMatches";
+import type { AIMatchResult } from "@/data/config/aiMatches";
 import Link from "next/link";
 import Image from "next/image";
 

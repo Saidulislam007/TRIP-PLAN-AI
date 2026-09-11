@@ -1,12 +1,22 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Map } from "lucide-react";
 import MapCompareSection from "@/components/destinations/interactive/MapCompareSection";
-import { destinationsData } from "@/data/destinations";
+import { fetchDestinations } from "@/lib/api/destination";
+import type { DestinationData } from "@/types/destination-card";
 
 export default function InteractiveMapPage() {
+  const [destinationsData, setDestinationsData] = useState<DestinationData[]>([]);
+
+  useEffect(() => {
+    fetchDestinations().then(res => {
+      if (Array.isArray(res)) setDestinationsData(res);
+    });
+  }, []);
+
   return (
     <div className="bg-[#F7F7F2] min-h-screen">
       {/* Hero Section */}

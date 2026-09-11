@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { Sparkles } from "lucide-react";
-import { EXPERIENCE_TAG_OPTIONS } from "@/data/tripPlanOptions";
+import { EXPERIENCE_TAG_OPTIONS } from "@/data/config/tripPlanOptions";
 import { matchDestinations } from "@/lib/services/destinationMatcher";
 import type { DestinationMatch, ExperienceTag } from "@/types/tripPlan";
 import ToggleChip from "@/components/plan-trip/shared/ToggleChip";
+
+import { fetchDestinations } from "@/lib/api/destination";
 
 interface AIDestinationMatcherProps {
   onSelectDestination: (slug: string) => void;
@@ -14,6 +16,7 @@ interface AIDestinationMatcherProps {
 export default function AIDestinationMatcher({ onSelectDestination }: AIDestinationMatcherProps) {
   const [selectedTags, setSelectedTags] = useState<ExperienceTag[]>([]);
   const [results, setResults] = useState<DestinationMatch[] | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleTag = (tag: ExperienceTag) => {
     setSelectedTags((current) =>
@@ -21,8 +24,18 @@ export default function AIDestinationMatcher({ onSelectDestination }: AIDestinat
     );
   };
 
-  const handleFind = () => {
-    setResults(matchDestinations(selectedTags));
+  const handleFind = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetchDestinations();
+      if (Array.isArray(response)) {
+        setResults(matchDestinations(selectedTags, response));
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

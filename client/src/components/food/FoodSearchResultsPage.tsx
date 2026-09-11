@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { formatBdt, restaurantSpotlights } from "@/data/food";
+import { formatBdt } from "@/data/services/food";
+import { useEffect } from "react";
 
 type SearchDefaults = {
   destination?: string;
@@ -54,6 +55,23 @@ export function FoodSearchResultsPage({ defaults }: { defaults: SearchDefaults }
       label: "Bangladesh",
       bbox: "88.00,20.50,93.00,26.80",
     };
+
+  const [restaurantSpotlights, setRestaurantSpotlights] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/food`);
+        const data = await res.json();
+        if (data.success && data.data) {
+          setRestaurantSpotlights(data.data.restaurants);
+        }
+      } catch (error) {
+        console.error("Failed to fetch restaurants:", error);
+      }
+    };
+    fetchRestaurants();
+  }, []);
 
   const results = useMemo(() => {
     const normalizedDestination = destination.trim().toLowerCase();

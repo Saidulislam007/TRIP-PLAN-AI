@@ -1,8 +1,14 @@
 import Image from "next/image";
 import { Sparkles, ArrowRight, Tag } from "lucide-react";
-import { dashboardData } from "@/data/dashboardData";
+import { useDashboard } from "@/components/dashboard/DashboardContext";
 
 export default function AITravelInsight() {
+  const { dashboardData, isLoading } = useDashboard();
+
+  if (isLoading || !dashboardData) {
+    return <div className="h-full flex items-center justify-center bg-white rounded-2xl">Loading...</div>;
+  }
+
   const { aiInsight } = dashboardData;
 
   return (
@@ -42,7 +48,7 @@ export default function AITravelInsight() {
 
           {/* Tags */}
           <div className="mt-4 flex flex-wrap gap-2">
-            {aiInsight.recommendation.tags.map((tag) => (
+            {aiInsight.recommendation.tags.map((tag: any) => (
               <span
                 key={tag}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-medium text-white/90"

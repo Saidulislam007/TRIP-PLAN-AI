@@ -1,11 +1,12 @@
 "use client";
 
-import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import {
-  ArrowLeft,
-  MapPin,
-  Plane,
-} from "lucide-react";
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+} from "framer-motion";
+import { ArrowLeft, MapPin, Plane } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { MouseEvent } from "react";
@@ -26,19 +27,19 @@ const destinationCards = [
   {
     name: "Sajek Valley",
     note: "Cloud-kissed mountains",
-    image: "/images/destinations/sajek.jpg",
+    image: "/assets/Sajek/cover-1.jpg",
     className: "right-[4%] top-[8%]",
   },
   {
     name: "Cox's Bazar",
     note: "World's longest sea beach",
-    image: "/images/destinations/coxs-bazar.jpg",
+    image: "/assets/Coxs/cover-1.jpg",
     className: "left-[4%] top-[49%]",
   },
   {
     name: "Saint Martin",
     note: "Coral island paradise",
-    image: "/images/destinations/saint-martin.jpg",
+    image: "/assets/Saintmartin/cover-1.jpg",
     className: "bottom-[5%] right-[4%]",
   },
 ] as const;
@@ -69,9 +70,7 @@ export default function RegisterPage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#FAF8F3] text-[#17211D] antialiased">
-      <RegisterNavbar
-        prefersReducedMotion={Boolean(prefersReducedMotion)}
-      />
+      <RegisterNavbar prefersReducedMotion={Boolean(prefersReducedMotion)} />
 
       <section className="mx-auto grid w-full max-w-[1500px] gap-5 px-4 pb-8 pt-[92px] sm:px-6 sm:pb-10 sm:pt-[104px] lg:min-h-screen lg:grid-cols-[0.88fr_1.28fr] lg:items-stretch lg:gap-6 lg:px-8 lg:pb-8 xl:px-10">
         <motion.div
@@ -175,11 +174,11 @@ export default function RegisterPage() {
                 prefersReducedMotion
                   ? { left: "52%", top: "54%", opacity: 1 }
                   : {
-                    left: ["65%", "55%", "51%", "47%"],
-                    top: ["24%", "39%", "58%", "81%"],
-                    rotate: [145, 168, 152, 160],
-                    opacity: [0, 1, 1, 1],
-                  }
+                      left: ["65%", "55%", "51%", "47%"],
+                      top: ["24%", "39%", "58%", "81%"],
+                      rotate: [145, 168, 152, 160],
+                      opacity: [0, 1, 1, 1],
+                    }
               }
               transition={{
                 duration: 8,
@@ -216,10 +215,10 @@ export default function RegisterPage() {
                     prefersReducedMotion
                       ? false
                       : {
-                        opacity: 0,
-                        y: 18,
-                        rotate: index === 1 ? -2 : 2,
-                      }
+                          opacity: 0,
+                          y: 18,
+                          rotate: index === 1 ? -2 : 2,
+                        }
                   }
                   animate={{ opacity: 1, y: 0, rotate: 0 }}
                   transition={{
@@ -231,9 +230,9 @@ export default function RegisterPage() {
                     prefersReducedMotion
                       ? undefined
                       : {
-                        scale: 1.035,
-                        rotateY: index % 2 ? -4 : 4,
-                      }
+                          scale: 1.035,
+                          rotateY: index % 2 ? -4 : 4,
+                        }
                   }
                   style={{ transformStyle: "preserve-3d" }}
                   className={`absolute z-30 w-[118px] overflow-hidden rounded-[14px] border border-white/75 bg-[#071A16]/[0.88] p-1 text-white shadow-[0_16px_35px_rgba(7,26,22,0.24)] backdrop-blur-lg sm:w-[150px] sm:rounded-[17px] sm:p-1.5 xl:w-[170px] ${destination.className}`}
@@ -276,9 +275,7 @@ function AnimatedBrand({
   return (
     <motion.div
       initial={
-        prefersReducedMotion
-          ? false
-          : { opacity: 0, y: 12, scale: 0.96 }
+        prefersReducedMotion ? false : { opacity: 0, y: 12, scale: 0.96 }
       }
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.6, delay: 0.32, ease: revealEase }}
@@ -294,15 +291,15 @@ function AnimatedBrand({
             prefersReducedMotion
               ? undefined
               : {
-                rotateX: [0, -8, 0, 7, 0],
-                rotateY: [0, 12, 0, -10, 0],
-                scale: [1, 1.045, 1, 1.025, 1],
-                boxShadow: [
-                  "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
-                  "0 14px 34px rgba(217,134,31,0.48), inset 0 1px 0 rgba(255,255,255,0.55)",
-                  "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
-                ],
-              }
+                  rotateX: [0, -8, 0, 7, 0],
+                  rotateY: [0, 12, 0, -10, 0],
+                  scale: [1, 1.045, 1, 1.025, 1],
+                  boxShadow: [
+                    "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
+                    "0 14px 34px rgba(217,134,31,0.48), inset 0 1px 0 rgba(255,255,255,0.55)",
+                    "0 9px 24px rgba(217,134,31,0.30), inset 0 1px 0 rgba(255,255,255,0.45)",
+                  ],
+                }
           }
           transition={{
             duration: 5.5,
@@ -347,9 +344,7 @@ function RegisterNavbar({
     <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 lg:px-7">
       <motion.nav
         initial={
-          prefersReducedMotion
-            ? false
-            : { opacity: 0, y: -22, scale: 0.985 }
+          prefersReducedMotion ? false : { opacity: 0, y: -22, scale: 0.985 }
         }
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.65, ease: revealEase }}

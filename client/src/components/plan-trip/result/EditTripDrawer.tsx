@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { RefreshCcw, Trash2, X } from "lucide-react";
-import { BUDGET_TIER_OPTIONS, TRAVEL_PACE_OPTIONS } from "@/data/tripPlanOptions";
+import { BUDGET_TIER_OPTIONS, TRAVEL_PACE_OPTIONS } from "@/data/config/tripPlanOptions";
 import { generateTrip } from "@/lib/services/tripPlanner";
 import { showTripPlanToast } from "@/components/TripPlanToast";
 import type { BudgetCategory, BudgetTier, GeneratedTrip, TravelPace } from "@/types/tripPlan";
@@ -33,10 +33,23 @@ function adjustCategory(trip: GeneratedTrip, label: BudgetCategory["label"], del
 
 export default function EditTripDrawer({ isOpen, trip, onClose, onUpdate }: EditTripDrawerProps) {
   const [selectedDay, setSelectedDay] = useState(trip.itinerary[0]?.day ?? 1);
+  const [isRegeneratingFull, setIsRegeneratingFull] = useState(false);
 
-  const applyRegeneration = (patch: Partial<GeneratedTrip["formState"]>) => {
+  const handleRegenerateTrip = async () => {
+    setIsRegeneratingFull(true);
+    const nextForm = { ...trip.formState };
+    const seed = Math.floor(Math.random() * 1000) + 1;
+    const regenerated = await generateTrip(nextForm, seed);
+    setIsRegeneratingFull(false);
+    if (regenerated) {
+      onUpdate(regenerated);
+      showTripPlanToast({ title: "Trip regenerated", message: "Here's a completely new plan!" });
+    }
+  };
+
+  const applyRegeneration = async (patch: Partial<GeneratedTrip["formState"]>) => {
     const nextForm = { ...trip.formState, ...patch };
-    const regenerated = generateTrip(nextForm);
+    const regenerated = await generateTrip(nextForm);
     if (regenerated) {
       onUpdate(regenerated);
       showTripPlanToast({ title: "Trip updated", message: "Your itinerary has been refreshed." });
@@ -100,9 +113,9 @@ export default function EditTripDrawer({ isOpen, trip, onClose, onUpdate }: Edit
     showTripPlanToast({ title: "Activity added", message: `Added "${candidate.title}" to Day ${dayNumber}.` });
   };
 
-  const handleRegenerateDay = (dayNumber: number) => {
+  const handleRegenerateDay = async (dayNumber: number) => {
     const seed = Math.floor(Math.random() * 1000) + 1;
-    const regenerated = generateTrip(trip.formState, seed);
+    const regenerated = await generateTrip(trip.formState, seed);
     if (!regenerated) return;
 
     const next: GeneratedTrip = JSON.parse(JSON.stringify(trip));

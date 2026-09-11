@@ -18,7 +18,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { destinations, formatBdt, hotels } from "@/data/hotels";
+// import { destinations, formatBdt, hotels } from "@/data/services/hotels";
+import { formatBdt } from "@/data/services/hotels";
 import { HotelSearchBar } from "./HotelSearchBar";
 
 const collections = [
@@ -33,6 +34,10 @@ const collections = [
 ];
 
 export function HotelDiscoveryPage() {
+  const [destinations, setDestinations] = useState<any[]>([]);
+  const [hotels, setHotels] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [destinationSlide, setDestinationSlide] = useState(0);
   const [destinationCardsPerView, setDestinationCardsPerView] = useState(4);
   const [destinationCarouselPaused, setDestinationCarouselPaused] = useState(false);
@@ -41,6 +46,24 @@ export function HotelDiscoveryPage() {
     0,
     destinations.length - destinationCardsPerView,
   );
+
+  useEffect(() => {
+    const fetchHotels = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/hotels`);
+        const data = await res.json();
+        if (data.success && data.data) {
+          setDestinations(data.data.destinations);
+          setHotels(data.data.hotels);
+        }
+      } catch (error) {
+        console.error("Failed to fetch hotels:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHotels();
+  }, []);
 
   useEffect(() => {
     const updateCardsPerView = () => {
@@ -281,7 +304,7 @@ export function HotelDiscoveryPage() {
           </Link>
         </div>
         <div className="mt-8 grid gap-5 md:grid-cols-3">
-          {hotels.slice(0, 3).map((hotel) => (
+          {hotels.slice(0, 3).map((hotel: any) => (
             <Link
               key={hotel.id}
               href={`/hotels/${hotel.slug}`}

@@ -1,8 +1,14 @@
 import Image from "next/image";
-import { CalendarDays, Users, ArrowRight } from "lucide-react";
-import { dashboardData } from "@/data/dashboardData";
+import { Sparkles, Calendar, Users, Wallet, CalendarDays, ArrowRight } from "lucide-react";
+import { useDashboard } from "@/components/dashboard/DashboardContext";
 
 export default function NextAdventureCard() {
+  const { dashboardData, isLoading } = useDashboard();
+
+  if (isLoading || !dashboardData) {
+    return <div className="h-64 flex items-center justify-center bg-white rounded-2xl">Loading...</div>;
+  }
+
   const trip = dashboardData.nextAdventure;
 
   return (

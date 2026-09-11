@@ -1,19 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Star, MapPin, CheckCircle2 } from "lucide-react";
-import { getPlaceWithDestinationBySlug } from "@/data/destinationRegistry";
 import { notFound } from "next/navigation";
 import { Button } from "@heroui/react";
+import { fetchPlaceBySlug } from "@/lib/api/destination";
 
 export default async function PlaceDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const result = getPlaceWithDestinationBySlug(slug);
-
-  if (!result) {
+  const resultResponse = await fetchPlaceBySlug(slug);
+  
+  if (!resultResponse || !resultResponse.success) {
     notFound();
   }
 
-  const { place, destination } = result;
+  const { place, destination } = resultResponse.data;
 
   if (!place) {
     notFound();

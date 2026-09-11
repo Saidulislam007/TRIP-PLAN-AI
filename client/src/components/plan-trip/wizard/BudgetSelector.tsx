@@ -1,7 +1,7 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { BUDGET_TIER_OPTIONS } from "@/data/tripPlanOptions";
+import { BUDGET_TIER_OPTIONS } from "@/data/config/tripPlanOptions";
 import type { BudgetTier } from "@/types/tripPlan";
 
 const PREVIEW_SPLIT: { label: string; percent: number; color: string }[] = [

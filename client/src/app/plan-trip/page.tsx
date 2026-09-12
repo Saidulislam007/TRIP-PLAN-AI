@@ -33,6 +33,7 @@ import TransportPlanView from "@/components/plan-trip/result/TransportPlanView";
 import BudgetBreakdownPanel from "@/components/plan-trip/result/BudgetBreakdownPanel";
 import NotesPanel from "@/components/plan-trip/result/NotesPanel";
 import TripActions from "@/components/plan-trip/result/TripActions";
+import AIFormAssistant from "@/components/plan-trip/AIFormAssistant";
 import AITravelAssistant from "@/components/plan-trip/result/AITravelAssistant";
 import EditTripDrawer from "@/components/plan-trip/result/EditTripDrawer";
 
@@ -357,7 +358,11 @@ export default function PlanTripPage() {
             days={days ?? 3}
             travelers={Math.max(1, travelerCount)}
           />
-          <AITravelAssistant trip={null} />
+          <AIFormAssistant
+            form={formState}
+            destinations={destinationsData}
+            onApply={patchForm}
+          />
         </div>
       </div>
 

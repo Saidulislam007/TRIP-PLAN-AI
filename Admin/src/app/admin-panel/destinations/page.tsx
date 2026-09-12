@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useMemo, useState, useEffect } from "react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import {
   Search,
   SlidersHorizontal,
@@ -18,152 +18,47 @@ import {
   Globe2,
 } from "lucide-react";
 
-const destinationsData = [
-  {
-    id: 1,
-    name: "Jaflong",
-    location: "Sylhet, Bangladesh",
-    category: "Nature",
-    rating: 4.8,
-    views: 12540,
-    status: "Active",
-    featured: true,
-    image:
-      "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=800&q=80",
-    description:
-      "A beautiful natural destination famous for hills, rivers and stone collections.",
-  },
-  {
-    id: 2,
-    name: "Cox's Bazar",
-    location: "Chittagong, Bangladesh",
-    category: "Beach",
-    rating: 4.9,
-    views: 18920,
-    status: "Active",
-    featured: true,
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
-    description:
-      "One of the world's longest natural sandy sea beaches.",
-  },
-  {
-    id: 3,
-    name: "Sajek Valley",
-    location: "Rangamati, Bangladesh",
-    category: "Hill",
-    rating: 4.7,
-    views: 15430,
-    status: "Active",
-    featured: true,
-    image:
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=800&q=80",
-    description:
-      "A popular hill destination surrounded by clouds, mountains and green valleys.",
-  },
-  {
-    id: 4,
-    name: "Ratargul Swamp Forest",
-    location: "Sylhet, Bangladesh",
-    category: "Nature",
-    rating: 4.6,
-    views: 9870,
-    status: "Active",
-    featured: false,
-    image:
-      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=80",
-    description:
-      "A freshwater swamp forest known for its unique ecosystem.",
-  },
-  {
-    id: 5,
-    name: "Bandarban",
-    location: "Chittagong, Bangladesh",
-    category: "Hill",
-    rating: 4.8,
-    views: 11200,
-    status: "Active",
-    featured: true,
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80",
-    description:
-      "A scenic hill district with waterfalls, mountains and tribal culture.",
-  },
-  {
-    id: 6,
-    name: "Sundarbans",
-    location: "Khulna, Bangladesh",
-    category: "Wildlife",
-    rating: 4.7,
-    views: 8750,
-    status: "Active",
-    featured: false,
-    image:
-      "https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=800&q=80",
-    description:
-      "The world's largest mangrove forest and home to the Royal Bengal Tiger.",
-  },
-  {
-    id: 7,
-    name: "Saint Martin's Island",
-    location: "Cox's Bazar, Bangladesh",
-    category: "Beach",
-    rating: 4.5,
-    views: 7640,
-    status: "Draft",
-    featured: false,
-    image:
-      "https://images.unsplash.com/photo-1540202404-a2f29016b523?auto=format&fit=crop&w=800&q=80",
-    description:
-      "A beautiful coral island known for blue water and peaceful beaches.",
-  },
-  {
-    id: 8,
-    name: "Tanguar Haor",
-    location: "Sunamganj, Bangladesh",
-    category: "Nature",
-    rating: 4.6,
-    views: 6320,
-    status: "Active",
-    featured: false,
-    image:
-      "https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=800&q=80",
-    description:
-      "A large wetland ecosystem famous for its seasonal beauty.",
-  },
-  {
-    id: 9,
-    name: "Kuakata",
-    location: "Patuakhali, Bangladesh",
-    category: "Beach",
-    rating: 4.4,
-    views: 5840,
-    status: "Active",
-    featured: false,
-    image:
-      "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=800&q=80",
-    description:
-      "A beautiful coastal destination where both sunrise and sunset can be enjoyed.",
-  },
-  {
-    id: 10,
-    name: "Madhabkunda Waterfall",
-    location: "Moulvibazar, Bangladesh",
-    category: "Nature",
-    rating: 4.5,
-    views: 4930,
-    status: "Draft",
-    featured: false,
-    image:
-      "https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=800&q=80",
-    description:
-      "One of the most popular waterfalls in Bangladesh.",
-  },
-];
+type Destination = {
+  id: string;
+  name: string;
+  location: string;
+  category: string;
+  rating: number;
+  views: number;
+  status: string;
+  featured: boolean;
+  image: string;
+  description: string;
+};
+
+type DestinationApiItem = {
+  _id?: string;
+  id?: string;
+  name?: string;
+  title?: string;
+  location?: string;
+  category?: string;
+  rating?: number;
+  views?: number;
+  status?: string;
+  featured?: boolean;
+  image?: string;
+  thumbnail?: string;
+  description?: string;
+};
+
+type StatProps = {
+  title: string;
+  value: number | string;
+  icon: React.ReactNode;
+  variants?: any | Variants;
+};
+
+
 
 const ITEMS_PER_PAGE = 6;
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: {},
   show: {
     transition: {
@@ -172,7 +67,7 @@ const containerVariants = {
   },
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: {
     opacity: 0,
     y: 20,
@@ -188,7 +83,7 @@ const cardVariants = {
 };
 
 export default function DestinationsPage() {
-  const [destinations, setDestinations] = useState([]);
+ const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
@@ -196,39 +91,97 @@ export default function DestinationsPage() {
   const [status, setStatus] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [selectedDestination, setSelectedDestination] = useState(null);
-  const [deleteDestination, setDeleteDestination] = useState(null);
+  const [selectedDestination, setSelectedDestination] =
+  useState<Destination | null>(null);
+  const [deleteDestination, setDeleteDestination] =
+  useState<Destination | null>(null);
+
+
+  const [showDestinationModal, setShowDestinationModal] =
+  useState(false);
+
+const [editingDestination, setEditingDestination] =
+  useState<Destination | null>(null);
+
+const [destinationForm, setDestinationForm] = useState({
+  name: "",
+  location: "",
+  category: "Nature",
+  rating: 0,
+  views: 0,
+  status: "Active",
+  featured: false,
+  image: "",
+  description: "",
+});
+
+const [savingDestination, setSavingDestination] =
+  useState(false);
+
 
   useEffect(() => {
-    const fetchDestinations = async () => {
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/destinations`);
-        if (response.ok) {
-          const result = await response.json();
-          if (result.success && result.data) {
-            const mappedData = result.data.map((item) => ({
-              id: item._id,
-              name: item.name || item.title || "Unknown",
-              location: item.location || "Unknown",
-              category: item.category || "Nature",
-              rating: item.rating || 4.5,
-              views: item.views || 0,
-              status: item.status || "Active",
-              featured: item.featured || false,
-              image: item.image || item.thumbnail || "https://images.unsplash.com/photo-1500534623283-312aade485b7",
-              description: item.description || "No description provided.",
-            }));
-            setDestinations(mappedData);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to fetch destinations", error);
-      } finally {
-        setLoading(false);
+  const fetchDestinations = async () => {
+    try {
+      setLoading(true);
+
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_URL ||
+        "http://localhost:5000";
+
+      const response = await fetch(
+        `${API_URL}/api/destinations`
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch destinations: ${response.status}`
+        );
       }
-    };
-    fetchDestinations();
-  }, []);
+
+      const result = await response.json();
+
+      console.log("Destinations API:", result);
+
+      if (result.success && Array.isArray(result.data)) {
+        const mappedData = result.data.map((item:DestinationApiItem) => ({
+          id: String(item._id || item.id),
+          name:
+            item.name ||
+            item.title ||
+            "Unknown Destination",
+          location: item.location || "Unknown",
+          category: item.category || "Nature",
+          rating: Number(item.rating) || 0,
+          views: Number(item.views) || 0,
+          status: item.status || "Active",
+          featured: Boolean(item.featured),
+          image:
+            item.image ||
+            item.thumbnail ||
+            "https://images.unsplash.com/photo-1500534623283-312aade485b7",
+          description:
+            item.description ||
+            "No description provided.",
+        }));
+
+        setDestinations(mappedData);
+      } else {
+        setDestinations([]);
+      }
+    } catch (error) {
+      console.error(
+        "Failed to fetch destinations:",
+        error
+      );
+
+      setDestinations([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchDestinations();
+}, []);
 
   const filteredDestinations = useMemo(() => {
     return destinations.filter((destination) => {
@@ -287,17 +240,17 @@ export default function DestinationsPage() {
     0
   );
 
-  const handleSearch = (value) => {
+  const handleSearch = (value:string) => {
     setSearch(value);
     setCurrentPage(1);
   };
 
-  const handleCategory = (value) => {
+  const handleCategory = (value:string) => {
     setCategory(value);
     setCurrentPage(1);
   };
 
-  const handleStatus = (value) => {
+  const handleStatus = (value:string) => {
     setStatus(value);
     setCurrentPage(1);
   };
@@ -308,6 +261,173 @@ export default function DestinationsPage() {
     setStatus("All");
     setCurrentPage(1);
   };
+
+  const openAddDestinationModal = () => {
+  setEditingDestination(null);
+
+  setDestinationForm({
+    name: "",
+    location: "",
+    category: "Nature",
+    rating: 0,
+    views: 0,
+    status: "Active",
+    featured: false,
+    image: "",
+    description: "",
+  });
+
+  setShowDestinationModal(true);
+};
+
+const openEditDestinationModal = (
+  destination: Destination
+) => {
+  setEditingDestination(destination);
+
+  setDestinationForm({
+    name: destination.name,
+    location: destination.location,
+    category: destination.category,
+    rating: destination.rating,
+    views: destination.views,
+    status: destination.status,
+    featured: destination.featured,
+    image: destination.image,
+    description: destination.description,
+  });
+
+  setShowDestinationModal(true);
+};
+
+const handleDestinationFormChange = (
+  e: React.ChangeEvent<
+    HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+  >
+) => {
+  const { name, value, type } = e.target;
+
+  setDestinationForm((prev) => ({
+    ...prev,
+    [name]:
+      type === "checkbox"
+        ? (e.target as HTMLInputElement).checked
+        : value,
+  }));
+};
+
+const handleSaveDestination = async (
+  e: React.FormEvent
+) => {
+  e.preventDefault();
+
+  if (!destinationForm.name.trim()) {
+    alert("Destination name is required.");
+    return;
+  }
+
+  if (!destinationForm.location.trim()) {
+    alert("Location is required.");
+    return;
+  }
+
+  try {
+    setSavingDestination(true);
+
+    const API_URL =
+      process.env.NEXT_PUBLIC_API_URL ||
+      "http://localhost:5000";
+
+    const payload = {
+      name: destinationForm.name.trim(),
+      location: destinationForm.location.trim(),
+      category: destinationForm.category,
+      rating: Number(destinationForm.rating) || 0,
+      views: Number(destinationForm.views) || 0,
+      status: destinationForm.status,
+      featured: destinationForm.featured,
+      image:
+        destinationForm.image.trim() ||
+        "https://images.unsplash.com/photo-1500534623283-312aade485b7",
+      description:
+        destinationForm.description.trim() ||
+        "No description provided.",
+    };
+
+    const url = editingDestination
+      ? `${API_URL}/api/destinations/${editingDestination.id}`
+      : `${API_URL}/api/destinations`;
+
+    const response = await fetch(url, {
+      method: editingDestination ? "PUT" : "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(
+        result.message || "Failed to save destination"
+      );
+    }
+
+    if (editingDestination) {
+      // Update existing destination in UI
+      setDestinations((prev) =>
+        prev.map((destination) =>
+          destination.id === editingDestination.id
+            ? {
+                ...destination,
+                ...payload,
+              }
+            : destination
+        )
+      );
+    } else {
+      // Add new destination in UI
+      const newDestination: Destination = {
+        id: String(result.data?._id),
+        ...payload,
+      };
+
+      setDestinations((prev) => [
+        newDestination,
+        ...prev,
+      ]);
+    }
+
+    setShowDestinationModal(false);
+    setEditingDestination(null);
+
+    setDestinationForm({
+      name: "",
+      location: "",
+      category: "Nature",
+      rating: 0,
+      views: 0,
+      status: "Active",
+      featured: false,
+      image: "",
+      description: "",
+    });
+  } catch (error) {
+    console.error(
+      "Failed to save destination:",
+      error
+    );
+
+    alert(
+      error instanceof Error
+        ? error.message
+        : "Failed to save destination"
+    );
+  } finally {
+    setSavingDestination(false);
+  }
+};
 
   const handleDelete = async () => {
     if (!deleteDestination) return;
@@ -390,36 +510,38 @@ export default function DestinationsPage() {
         </div>
 
         <motion.button
-          whileHover={{
-            scale: 1.03,
-            y: -2,
-          }}
-          whileTap={{
-            scale: 0.96,
-          }}
-          className="
-            flex
-            w-full
-            items-center
-            justify-center
-            gap-2
-            rounded-xl
-            bg-green-600
-            px-4
-            py-2.5
-            text-sm
-            font-semibold
-            text-white
-            shadow-sm
-            shadow-green-200
-            transition-colors
-            hover:bg-green-700
-            sm:w-auto
-          "
-        >
-          <Plus size={18} />
-          Add Destination
-        </motion.button>
+  type="button"
+  onClick={openAddDestinationModal}
+  whileHover={{
+    scale: 1.03,
+    y: -2,
+  }}
+  whileTap={{
+    scale: 0.96,
+  }}
+  className="
+    flex
+    w-full
+    items-center
+    justify-center
+    gap-2
+    rounded-xl
+    bg-green-600
+    px-4
+    py-2.5
+    text-sm
+    font-semibold
+    text-white
+    shadow-sm
+    shadow-green-200
+    transition-colors
+    hover:bg-green-700
+    sm:w-auto
+  "
+>
+  <Plus size={18} />
+  Add Destination
+</motion.button>
 
       </motion.div>
 
@@ -1036,9 +1158,12 @@ export default function DestinationsPage() {
                           />
 
                           <ActionButton
-                            icon={<Pencil size={17} />}
-                            hover="blue"
-                          />
+  icon={<Pencil size={17} />}
+  onClick={() =>
+    openEditDestinationModal(destination)
+  }
+  hover="blue"
+/>
 
                           <ActionButton
                             icon={<Trash2 size={17} />}
@@ -1343,28 +1468,35 @@ export default function DestinationsPage() {
                         View
                       </motion.button>
 
-                      <motion.button
-                        whileTap={{
-                          scale: 0.95,
-                        }}
-                        className="
-                          flex
-                          flex-1
-                          items-center
-                          justify-center
-                          gap-1.5
-                          rounded-lg
-                          bg-blue-50
-                          py-2
-                          text-xs
-                          font-semibold
-                          text-blue-600
-                          hover:bg-blue-100
-                        "
-                      >
-                        <Pencil size={14} />
-                        Edit
-                      </motion.button>
+                     <motion.button
+  type="button"
+  whileHover={{
+    scale: 1.03,
+  }}
+  whileTap={{
+    scale: 0.95,
+  }}
+  onClick={() =>
+    openEditDestinationModal(destination)
+  }
+  className="
+    flex
+    flex-1
+    items-center
+    justify-center
+    gap-1.5
+    rounded-lg
+    bg-blue-50
+    py-2
+    text-xs
+    font-semibold
+    text-blue-600
+    hover:bg-blue-100
+  "
+>
+  <Pencil size={14} />
+  Edit
+</motion.button>
 
                       <motion.button
                         whileTap={{
@@ -1839,6 +1971,581 @@ export default function DestinationsPage() {
         )}
       </AnimatePresence>
 
+{/* =========================
+    ADD / EDIT DESTINATION MODAL
+========================= */}
+
+<AnimatePresence>
+  {showDestinationModal && (
+    <motion.div
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      exit={{
+        opacity: 0,
+      }}
+      onClick={() =>
+        !savingDestination &&
+        setShowDestinationModal(false)
+      }
+      className="
+        fixed
+        inset-0
+        z-[100]
+        flex
+        items-center
+        justify-center
+        bg-black/40
+        p-4
+        backdrop-blur-sm
+      "
+    >
+      <motion.div
+        initial={{
+          opacity: 0,
+          scale: 0.9,
+          y: 30,
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          y: 0,
+        }}
+        exit={{
+          opacity: 0,
+          scale: 0.95,
+          y: 20,
+        }}
+        transition={{
+          duration: 0.3,
+          ease: "easeOut",
+        }}
+        onClick={(e) => e.stopPropagation()}
+        className="
+          max-h-[90vh]
+          w-full
+          max-w-2xl
+          overflow-y-auto
+          rounded-2xl
+          bg-white
+          shadow-2xl
+        "
+      >
+        {/* Header */}
+
+        <div className="
+          flex
+          items-center
+          justify-between
+          border-b
+          border-gray-100
+          px-6
+          py-5
+        ">
+          <div>
+            <h2 className="
+              text-lg
+              font-bold
+              text-gray-900
+            ">
+              {editingDestination
+                ? "Edit Destination"
+                : "Add Destination"}
+            </h2>
+
+            <p className="
+              mt-1
+              text-xs
+              text-gray-400
+            ">
+              {editingDestination
+                ? "Update destination information."
+                : "Add a new travel destination."}
+            </p>
+          </div>
+
+          <motion.button
+            type="button"
+            whileHover={{
+              scale: 1.08,
+              rotate: 90,
+            }}
+            whileTap={{
+              scale: 0.9,
+            }}
+            disabled={savingDestination}
+            onClick={() =>
+              setShowDestinationModal(false)
+            }
+            className="
+              cursor-pointer
+              rounded-full
+              bg-gray-100
+              p-2
+              text-gray-500
+              transition-colors
+              hover:bg-gray-200
+              disabled:opacity-50
+            "
+          >
+            <X size={18} />
+          </motion.button>
+        </div>
+
+        {/* Form */}
+
+        <form
+          onSubmit={handleSaveDestination}
+          className="p-6"
+        >
+          <div className="
+            grid
+            grid-cols-1
+            gap-4
+            sm:grid-cols-2
+          ">
+
+            {/* Name */}
+
+            <div className="sm:col-span-2">
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Destination Name *
+              </label>
+
+              <input
+                type="text"
+                name="name"
+                value={destinationForm.name}
+                onChange={handleDestinationFormChange}
+                placeholder="e.g. Jaflong"
+                required
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  transition-all
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Location */}
+
+            <div className="sm:col-span-2">
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Location *
+              </label>
+
+              <input
+                type="text"
+                name="location"
+                value={destinationForm.location}
+                onChange={handleDestinationFormChange}
+                placeholder="e.g. Sylhet, Bangladesh"
+                required
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  transition-all
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Category */}
+
+            <div>
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Category
+              </label>
+
+              <select
+                name="category"
+                value={destinationForm.category}
+                onChange={handleDestinationFormChange}
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              >
+                <option value="Nature">Nature</option>
+                <option value="Beach">Beach</option>
+                <option value="Hill">Hill</option>
+                <option value="Wildlife">Wildlife</option>
+              </select>
+            </div>
+
+            {/* Status */}
+
+            <div>
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Status
+              </label>
+
+              <select
+                name="status"
+                value={destinationForm.status}
+                onChange={handleDestinationFormChange}
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              >
+                <option value="Active">Active</option>
+                <option value="Draft">Draft</option>
+              </select>
+            </div>
+
+            {/* Rating */}
+
+            <div>
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Rating
+              </label>
+
+              <input
+                type="number"
+                name="rating"
+                min="0"
+                max="5"
+                step="0.1"
+                value={destinationForm.rating}
+                onChange={handleDestinationFormChange}
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Views */}
+
+            <div>
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Views
+              </label>
+
+              <input
+                type="number"
+                name="views"
+                min="0"
+                value={destinationForm.views}
+                onChange={handleDestinationFormChange}
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Image */}
+
+            <div className="sm:col-span-2">
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Image URL
+              </label>
+
+              <input
+                type="url"
+                name="image"
+                value={destinationForm.image}
+                onChange={handleDestinationFormChange}
+                placeholder="https://..."
+                className="
+                  h-11
+                  w-full
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  transition-all
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Description */}
+
+            <div className="sm:col-span-2">
+              <label className="
+                mb-1.5
+                block
+                text-xs
+                font-semibold
+                text-gray-600
+              ">
+                Description
+              </label>
+
+              <textarea
+                name="description"
+                value={destinationForm.description}
+                onChange={handleDestinationFormChange}
+                rows={4}
+                placeholder="Describe this destination..."
+                className="
+                  w-full
+                  resize-none
+                  rounded-xl
+                  border
+                  border-gray-200
+                  bg-gray-50
+                  px-3
+                  py-3
+                  text-sm
+                  text-gray-700
+                  outline-none
+                  transition-all
+                  focus:border-green-500
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-green-50
+                "
+              />
+            </div>
+
+            {/* Featured */}
+
+            <div className="sm:col-span-2">
+              <label className="
+                flex
+                cursor-pointer
+                items-center
+                gap-3
+                rounded-xl
+                border
+                border-gray-200
+                bg-gray-50
+                p-3
+              ">
+                <input
+                  type="checkbox"
+                  name="featured"
+                  checked={destinationForm.featured}
+                  onChange={handleDestinationFormChange}
+                  className="
+                    h-4
+                    w-4
+                    accent-green-600
+                  "
+                />
+
+                <div>
+                  <p className="
+                    text-sm
+                    font-semibold
+                    text-gray-700
+                  ">
+                    Featured Destination
+                  </p>
+
+                  <p className="
+                    text-xs
+                    text-gray-400
+                  ">
+                    Show this destination as featured.
+                  </p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Buttons */}
+
+          <div className="
+            mt-6
+            flex
+            gap-3
+            border-t
+            border-gray-100
+            pt-5
+          ">
+            <motion.button
+              type="button"
+              whileTap={{
+                scale: 0.96,
+              }}
+              disabled={savingDestination}
+              onClick={() =>
+                setShowDestinationModal(false)
+              }
+              className="
+                flex-1
+                rounded-xl
+                border
+                border-gray-200
+                py-2.5
+                text-sm
+                font-semibold
+                text-gray-600
+                transition-colors
+                hover:bg-gray-50
+                disabled:opacity-50
+              "
+            >
+              Cancel
+            </motion.button>
+
+            <motion.button
+              type="submit"
+              whileHover={{
+                y: -1,
+              }}
+              whileTap={{
+                scale: 0.96,
+              }}
+              disabled={savingDestination}
+              className="
+                flex-1
+                rounded-xl
+                bg-green-600
+                py-2.5
+                text-sm
+                font-semibold
+                text-white
+                shadow-sm
+                shadow-green-200
+                transition-colors
+                hover:bg-green-700
+                disabled:cursor-not-allowed
+                disabled:opacity-60
+              "
+            >
+              {savingDestination
+                ? "Saving..."
+                : editingDestination
+                ? "Update Destination"
+                : "Add Destination"}
+            </motion.button>
+          </div>
+        </form>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
+
       {/* =========================
           DELETE MODAL
       ========================= */}
@@ -2002,7 +2709,7 @@ function Stat({
   value,
   icon,
   variants,
-}) {
+}:StatProps) {
   return (
     <motion.div
       variants={variants}
@@ -2090,12 +2797,17 @@ function Stat({
 /* =========================================
    ACTION BUTTON
 ========================================= */
+type ActionButtonProps = {
+  icon: React.ReactNode;
+  onClick?: () => void;
+  hover: "green" | "blue" | "red";
+};
 
 function ActionButton({
   icon,
   onClick,
   hover,
-}) {
+}:ActionButtonProps) {
   const hoverClasses = {
     green:
       "hover:bg-green-50 hover:text-green-600",

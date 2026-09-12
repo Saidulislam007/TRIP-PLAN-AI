@@ -1,6 +1,5 @@
 "use client";
 
-import { User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -17,10 +16,14 @@ import {
   LogOut,
   Globe2,
   Bell,
-  Rocket,
   ChevronRight,
   BookOpen,
 } from "lucide-react";
+
+interface AdminSidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
 const mainMenuItems = [
   {
@@ -68,13 +71,15 @@ const mainMenuItems = [
     href: "/admin-panel/moderation",
     icon: ShieldCheck,
   },
-  
 ];
 
-export default function AdminSidebar({ isOpen, onClose }) {
+export default function AdminSidebar({
+  isOpen,
+  onClose,
+}: AdminSidebarProps) {
   const pathname = usePathname();
 
-  const isActive = (href) => {
+  const isActive = (href: string) => {
     if (href === "/admin-panel") {
       return pathname === "/admin-panel";
     }
@@ -102,14 +107,11 @@ export default function AdminSidebar({ isOpen, onClose }) {
           bg-[#004D40]
           text-white
           shadow-xl
-
           transform
           transition-transform
           duration-300
           ease-in-out
-
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
-
           lg:translate-x-0
         `}
       >
@@ -117,10 +119,11 @@ export default function AdminSidebar({ isOpen, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          className="cursor:pointer
+          className="
             absolute right-3 top-3
             z-10
             flex h-8 w-8
+            cursor-pointer
             items-center justify-center
             rounded-lg
             text-white
@@ -218,7 +221,6 @@ export default function AdminSidebar({ isOpen, onClose }) {
                       font-medium
                       transition-all
                       duration-200
-
                       ${
                         active
                           ? "bg-[#16A875] text-white shadow-sm"
@@ -233,7 +235,6 @@ export default function AdminSidebar({ isOpen, onClose }) {
                         shrink-0
                         transition-all
                         duration-200
-
                         ${
                           active
                             ? "text-white"
@@ -385,7 +386,6 @@ export default function AdminSidebar({ isOpen, onClose }) {
                   font-medium
                   transition-all
                   duration-200
-
                   ${
                     isActive("/admin-panel/profile")
                       ? "bg-[#16A875] text-white"
@@ -419,7 +419,6 @@ export default function AdminSidebar({ isOpen, onClose }) {
                   font-medium
                   transition-all
                   duration-200
-
                   ${
                     isActive("/admin-panel/settings")
                       ? "bg-[#16A875] text-white"
@@ -441,112 +440,41 @@ export default function AdminSidebar({ isOpen, onClose }) {
               </Link>
 
               {/* Logout */}
-              
-             <Link
-  href="/admin-panel/logout"
-  onClick={onClose}
-  className="
-    group
-    flex w-full
-    items-center gap-3
-    rounded-[10px]
-    px-3 py-[9px]
-    text-[13px]
-    font-medium
-    text-[#D0E2DD]
-    transition-all
-    duration-200
-    hover:bg-red-500/15
-    hover:text-red-300
-  "
->
-  <LogOut
-    size={18}
-    strokeWidth={1.8}
-    className="
-      text-[#A9C9C0]
-      transition-all
-      duration-200
-      group-hover:-translate-x-0.5
-      group-hover:text-red-300
-    "
-  />
+              <Link
+                href="/admin-panel/logout"
+                onClick={onClose}
+                className="
+                  group
+                  flex w-full
+                  items-center gap-3
+                  rounded-[10px]
+                  px-3 py-[9px]
+                  text-[13px]
+                  font-medium
+                  text-[#D0E2DD]
+                  transition-all
+                  duration-200
+                  hover:bg-red-500/15
+                  hover:text-red-300
+                "
+              >
+                <LogOut
+                  size={18}
+                  strokeWidth={1.8}
+                  className="
+                    text-[#A9C9C0]
+                    transition-all
+                    duration-200
+                    group-hover:-translate-x-0.5
+                    group-hover:text-red-300
+                  "
+                />
 
-  <span>Logout</span>
-</Link>
-              
+                <span>Logout</span>
+              </Link>
             </div>
           </div>
         </nav>
-
-        {/* ================= UPGRADE CARD ================= */}
-        {/* <div className="shrink-0 px-3 pb-3">
-          <div
-            className="
-              relative
-              overflow-hidden
-              rounded-[15px]
-              border
-              border-[#36B994]/30
-              bg-gradient-to-br
-              from-[#087F5B]
-              to-[#00695C]
-              p-4
-              shadow-lg
-            "
-          >
-            <div
-              className="
-                absolute
-                -right-7
-                -top-7
-                h-20 w-20
-                rounded-full
-                bg-white/10
-              "
-            />
-
-            <div className="relative">
-              <div className="mb-2 flex items-center justify-between">
-                <p className="text-[12px] font-bold text-white">
-                  Upgrade to Pro Plan
-                </p>
-
-                <Rocket
-                  size={21}
-                  strokeWidth={1.8}
-                  className="text-[#C8F2E5]"
-                />
-              </div>
-
-              <p className="mb-3 text-[10px] leading-4 text-[#C7E8DE]">
-                Get advanced analytics and priority support.
-              </p>
-
-              <button
-                type="button"
-                className="cursor-pointer
-                  flex w-full
-                  items-center justify-center
-                  gap-1.5
-                  rounded-lg
-                  bg-white
-                  px-3 py-2
-                  text-[11px]
-                  font-bold
-                  text-[#087F5B]
-                  transition-all
-                  duration-200
-                  hover:bg-[#EAF8F3]
-                  hover:shadow-md
-                "
-              >
-                Upgrade Now
-                <ChevronRight size={14} />
-              </button>
-            </div>
-          </div>
-        </div> */}
 
         {/* ================= BRAND FOOTER ================= */}
         <div className="shrink-0 border-t border-white/10 px-5 py-3">

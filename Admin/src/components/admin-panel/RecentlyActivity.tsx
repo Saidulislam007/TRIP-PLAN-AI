@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   MapPin,
@@ -74,6 +75,8 @@ const recentUsers = [
 ];
 
 export default function RecentActivity() {
+  const router = useRouter();
+  
   return (
     <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-3">
 
@@ -94,6 +97,8 @@ export default function RecentActivity() {
 
           <Link
             href="/admin-panel/trips"
+            onClick={() => router.push("/admin-panel/trips")}
+
             className="flex items-center gap-1 text-sm font-semibold text-green-600 transition-colors hover:text-green-700"
           >
             View All

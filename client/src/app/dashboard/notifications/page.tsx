@@ -84,16 +84,7 @@ export default function NotificationsPage() {
   const handleGenerateTest = async () => {
     if (!user?.id) return;
     try {
-      const types = ["info", "success", "warning", "trip", "system"];
-      const randomType = types[Math.floor(Math.random() * types.length)] as any;
-      
-      let title = "System Update";
-      let message = "This is a generic system notification.";
-      if (randomType === "success") { title = "Payment Successful"; message = "Your booking for Cox's Bazar Resort is confirmed."; }
-      if (randomType === "warning") { title = "Action Required"; message = "Please complete your profile to unlock more features."; }
-      if (randomType === "trip") { title = "Upcoming Trip"; message = "Don't forget to pack! Your trip to Sylhet starts in 2 days."; }
-      
-      const newNotif = await createTestNotification(user.id, title, message, randomType);
+      const newNotif = await createTestNotification(user.id);
       setNotifications(prev => [newNotif, ...prev]);
       toast.success("Test notification generated");
     } catch (error) {
@@ -225,19 +216,7 @@ export default function NotificationsPage() {
             ) : (
               filteredNotifications.map((notif) => {
                 const isUnread = !notif.isRead;
-                
-                // Outer wrapper can be a div or Link if URL exists
-                const Wrapper = notif.link ? Link : 'div';
-                const wrapperProps = notif.link ? { href: notif.link } : {};
-
-                return (
-                  <Wrapper 
-                    key={notif._id}
-                    {...wrapperProps}
-                    className={`group block p-4 md:p-6 transition-all hover:bg-gray-50 cursor-pointer ${
-                      isUnread ? "bg-blue-50/30" : "bg-white"
-                    }`}
-                  >
+                const notificationContent = (
                     <div className="flex gap-4 md:gap-6">
                       
                       {/* Icon */}
@@ -285,7 +264,20 @@ export default function NotificationsPage() {
                         </button>
                       </div>
                     </div>
-                  </Wrapper>
+                );
+
+                const wrapperClassName = `group block p-4 md:p-6 transition-all hover:bg-gray-50 cursor-pointer ${
+                  isUnread ? "bg-blue-50/30" : "bg-white"
+                }`;
+
+                return notif.link ? (
+                  <Link key={notif._id} href={notif.link} className={wrapperClassName}>
+                    {notificationContent}
+                  </Link>
+                ) : (
+                  <div key={notif._id} className={wrapperClassName}>
+                    {notificationContent}
+                  </div>
                 );
               })
             )}

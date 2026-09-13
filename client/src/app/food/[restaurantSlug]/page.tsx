@@ -1,17 +1,13 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { FoodDetailsPage } from "@/components/food/FoodDetailsPage";
-import { fetchFoodBySlug, fetchFood } from "@/lib/api/food";
+import { fetchFoodBySlug } from "@/lib/api/food";
+
+export const dynamic = "force-dynamic";
 
 type FoodDetailsRouteProps = {
   params: Promise<{ restaurantSlug: string }>;
 };
-
-export async function generateStaticParams() {
-  const res = await fetchFood();
-  if (!res?.success) return [];
-  return res.data.restaurants.map((restaurant: any) => ({ restaurantSlug: restaurant.slug }));
-}
 
 export async function generateMetadata({ params }: FoodDetailsRouteProps): Promise<Metadata> {
   const { restaurantSlug } = await params;

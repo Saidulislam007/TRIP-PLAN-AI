@@ -15,6 +15,9 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { useSession } from "@/lib/auth-client";
 
 type PackageBookingProps = {
   packageId: number;
@@ -44,7 +47,10 @@ export default function PackageBooking({
   operator,
   price,
 }: PackageBookingProps) {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [open, setOpen] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const [loading, setLoading] =
     useState(false);
@@ -111,7 +117,7 @@ export default function PackageBooking({
       setLoading(true);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/tour-bookings`,
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/tour-bookings`,
         {
           method: "POST",
 
@@ -141,6 +147,8 @@ export default function PackageBooking({
               phone: form.phone,
             },
 
+            userId: session?.user?.id,
+
             travelDate:
               form.travelDate,
 
@@ -163,29 +171,30 @@ export default function PackageBooking({
       }
 
       /* ========================================================
-         PAYMENT REDIRECT
+         SUCCESS HANDLER (No Payment System Yet)
       ======================================================== */
 
-      if (data.paymentUrl) {
-        window.location.href =
-          data.paymentUrl;
-
-        return;
-      }
-
-      throw new Error(
-        "Payment URL was not returned."
-      );
+      setIsSuccess(true);
+      toast.success("Booking Request Submitted Successfully!");
+      
+      // Delay slightly to allow the toast to render and success animation to play before navigating
+      setTimeout(() => {
+        setForm({ name: "", email: "", phone: "", travelDate: "", travellers: 1, note: "" });
+        setOpen(false);
+        setIsSuccess(false);
+        setLoading(false);
+        router.push("/dashboard/my-bookings");
+      }, 2500);
+      
     } catch (error) {
       console.error(error);
+      setLoading(false); // Stop loading on error
 
-      alert(
+      toast.error(
         error instanceof Error
           ? error.message
           : "Something went wrong."
       );
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -249,8 +258,22 @@ export default function PackageBooking({
               bg-[#f8f6f1]
               text-[#17392f]
               shadow-[0_30px_100px_rgba(0,0,0,0.25)]
+              transition-all duration-500 overflow-hidden
             "
           >
+            {/* ==================================================
+                SUCCESS OVERLAY
+            ================================================== */}
+            {isSuccess && (
+              <div className="absolute inset-0 z-50 bg-[#073D31] flex flex-col items-center justify-center text-center px-6 animate-in fade-in duration-500">
+                <div className="w-24 h-24 bg-white/20 rounded-full flex items-center justify-center mb-6">
+                  <CheckCircle2 className="w-14 h-14 text-white" />
+                </div>
+                <h2 className="text-3xl font-serif font-bold text-white mb-2">Booking Confirmed!</h2>
+                <p className="text-emerald-100 text-lg">Taking you to payment in a moment...</p>
+              </div>
+            )}
+
             {/* ==================================================
                 CLOSE BUTTON
             ================================================== */}

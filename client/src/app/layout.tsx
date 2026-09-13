@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import LayoutWrapper from "@/components/layout/LayoutWrapper";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,6 +44,20 @@ export default function RootLayout({
       <BookmarksProvider>
         <LayoutWrapper>{children}</LayoutWrapper>
       </BookmarksProvider>
+      {/* Tawk.to Live Chat Script */}
+      <Script id="tawk-to" strategy="lazyOnload">
+        {`
+          var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+          (function(){
+          var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+          s1.async=true;
+          s1.src='https://embed.tawk.to/YOUR_PROPERTY_ID/default';
+          s1.charset='UTF-8';
+          s1.setAttribute('crossorigin','*');
+          s0.parentNode.insertBefore(s1,s0);
+          })();
+        `}
+      </Script>
     </html>
   );
 }

@@ -342,7 +342,7 @@ export default function TravelCategories() {
                     className="group relative block h-full overflow-hidden rounded-[22px] border border-white/45 bg-[#DDE9E3] shadow-[0_18px_44px_rgba(14,23,19,0.18)] outline-none transition-[border-color,box-shadow] duration-500 hover:border-[#FFD078]/75 hover:shadow-[0_24px_58px_rgba(14,23,19,0.24),0_0_30px_rgba(244,185,66,0.12)] focus-visible:ring-2 focus-visible:ring-[#F4B942] focus-visible:ring-offset-4"
                   >
                     <Image
-                      src={category.image}
+                      src={category.image || "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop"}
                       alt={category.title}
                       fill
                       sizes="(max-width: 640px) 76vw, (max-width: 1024px) 310px, 340px"

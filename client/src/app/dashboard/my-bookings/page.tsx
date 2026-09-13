@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { Calendar, CreditCard, Ticket, MapPin, Users, Loader2, ArrowRight, DownloadCloud, Clock, Hash } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function MyBookingsPage() {
   const { data: session, isPending } = useSession();
@@ -40,6 +41,43 @@ export default function MyBookingsPage() {
 
   const handlePayment = (bookingId: string) => {
     router.push(`/dashboard/checkout/${bookingId}`);
+  };
+
+  const handleDownloadReceipt = (booking: any) => {
+    const receiptContent = `
+=========================================
+          TRIP PLAN AI - RECEIPT
+=========================================
+
+Booking ID: ${booking._id}
+Package: ${booking.packageTitle}
+Destination: ${booking.destination}
+Duration: ${booking.duration}
+Travel Date: ${new Date(booking.travelDate).toLocaleDateString()}
+Travellers: ${booking.travellers} Person(s)
+
+-----------------------------------------
+Total Amount: BDT ${booking.totalPrice.toLocaleString('en-IN')}
+Payment Status: PAID
+-----------------------------------------
+
+Thank you for choosing Trip Plan AI!
+Have a safe and wonderful journey!
+=========================================
+    `.trim();
+
+    const blob = new Blob([receiptContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Receipt-${booking._id.substring(booking._id.length - 8).toUpperCase()}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast.success("Receipt downloaded successfully!");
   };
 
   const formatPrice = (value: number) => new Intl.NumberFormat("en-BD", { style: "currency", currency: "BDT" }).format(value);
@@ -163,7 +201,10 @@ export default function MyBookingsPage() {
                   )}
                   
                   {booking.paymentStatus === "Paid" && (
-                    <button className="w-full flex items-center justify-center gap-2 py-3 bg-white border-2 border-gray-100 rounded-xl text-sm font-bold text-[#073D31] hover:bg-emerald-50 hover:border-emerald-100 transition-all shadow-sm">
+                    <button 
+                      onClick={() => handleDownloadReceipt(booking)}
+                      className="w-full flex items-center justify-center gap-2 py-3 bg-white border-2 border-gray-100 rounded-xl text-sm font-bold text-[#073D31] hover:bg-emerald-50 hover:border-emerald-100 transition-all shadow-sm"
+                    >
                       <DownloadCloud className="w-4 h-4" /> Download Receipt
                     </button>
                   )}

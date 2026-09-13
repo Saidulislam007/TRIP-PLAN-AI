@@ -18,6 +18,7 @@ import {
   Bell,
   ChevronRight,
   BookOpen,
+  Ticket,
 } from "lucide-react";
 
 interface AdminSidebarProps {
@@ -55,6 +56,11 @@ const mainMenuItems = [
     name: "Trips",
     href: "/admin-panel/trips",
     icon: Map,
+  },
+  {
+    name: "Bookings",
+    href: "/admin-panel/bookings",
+    icon: Ticket,
   },
   {
     name: "Stories",

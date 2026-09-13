@@ -14,10 +14,10 @@ export default function LayoutWrapper({
     pathname?.startsWith("/dashboard") || pathname?.startsWith("/plan-trip");
 
   return (
-    <body className="flex min-h-full flex-col font-sans">
+    <div className="flex min-h-full flex-col font-sans">
       {!isAppShell && <Navbar />}
       <main className="flex-1 h-full">{children}</main>
       {!isAppShell && <Footer />}
-    </body>
+    </div>
   );
 }

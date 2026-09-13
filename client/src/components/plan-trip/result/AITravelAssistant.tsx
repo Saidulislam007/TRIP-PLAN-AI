@@ -685,6 +685,7 @@ export default function AITravelAssistant({
             isTyping ||
             isApplying
           }
+          
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#04271C] text-white transition-colors hover:bg-[#073D31] disabled:cursor-not-allowed disabled:opacity-40"
         >
           <Send size={15} />

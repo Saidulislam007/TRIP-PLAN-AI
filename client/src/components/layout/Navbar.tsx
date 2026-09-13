@@ -277,7 +277,7 @@ export default function Navbar() {
               This is absolutely centered in the navbar.
           ==================================================== */}
 
-          <div className="absolute left-1/2 top-0 hidden h-full -translate-x-1/2 items-center lg:flex">
+          <div className="absolute left-1/2 top-0 hidden h-full -translate-x-1/2 items-center whitespace-nowrap lg:flex">
             {/* ==================================================
                 EXPLORE
             ================================================== */}
@@ -295,7 +295,7 @@ export default function Navbar() {
                   setInspirationOpen(false);
                 }}
                 className={`
-                  relative flex h-full items-center
+                  relative flex h-full shrink-0 items-center whitespace-nowrap
                   px-[14px]
                   text-[14px]
                   font-medium
@@ -309,7 +309,7 @@ export default function Navbar() {
                   }
                 `}
               >
-                <span className="flex items-center gap-[5px]">
+                <span className="flex items-center gap-[5px] whitespace-nowrap">
                   Explore
 
                   <ChevronDown
@@ -362,7 +362,7 @@ export default function Navbar() {
                   setInspirationOpen(false);
                 }}
                 className={`
-                  relative flex h-full items-center
+                  relative flex h-full shrink-0 items-center whitespace-nowrap
                   px-[14px]
                   text-[14px]
                   font-medium
@@ -376,7 +376,7 @@ export default function Navbar() {
                   }
                 `}
               >
-                <span className="flex items-center gap-[5px]">
+                <span className="flex items-center gap-[5px] whitespace-nowrap">
                   Destinations
 
                   <ChevronDown
@@ -459,7 +459,7 @@ export default function Navbar() {
                   setDestinationsOpen(false);
                 }}
                 className={`
-                  relative flex h-full items-center
+                  relative flex h-full shrink-0 items-center whitespace-nowrap
                   px-[14px]
                   text-[14px]
                   font-medium
@@ -473,7 +473,7 @@ export default function Navbar() {
                   }
                 `}
               >
-                <span className="flex items-center gap-[5px]">
+                <span className="flex items-center gap-[5px] whitespace-nowrap">
                   Inspiration
 
                   <ChevronDown
@@ -825,7 +825,7 @@ function NavItem({
     <Link
       href={href}
       className={`
-        group relative flex h-full items-center
+        group relative flex h-full shrink-0 items-center whitespace-nowrap
         px-[14px]
         text-[14px]
         font-medium
@@ -838,7 +838,7 @@ function NavItem({
         }
       `}
     >
-      <span className="relative">
+      <span className="relative whitespace-nowrap">
         {label}
 
         {/* Underline directly under text */}

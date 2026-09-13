@@ -8,6 +8,7 @@ import type { GeneratedTrip, ResultTabId } from "@/types/tripPlan";
 
 import TripSummary from "@/components/plan-trip/result/TripSummary";
 import AIRecommendationCard from "@/components/plan-trip/result/AIRecommendationCard";
+import AITravelAssistant from "@/components/plan-trip/result/AITravelAssistant";
 import ItineraryTimeline from "@/components/plan-trip/result/ItineraryTimeline";
 import HotelRecommendations from "@/components/plan-trip/result/HotelRecommendations";
 import FoodRecommendations from "@/components/plan-trip/result/FoodRecommendations";
@@ -56,6 +57,42 @@ export default function TripDetailsPage() {
     };
     if (id) fetchTrip();
   }, [id]);
+
+  const handleAITripUpdate = async (updatedTrip: GeneratedTrip) => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const response = await fetch(`${baseUrl}/api/trips/${encodeURIComponent(id)}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        fullPlan: updatedTrip,
+        formState: updatedTrip.formState,
+        amount: updatedTrip.budget.total,
+        updatedAt: new Date().toISOString(),
+      }),
+    });
+
+    if (!response.ok) {
+      const data = await response.json().catch(() => null);
+      throw new Error(
+        typeof data?.message === "string"
+          ? data.message
+          : "AI changes save kora jayni. Abar try koro.",
+      );
+    }
+
+    setTrip((current: any) =>
+      current
+        ? {
+            ...current,
+            fullPlan: updatedTrip,
+            formState: updatedTrip.formState,
+            amount: updatedTrip.budget.total,
+            updatedAt: new Date().toISOString(),
+          }
+        : current,
+    );
+  };
 
   if (loading) {
     return (
@@ -146,6 +183,10 @@ export default function TripDetailsPage() {
 
                 <div className="space-y-5">
                   <AIRecommendationCard recommendation={fullPlan.aiRecommendation} />
+                  <AITravelAssistant
+                    trip={fullPlan}
+                    onTripUpdate={handleAITripUpdate}
+                  />
                 </div>
               </div>
             </div>

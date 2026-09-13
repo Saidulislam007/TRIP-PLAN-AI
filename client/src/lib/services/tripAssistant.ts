@@ -1,11 +1,18 @@
-import type { BudgetCategory, GeneratedTrip, ItineraryActivity } from "@/types/tripPlan";
+import type {
+  AITripOperation,
+  AITripProposal,
+  BudgetCategory,
+  GeneratedTrip,
+  ItineraryActivity,
+} from "@/types/tripPlan";
 
-export interface AssistantResponse {
-  reply: string;
-  updatedTrip?: GeneratedTrip;
+export interface AppliedTripProposal {
+  trip: GeneratedTrip;
+  appliedCount: number;
 }
 
 function cloneTrip(trip: GeneratedTrip): GeneratedTrip {
+  if (typeof structuredClone === "function") return structuredClone(trip);
   return JSON.parse(JSON.stringify(trip)) as GeneratedTrip;
 }
 
@@ -16,178 +23,184 @@ function categoryFor(tag: ItineraryActivity["tag"]): BudgetCategory["label"] {
   return "Activities";
 }
 
-function recalcBudgetTotals(trip: GeneratedTrip): void {
-  const total = trip.budget.categories.reduce((sum, category) => sum + category.amount, 0);
-  trip.budget.total = total;
-  trip.budget.categories.forEach((category) => {
-    category.percent = total > 0 ? Math.round((category.amount / total) * 100) : 0;
-  });
-  trip.budget.usedPercent = trip.budget.budgetLimit > 0 ? Math.round((total / trip.budget.budgetLimit) * 100) : 100;
-  if (trip.budget.usedPercent <= 100) {
-    trip.budget.aiSuggestion = undefined;
-  }
-}
-
-function adjustCategory(trip: GeneratedTrip, label: BudgetCategory["label"], deltaAmount: number): void {
+function adjustCategory(
+  trip: GeneratedTrip,
+  label: BudgetCategory["label"],
+  deltaAmount: number,
+): void {
   const category = trip.budget.categories.find((entry) => entry.label === label);
   if (category) category.amount = Math.max(0, category.amount + deltaAmount);
 }
 
-function handleCheaper(trip: GeneratedTrip): AssistantResponse {
-  const selected = trip.hotels.find((hotel) => hotel.selected);
-  const cheapest = [...trip.hotels].sort((a, b) => a.pricePerNight - b.pricePerNight)[0];
-
-  if (!selected || !cheapest || cheapest.id === selected.id) {
-    return { reply: "Your current selections are already close to the best value I can find for this trip." };
-  }
-
-  const nightlySavings = selected.pricePerNight - cheapest.pricePerNight;
-  const totalSavings = Math.max(0, nightlySavings * trip.nights);
-
-  selected.selected = false;
-  cheapest.selected = true;
-  adjustCategory(trip, "Accommodation", -totalSavings);
-  recalcBudgetTotals(trip);
-
-  return {
-    reply: `Switched your stay to ${cheapest.name} — that saves about ৳${totalSavings.toLocaleString("en-US")} on this trip.`,
-    updatedTrip: trip,
-  };
+function recalcDay(trip: GeneratedTrip, dayNumber: number): void {
+  const day = trip.itinerary.find((entry) => entry.day === dayNumber);
+  if (!day) return;
+  day.totalCost = day.activities.reduce((sum, activity) => sum + activity.cost, 0);
 }
 
-function handleRemoveActivity(trip: GeneratedTrip, keyword: string): AssistantResponse {
-  let removedCount = 0;
-  let removedCost = 0;
-  let removedCategory: BudgetCategory["label"] | null = null;
+function recalcBudgetTotals(trip: GeneratedTrip): void {
+  const total = trip.budget.categories.reduce(
+    (sum, category) => sum + category.amount,
+    0,
+  );
 
-  trip.itinerary.forEach((day) => {
-    const remaining = day.activities.filter((activity) => {
-      const haystack = `${activity.title} ${activity.tag} ${activity.location}`.toLowerCase();
-      const matches = activity.tag !== "transfer" && haystack.includes(keyword);
-      if (matches) {
-        removedCount++;
-        removedCost += activity.cost;
-        removedCategory = categoryFor(activity.tag);
-      }
-      return !matches;
-    });
-    day.activities = remaining;
-    day.totalCost = remaining.reduce((sum, activity) => sum + activity.cost, 0);
+  trip.budget.total = total;
+  trip.budget.categories.forEach((category) => {
+    category.percent = total > 0 ? Math.round((category.amount / total) * 100) : 0;
   });
+  trip.budget.usedPercent =
+    trip.budget.budgetLimit > 0
+      ? Math.round((total / trip.budget.budgetLimit) * 100)
+      : 100;
 
-  if (removedCount === 0) {
-    return { reply: `I couldn't find anything matching "${keyword}" in your itinerary.` };
+  if (trip.budget.usedPercent <= 100) {
+    trip.budget.aiSuggestion = undefined;
+  } else {
+    trip.budget.aiSuggestion =
+      "Your updated plan is above the current budget. Ask TripPlan AI to reduce the cost.";
   }
-
-  if (removedCategory) adjustCategory(trip, removedCategory, -removedCost);
-  recalcBudgetTotals(trip);
-
-  return {
-    reply: `Removed ${removedCount} ${removedCount === 1 ? "activity" : "activities"} matching "${keyword}" and freed up ৳${removedCost.toLocaleString("en-US")}.`,
-    updatedTrip: trip,
-  };
 }
 
-function handleMoreFood(trip: GeneratedTrip): AssistantResponse {
-  const dayWithFewestMeals = [...trip.itinerary].sort(
-    (a, b) => a.activities.filter((act) => act.tag === "meal").length - b.activities.filter((act) => act.tag === "meal").length,
-  )[0];
+function applyOperation(trip: GeneratedTrip, operation: AITripOperation): boolean {
+  if (operation.type === "remove_activity") {
+    const day = trip.itinerary.find((entry) => entry.day === operation.day);
+    if (!day) return false;
 
-  if (!dayWithFewestMeals) {
-    return { reply: "Generate a trip first so I have an itinerary to add food experiences to." };
+    const activity = day.activities.find((entry) => entry.id === operation.activityId);
+    if (!activity || activity.tag === "transfer") return false;
+
+    day.activities = day.activities.filter((entry) => entry.id !== operation.activityId);
+    adjustCategory(trip, categoryFor(activity.tag), -activity.cost);
+    recalcDay(trip, day.day);
+    return true;
   }
 
-  const usedTitles = new Set(
-    trip.itinerary.flatMap((day) => day.activities.filter((act) => act.tag === "meal").map((act) => act.title)),
-  );
-  const candidate = trip.food.find((food) => !usedTitles.has(food.title)) ?? trip.food[0];
+  if (operation.type === "move_activity") {
+    const fromDay = trip.itinerary.find((entry) => entry.day === operation.fromDay);
+    const toDay = trip.itinerary.find((entry) => entry.day === operation.toDay);
+    if (!fromDay || !toDay || fromDay.day === toDay.day) return false;
 
-  if (!candidate) {
-    return { reply: "I don't have any additional food recommendations for this destination right now." };
+    const activity = fromDay.activities.find((entry) => entry.id === operation.activityId);
+    if (!activity || activity.tag === "transfer") return false;
+
+    fromDay.activities = fromDay.activities.filter((entry) => entry.id !== operation.activityId);
+    toDay.activities.push({
+      ...activity,
+      time: operation.newTime?.trim() || activity.time,
+    });
+    recalcDay(trip, fromDay.day);
+    recalcDay(trip, toDay.day);
+    return true;
   }
 
-  const averageMealCost = Math.round(
-    (trip.budget.categories.find((c) => c.label === "Food")?.amount ?? 1500) /
-      Math.max(1, trip.itinerary.flatMap((day) => day.activities.filter((act) => act.tag === "meal")).length),
-  );
+  if (operation.type === "add_food") {
+    const day = trip.itinerary.find((entry) => entry.day === operation.day);
+    const food = trip.food.find((entry) => entry.id === operation.foodId);
+    if (!day || !food) return false;
 
-  const newActivity: ItineraryActivity = {
-    id: `assistant-${Date.now()}`,
-    time: "08:00 PM",
-    title: candidate.title,
-    location: trip.destination.name,
-    cost: averageMealCost,
-    description: candidate.description,
-    image: candidate.image,
-    tag: "meal",
-  };
+    const mealCount = trip.itinerary.reduce(
+      (count, entry) =>
+        count + entry.activities.filter((activity) => activity.tag === "meal").length,
+      0,
+    );
+    const foodBudget =
+      trip.budget.categories.find((entry) => entry.label === "Food")?.amount ?? 0;
+    const estimatedCost = Math.max(0, Math.round(foodBudget / Math.max(1, mealCount)));
 
-  dayWithFewestMeals.activities.push(newActivity);
-  dayWithFewestMeals.totalCost += newActivity.cost;
-  adjustCategory(trip, "Food", newActivity.cost);
-  recalcBudgetTotals(trip);
-
-  return {
-    reply: `Added "${candidate.title}" to Day ${dayWithFewestMeals.day} of your itinerary.`,
-    updatedTrip: trip,
-  };
-}
-
-function handleMoreRelaxed(trip: GeneratedTrip, command: string): AssistantResponse {
-  const dayMatch = command.match(/day\s*(\d+)/i);
-  const targetDayNumber = dayMatch ? Number(dayMatch[1]) : trip.itinerary[1]?.day ?? trip.itinerary[0]?.day;
-  const day = trip.itinerary.find((entry) => entry.day === targetDayNumber);
-
-  if (!day) {
-    return { reply: "I couldn't find that day in your itinerary." };
-  }
-
-  const removable = [...day.activities].reverse().find((activity) => activity.tag !== "transfer");
-  if (!removable) {
-    return { reply: `Day ${day.day} is already light on activities.` };
-  }
-
-  day.activities = day.activities.filter((activity) => activity.id !== removable.id);
-  day.totalCost -= removable.cost;
-  adjustCategory(trip, categoryFor(removable.tag), -removable.cost);
-  recalcBudgetTotals(trip);
-
-  return {
-    reply: `Made Day ${day.day} more relaxed by removing "${removable.title}".`,
-    updatedTrip: trip,
-  };
-}
-
-export function interpretAssistantCommand(command: string, trip: GeneratedTrip): AssistantResponse {
-  const lower = command.toLowerCase();
-  const working = cloneTrip(trip);
-
-  if (lower.includes("cheap") || lower.includes("budget")) {
-    return handleCheaper(working);
-  }
-
-  if (lower.includes("rain")) {
-    return {
-      reply:
-        "If it rains, consider swapping outdoor sightseeing for local food experiences, markets, or your hotel's indoor amenities — I've kept your itinerary as-is since this is just a heads up.",
+    const activity: ItineraryActivity = {
+      id: `ai-food-${Date.now()}-${operation.day}`,
+      time: operation.time?.trim() || "08:00 PM",
+      title: food.title,
+      location: trip.destination.name,
+      cost: estimatedCost,
+      description: food.description,
+      image: food.image,
+      tag: "meal",
     };
+
+    day.activities.push(activity);
+    adjustCategory(trip, "Food", estimatedCost);
+    recalcDay(trip, day.day);
+    return true;
   }
 
-  const removeMatch = lower.match(/remove\s+([a-z\s]+)/);
-  if (removeMatch) {
-    return handleRemoveActivity(working, removeMatch[1].trim());
+  if (operation.type === "add_activity") {
+    const day = trip.itinerary.find((entry) => entry.day === operation.day);
+    if (!day) return false;
+
+    const activity: ItineraryActivity = {
+      id: `ai-activity-${Date.now()}-${operation.day}`,
+      time: operation.time,
+      title: operation.title,
+      location: operation.location,
+      cost: Math.max(0, Math.round(operation.estimatedCost)),
+      description: operation.description,
+      tag: operation.tag,
+    };
+
+    day.activities.push(activity);
+    adjustCategory(trip, categoryFor(activity.tag), activity.cost);
+    recalcDay(trip, day.day);
+    return true;
   }
 
-  if (lower.includes("more food") || lower.includes("food experience")) {
-    return handleMoreFood(working);
+  if (operation.type === "select_hotel") {
+    const nextHotel = trip.hotels.find((hotel) => hotel.id === operation.hotelId);
+    if (!nextHotel) return false;
+
+    const currentHotel = trip.hotels.find((hotel) => hotel.selected);
+    if (currentHotel?.id === nextHotel.id) return false;
+
+    const oldStayCost = (currentHotel?.pricePerNight ?? 0) * Math.max(1, trip.nights);
+    const newStayCost = nextHotel.pricePerNight * Math.max(1, trip.nights);
+
+    trip.hotels = trip.hotels.map((hotel) => ({
+      ...hotel,
+      selected: hotel.id === nextHotel.id,
+    }));
+    adjustCategory(trip, "Accommodation", newStayCost - oldStayCost);
+    return true;
   }
 
-  if (lower.includes("relax") || /day\s*\d+/.test(lower)) {
-    return handleMoreRelaxed(working, lower);
+  if (operation.type === "set_travel_pace") {
+    if (trip.formState.travelPace === operation.pace) return false;
+    trip.formState.travelPace = operation.pace;
+    return true;
   }
 
-  return {
-    reply:
-      "I can help make this trip cheaper, add food experiences, remove an activity, or make a specific day more relaxed — try one of the suggestions below.",
-  };
+  if (operation.type === "set_budget_limit") {
+    const amount = Math.max(1, Math.round(operation.amount));
+    trip.formState.customBudget = amount;
+    trip.budget.budgetLimit = amount;
+    return true;
+  }
+
+  if (operation.type === "add_note") {
+    const note = operation.note.trim();
+    if (!note || trip.notes.some((entry) => entry.toLowerCase() === note.toLowerCase())) {
+      return false;
+    }
+    trip.notes.push(note);
+    return true;
+  }
+
+  return false;
+}
+
+export function applyAITripProposal(
+  currentTrip: GeneratedTrip,
+  proposal: AITripProposal,
+): AppliedTripProposal {
+  const trip = cloneTrip(currentTrip);
+  let appliedCount = 0;
+
+  for (const operation of proposal.operations) {
+    if (applyOperation(trip, operation)) appliedCount += 1;
+  }
+
+  if (appliedCount > 0) {
+    recalcBudgetTotals(trip);
+  }
+
+  return { trip, appliedCount };
 }

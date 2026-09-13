@@ -189,6 +189,78 @@ export interface GeneratedTrip {
 }
 
 /* ============================================================
+   AI LIVE TRIP REPLANNER
+============================================================ */
+
+export type AITripOperation =
+  | {
+      type: "remove_activity";
+      label: string;
+      reason: string;
+      day: number;
+      activityId: string;
+    }
+  | {
+      type: "move_activity";
+      label: string;
+      reason: string;
+      fromDay: number;
+      toDay: number;
+      activityId: string;
+      newTime: string | null;
+    }
+  | {
+      type: "add_food";
+      label: string;
+      reason: string;
+      day: number;
+      foodId: string;
+      time: string | null;
+    }
+  | {
+      type: "add_activity";
+      label: string;
+      reason: string;
+      day: number;
+      time: string;
+      title: string;
+      location: string;
+      description: string;
+      tag: ActivityTag;
+      estimatedCost: number;
+    }
+  | {
+      type: "select_hotel";
+      label: string;
+      reason: string;
+      hotelId: string;
+    }
+  | {
+      type: "set_travel_pace";
+      label: string;
+      reason: string;
+      pace: TravelPace;
+    }
+  | {
+      type: "set_budget_limit";
+      label: string;
+      reason: string;
+      amount: number;
+    }
+  | {
+      type: "add_note";
+      label: string;
+      reason: string;
+      note: string;
+    };
+
+export interface AITripProposal {
+  title: string;
+  summary: string;
+  operations: AITripOperation[];
+}
+
+/* ============================================================
    WIZARD UI
 ============================================================ */
 

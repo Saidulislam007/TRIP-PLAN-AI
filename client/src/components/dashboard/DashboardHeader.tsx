@@ -3,11 +3,11 @@
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Bell, Heart, Menu, ChevronDown } from "lucide-react";
+import { Search, Bell, Heart, Menu, ChevronDown, LogOut, Settings, User as UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { fetchUnreadCount } from "@/lib/api/notifications";
 
-import { useSession } from "@/lib/auth-client";
+import { useSession, signOut } from "@/lib/auth-client";
 import { Avatar } from "@heroui/react";
 
 interface DashboardHeaderProps {
@@ -20,6 +20,16 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
   const user = userdata?.data?.user;
 
   const [unreadCount, setUnreadCount] = useState(0);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
 
   useEffect(() => {
     if (user?.id) {
@@ -87,22 +97,62 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
         </div>
 
         {/* User Avatar Pill */}
-        <div className="flex items-center gap-2.5 cursor-pointer transition-all hover:bg-[#D5DBD8] bg-[#E2E7E3] px-1.5 py-1.5 rounded-full border border-gray-200/50 shadow-sm ml-2">
-          <div className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-white">
-            <Avatar className="h-full w-full shrink-0">
-              <Avatar.Image
-                alt={user?.name}
-                src={user?.image ?? undefined}
-              />
-              <Avatar.Fallback className="bg-white text-[#17211D] font-bold text-sm w-full h-full flex items-center justify-center">
-                {user?.name ? user.name.charAt(0) : 'U'}
-              </Avatar.Fallback>
-            </Avatar>
+        <div className="relative">
+          <div 
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center gap-2.5 cursor-pointer transition-all hover:bg-[#D5DBD8] bg-[#E2E7E3] px-1.5 py-1.5 rounded-full border border-gray-200/50 shadow-sm ml-2"
+          >
+            <div className="relative h-8 w-8 overflow-hidden rounded-full ring-2 ring-white">
+              <Avatar className="h-full w-full shrink-0">
+                <Avatar.Image
+                  alt={user?.name}
+                  src={user?.image ?? undefined}
+                />
+                <Avatar.Fallback className="bg-white text-[#17211D] font-bold text-sm w-full h-full flex items-center justify-center">
+                  {user?.name ? user.name.charAt(0) : 'U'}
+                </Avatar.Fallback>
+              </Avatar>
+            </div>
+            <span className="text-[14px] font-bold text-[#17211D] hidden lg:block pr-1 select-none">
+              {user?.name || "User"}
+            </span>
+            <ChevronDown size={16} className={`text-[#66736D] mr-2 hidden lg:block transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
           </div>
-          <span className="text-[14px] font-bold text-[#17211D] hidden lg:block pr-1">
-            {user?.name || "User"}
-          </span>
-          <ChevronDown size={16} className="text-[#66736D] mr-2 hidden lg:block" />
+
+          {/* Dropdown Menu */}
+          {isDropdownOpen && (
+            <>
+              <div 
+                className="fixed inset-0 z-40" 
+                onClick={() => setIsDropdownOpen(false)} 
+              />
+              <div className="absolute right-0 mt-2 w-64 rounded-[20px] bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-[#E2E7E3] z-50 py-2 animate-in fade-in slide-in-from-top-2">
+                <div className="px-5 py-3 border-b border-[#E2E7E3]/60 mb-2">
+                  <p className="text-[15px] font-bold text-[#17211D] truncate">{user?.name || "User"}</p>
+                  <p className="text-[13px] text-[#66736D] truncate mt-0.5">{user?.email}</p>
+                </div>
+                
+                <div className="px-2 space-y-1">
+                  <Link 
+                    href="/dashboard/settings" 
+                    onClick={() => setIsDropdownOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[14px] font-semibold text-[#073D31] hover:bg-[#E2E7E3]/60 transition-colors"
+                  >
+                    <Settings size={18} className="text-[#073D31]" />
+                    Account Settings
+                  </Link>
+                  
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[14px] font-bold text-[#D93025] hover:bg-red-50 w-full text-left transition-colors mt-1"
+                  >
+                    <LogOut size={18} className="text-[#D93025]" />
+                    Log Out
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </header>

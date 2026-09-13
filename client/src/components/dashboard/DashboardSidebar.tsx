@@ -18,7 +18,8 @@ import {
   Plus,
   Sparkles,
   ChevronDown,
-  Plane
+  Plane,
+  Ticket
 } from "lucide-react";
 
 import { useSession } from "@/lib/auth-client";
@@ -40,6 +41,7 @@ const navigation = [
   {
     section: "TRAVEL",
     items: [
+      { name: "My Bookings", href: "/dashboard/my-bookings", icon: Ticket },
       { name: "My Trips", href: "/dashboard/trips", icon: Map },
       { name: "Plan a Trip", href: "/plan-trip", icon: Compass },
       { name: "Saved", href: "/dashboard/saved", icon: Heart },

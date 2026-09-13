@@ -21,6 +21,7 @@ import {
   Plane,
   Ticket
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import { useSession } from "@/lib/auth-client";
 import { Avatar } from "@heroui/react";
@@ -31,7 +32,19 @@ type SessionUser = {
   role?: string | null;
 };
 
-const navigation = [
+type NavigationItem = {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+  badge?: string | number;
+};
+
+type NavigationGroup = {
+  section: string;
+  items: NavigationItem[];
+};
+
+const navigation: NavigationGroup[] = [
   {
     section: "OVERVIEW",
     items: [

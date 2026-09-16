@@ -28,7 +28,7 @@ export default function DashboardLayout({
           className={`fixed inset-y-0 left-0 z-50 w-[320px] shrink-0 transform transition-transform duration-300 lg:static lg:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
             }`}
         >
-          <DashboardSidebar />
+          <DashboardSidebar onMobileClose={() => setIsMobileMenuOpen(false)} />
         </aside>
 
         {/* Main Content Area */}

@@ -27,6 +27,46 @@ export default function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // States for password change
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleSecuritySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSuccessMsg("");
+    setErrorMsg("");
+    
+    if (newPassword !== confirmPassword) {
+      return setErrorMsg("New passwords do not match.");
+    }
+    
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/users/password`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: profile.email, currentPassword, newPassword })
+      });
+      
+      const data = await res.json();
+      if (res.ok) {
+        setSuccessMsg("Password changed successfully!");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      }
+      else setErrorMsg(data.message || "Failed to change password.");
+    } catch (error) {
+      setErrorMsg("Something went wrong.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const [profile, setProfile] = useState({
     name: "Admin User",
     email: "admin@tripplan.ai",
@@ -558,12 +598,25 @@ export default function ProfilePage() {
 
               <div className="relative">
 
-                <input
-                  type={showPassword ? "text" : "password"}
-                  defaultValue="adminpassword"
-                  className="
-                    w-full
-                    rounded-xl
+                  <form onSubmit={handleSecuritySubmit}>
+                  {successMsg && (
+                    <div className="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-xl text-sm font-medium">
+                      {successMsg}
+                    </div>
+                  )}
+                  {errorMsg && (
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm font-medium">
+                      {errorMsg}
+                    </div>
+                  )}
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Current Password"
+                    className="
+                      w-full
+                      rounded-xl
                     border
                     border-gray-200
                     bg-gray-50
@@ -604,8 +657,64 @@ export default function ProfilePage() {
 
               </div>
 
+              <div className="mt-4">
+                <label className="mb-2 block text-sm font-medium text-gray-700">
+                  New Password
+                </label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="New Password"
+                  className="
+                    w-full
+                    rounded-xl
+                    border
+                    border-gray-200
+                    bg-gray-50
+                    px-4
+                    py-3
+                    text-sm
+                    outline-none
+                    transition
+                    focus:border-green-500
+                    focus:bg-white
+                    focus:ring-2
+                    focus:ring-green-100
+                  "
+                />
+              </div>
+
+              <div className="mt-4">
+                <label className="mb-2 block text-sm font-medium text-gray-700">
+                  Confirm New Password
+                </label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm New Password"
+                  className="
+                    w-full
+                    rounded-xl
+                    border
+                    border-gray-200
+                    bg-gray-50
+                    px-4
+                    py-3
+                    text-sm
+                    outline-none
+                    transition
+                    focus:border-green-500
+                    focus:bg-white
+                    focus:ring-2
+                    focus:ring-green-100
+                  "
+                />
+              </div>
+
               <div className="
-                mt-4
+                mt-6
                 flex
                 flex-col
                 gap-3
@@ -614,6 +723,8 @@ export default function ProfilePage() {
               ">
 
                 <button
+                  type="submit"
+                  disabled={isSubmitting}
                   className="
                     flex
                     w-fit
@@ -629,17 +740,19 @@ export default function ProfilePage() {
                     text-white
                     transition
                     hover:bg-green-700
+                    disabled:opacity-70
                   "
                 >
                   <Lock size={15} />
-                  Change Password
+                  {isSubmitting ? "Changing..." : "Change Password"}
                 </button>
 
                 <span className="text-xs text-gray-400">
-                  Last password update: 30 days ago
+                  Keep your password secure and do not share it.
                 </span>
 
               </div>
+              </form>
 
             </div>
 

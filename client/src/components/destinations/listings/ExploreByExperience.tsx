@@ -45,7 +45,7 @@ export default function ExploreByExperience() {
           Explore by Experience
         </h2>
         <Link 
-          href="/categories" 
+          href="/travel-categories" 
           className="text-[13px] font-bold text-[#087F5B] hover:text-[#065F46] transition-colors flex items-center gap-1.5"
         >
           View All Categories <ArrowRight size={14} />

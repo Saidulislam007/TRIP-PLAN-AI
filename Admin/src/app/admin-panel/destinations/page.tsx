@@ -125,8 +125,7 @@ const [savingDestination, setSavingDestination] =
       setLoading(true);
 
       const API_URL =
-        process.env.NEXT_PUBLIC_API_URL ||
-        "http://localhost:5000";
+        (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
       const response = await fetch(
         `${API_URL}/api/destinations`
@@ -335,8 +334,7 @@ const handleSaveDestination = async (
     setSavingDestination(true);
 
     const API_URL =
-      process.env.NEXT_PUBLIC_API_URL ||
-      "http://localhost:5000";
+      (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
     const payload = {
       name: destinationForm.name.trim(),
@@ -433,7 +431,7 @@ const handleSaveDestination = async (
     if (!deleteDestination) return;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/destinations/${deleteDestination.id}`, {
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/destinations/${deleteDestination.id}`, {
         method: "DELETE",
       });
 

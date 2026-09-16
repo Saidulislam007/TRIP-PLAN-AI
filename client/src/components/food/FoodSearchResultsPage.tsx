@@ -61,7 +61,7 @@ export function FoodSearchResultsPage({ defaults }: { defaults: SearchDefaults }
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/food`);
+        const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/food`);
         const data = await res.json();
         if (data.success && data.data) {
           setRestaurantSpotlights(data.data.restaurants);

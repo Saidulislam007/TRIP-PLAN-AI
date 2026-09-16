@@ -22,7 +22,7 @@ export function DashboardProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const url = new URL(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/dashboard`);
+        const url = new URL(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/dashboard`);
         if (userId) {
           url.searchParams.append("userId", userId);
         }

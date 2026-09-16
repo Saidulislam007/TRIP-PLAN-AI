@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { getUserToken } from "./session";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
 export const serverQuery = async (path: string) => {
     const res = await fetch(`${baseUrl}${path}`);

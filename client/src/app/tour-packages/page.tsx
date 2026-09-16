@@ -1094,7 +1094,7 @@ export default function TourPackagesPage() {
             </p>
 
             <Link
-              href="/travel-intelligence"
+              href="/plan-trip"
               className="
                 mt-7
                 inline-flex

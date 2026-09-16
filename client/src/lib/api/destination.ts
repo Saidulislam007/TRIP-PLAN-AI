@@ -1,4 +1,4 @@
-const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const url = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
 export async function fetchDestinations() {
   const response = await fetch(`${url}/api/destinations`);

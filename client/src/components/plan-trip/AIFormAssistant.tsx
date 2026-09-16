@@ -41,7 +41,7 @@ const labels: Record<string, string> = {
 
 const API_BASE = (
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
-).replace(/\/$/, "");
+).replace(/\/+$/, "");
 
 const MAX_AUDIO_SIZE = 8 * 1024 * 1024;
 const MAX_RECORDING_MS = 60_000;

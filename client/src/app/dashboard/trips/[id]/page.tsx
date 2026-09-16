@@ -31,7 +31,7 @@ export default function TripDetailsPage() {
         if (!id) return;
         
         // Ensure we have a valid URL and fallback if NEXT_PUBLIC_API_URL is missing
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+        const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
         const url = `${baseUrl}/api/trips/${encodeURIComponent(id)}`;
         
         const response = await fetch(url, {
@@ -59,7 +59,7 @@ export default function TripDetailsPage() {
   }, [id]);
 
   const handleAITripUpdate = async (updatedTrip: GeneratedTrip) => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
     const response = await fetch(`${baseUrl}/api/trips/${encodeURIComponent(id)}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },

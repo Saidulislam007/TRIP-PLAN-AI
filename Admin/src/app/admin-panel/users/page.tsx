@@ -105,7 +105,7 @@ export default function UsersPage() {
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const baseUrl =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
     const [showUserModal, setShowUserModal] = useState(false);
 const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -146,13 +146,13 @@ const [formLoading, setFormLoading] = useState(false);
               email: user.email || "No email available",
               phone: user.phone || "+880 0000-000000",
               location: user.location || "Bangladesh",
-              joined: user.createdAt
-                ? new Date(user.createdAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })
-                : "Unknown",
+              joined: (() => {
+                if (!user.createdAt) return "Unknown";
+                const d = new Date(user.createdAt);
+                return isNaN(d.getTime())
+                  ? "Unknown"
+                  : d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+              })(),
               trips: typeof user.trips === "number" ? user.trips : 0,
               status: user.status === "Inactive" ? "Inactive" : "Active",
               role: user.role || "Registered User",

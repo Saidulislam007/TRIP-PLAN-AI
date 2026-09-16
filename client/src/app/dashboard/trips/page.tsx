@@ -192,7 +192,7 @@ export default function TripsPage() {
       try {
         const { data: session } = await authClient.getSession();
         if (!session?.user?.id) return;
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/trips/user/${session.user.id}`);
+        const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/trips/user/${session.user.id}`);
         const data = await response.json();
         if (data.success) setTrips(data.data);
       } catch (error) {

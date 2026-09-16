@@ -51,7 +51,7 @@ const QUICK_PROMPTS = [
 |--------------------------------------------------------------------------
 */
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
 interface AITravelAssistantProps {
   trip: GeneratedTrip | null;
@@ -146,18 +146,7 @@ export default function AITravelAssistant({
 
       const url = `${API_BASE}/api/ai/replan`;
 
-      console.log(
-        "🚀 TripPlan Replan URL:",
-        url
-      );
 
-      console.log(
-        "🚀 TripPlan Replan Payload:",
-        {
-          messages: nextMessages,
-          currentTrip: trip,
-        }
-      );
 
       /*
       |--------------------------------------------------------------------------
@@ -186,15 +175,7 @@ export default function AITravelAssistant({
         }),
       });
 
-      console.log(
-        "✅ Replan HTTP Status:",
-        response.status
-      );
 
-      console.log(
-        "✅ Replan OK:",
-        response.ok
-      );
 
       /*
       |--------------------------------------------------------------------------
@@ -206,10 +187,7 @@ export default function AITravelAssistant({
 
       const rawText = await response.text();
 
-      console.log(
-        "✅ Replan Raw Response:",
-        rawText
-      );
+
 
       /*
       |--------------------------------------------------------------------------

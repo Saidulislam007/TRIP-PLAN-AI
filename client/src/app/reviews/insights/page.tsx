@@ -439,7 +439,7 @@ export default function ReviewInsightsPage() {
   useEffect(() => {
     const fetchInsights = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/reviews/insights`);
+        const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/reviews/insights`);
         const data = await res.json();
         if (data.success && data.data) {
           setInsightsData(data.data);

@@ -69,7 +69,7 @@ type ToastState = {
 ========================================================= */
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
 const CATEGORIES_API = `${API_URL}/api/travel-categories`;
 
@@ -2125,4 +2125,5 @@ function ModalOverlay({
     </motion.div>
   );
 }
+
 

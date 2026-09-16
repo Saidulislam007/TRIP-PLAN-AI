@@ -1,4 +1,4 @@
-const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const url = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
 import { TravelCategory } from "@/types/travelCategory";
 
@@ -18,7 +18,7 @@ export const getFeatReviews = async () => {
 
 export const getTravelCategories = async (): Promise<TravelCategory[]> => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/travel-categories`);
+    const response = await fetch(`${url}/api/travel-categories`);
     if (!response.ok) {
       throw new Error("Failed to fetch travel categories");
     }

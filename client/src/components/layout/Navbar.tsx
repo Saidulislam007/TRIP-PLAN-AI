@@ -531,7 +531,7 @@ export default function Navbar() {
             {/* Search */}
 
             <Link
-              href="/search"
+              href="/destinations"
               aria-label="Search"
               className={`
                 flex h-[40px] w-[40px]
@@ -757,7 +757,7 @@ export default function Navbar() {
 
           <div className="ml-auto flex items-center gap-1 lg:hidden">
             <Link
-              href="/search"
+              href="/destinations"
               aria-label="Search"
               className="flex h-9 w-9 items-center justify-center rounded-full text-[#385047] transition-colors hover:bg-[#087F5B]/10 hover:text-[#087F5B]"
             >

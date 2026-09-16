@@ -27,7 +27,7 @@ export default function MyBookingsPage() {
   const fetchBookings = async (email: string, userId: string = "mockId") => {
     try {
       setLoading(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/tour-bookings/user/${userId}?email=${email}`);
+      const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/tour-bookings/user/${userId}?email=${email}`);
       const data = await res.json();
       if (data.success) {
         setBookings(data.data);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -19,111 +19,6 @@ import {
   CalendarDays,
   MoreHorizontal,
 } from "lucide-react";
-
-/* =========================
-   DEMO DATA
-========================= */
-
-const initialReviews = [
-  {
-    id: 1,
-    user: "Rahim Ahmed",
-    initials: "RA",
-    destination: "Cox's Bazar",
-    rating: 5,
-    review:
-      "Amazing place! The beach was beautiful and the overall experience was excellent.",
-    date: "Aug 20, 2026",
-    status: "Pending",
-    reported: false,
-  },
-  {
-    id: 2,
-    user: "Sadia Rahman",
-    initials: "SR",
-    destination: "Sajek Valley",
-    rating: 4,
-    review:
-      "Beautiful mountains and amazing weather. Highly recommended for a short trip.",
-    date: "Aug 19, 2026",
-    status: "Reported",
-    reported: true,
-    reportReason: "Spam content",
-  },
-  {
-    id: 3,
-    user: "Karim Hasan",
-    initials: "KH",
-    destination: "Sylhet",
-    rating: 5,
-    review:
-      "Sylhet was peaceful and beautiful. The tea gardens were my favorite.",
-    date: "Aug 18, 2026",
-    status: "Approved",
-    reported: false,
-  },
-  {
-    id: 4,
-    user: "Nusrat Jahan",
-    initials: "NJ",
-    destination: "Bandarban",
-    rating: 3,
-    review:
-      "The scenery was nice but transportation was a little difficult.",
-    date: "Aug 17, 2026",
-    status: "Pending",
-    reported: false,
-  },
-  {
-    id: 5,
-    user: "Tanvir Islam",
-    initials: "TI",
-    destination: "Saint Martin",
-    rating: 5,
-    review:
-      "One of the best places I have visited in Bangladesh. Loved everything.",
-    date: "Aug 16, 2026",
-    status: "Approved",
-    reported: false,
-  },
-  {
-    id: 6,
-    user: "Mim Akter",
-    initials: "MA",
-    destination: "Rangamati",
-    rating: 2,
-    review:
-      "The place was okay but the service quality was not good.",
-    date: "Aug 15, 2026",
-    status: "Rejected",
-    reported: false,
-  },
-  {
-    id: 7,
-    user: "Siam Hossain",
-    initials: "SH",
-    destination: "Kuakata",
-    rating: 4,
-    review:
-      "Nice sunset and peaceful environment. Good place for families.",
-    date: "Aug 14, 2026",
-    status: "Reported",
-    reported: true,
-    reportReason: "Inappropriate language",
-  },
-  {
-    id: 8,
-    user: "Jannat Ara",
-    initials: "JA",
-    destination: "Sreemangal",
-    rating: 5,
-    review:
-      "The tea gardens were gorgeous. Had a wonderful experience.",
-    date: "Aug 13, 2026",
-    status: "Pending",
-    reported: false,
-  },
-];
 
 /* =========================
    ANIMATION
@@ -158,33 +53,83 @@ const itemVariants = {
 ========================= */
 
 export default function ModerationPage() {
-  const [reviews, setReviews] = useState(initialReviews);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
   const [selectedReview, setSelectedReview] = useState(null);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/reviews`);
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data) {
+            const mappedData = result.data.map(item => ({
+              id: item._id,
+              user: item.name || item.user || "Anonymous",
+              initials: (item.name || item.user || "A").substring(0, 2).toUpperCase(),
+              destination: item.destination || "Unknown",
+              rating: item.rating || 5,
+              review: item.reviewText || item.comment || "No comment provided.",
+              date: new Date(item.date || item.createdAt || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+              status: item.status || "Pending",
+              reported: item.reported || false,
+              reportReason: item.reportReason || "",
+            }));
+            setReviews(mappedData);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch reviews", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchReviews();
+  }, []);
 
   /* =========================
      ACTIONS
   ========================= */
 
-  const updateStatus = (id, status) => {
-    setReviews((prev) =>
-      prev.map((review) =>
-        review.id === id
-          ? {
-              ...review,
-              status,
-              reported: false,
-            }
-          : review
-      )
-    );
+  const updateStatus = async (id, status) => {
+    try {
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/reviews/${id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status })
+      });
+      if (response.ok) {
+        setReviews((prev) =>
+          prev.map((review) =>
+            review.id === id
+              ? {
+                  ...review,
+                  status,
+                  reported: false,
+                }
+              : review
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Failed to update status", error);
+    }
   };
 
-  const deleteReview = (id) => {
-    setReviews((prev) =>
-      prev.filter((review) => review.id !== id)
-    );
+  const deleteReview = async (id) => {
+    try {
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/reviews/${id}`, {
+        method: "DELETE"
+      });
+      if (response.ok) {
+        setReviews((prev) => prev.filter((review) => review.id !== id));
+      }
+    } catch (error) {
+      console.error("Failed to delete review", error);
+    }
   };
 
   /* =========================

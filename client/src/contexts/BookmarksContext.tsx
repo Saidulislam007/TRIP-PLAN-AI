@@ -36,7 +36,7 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
 
     const fetchBookmarks = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/bookmarks/${userId}`);
+        const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/bookmarks/${userId}`);
         const data = await res.json();
         if (data.success) {
           setBookmarks(data.data);
@@ -71,7 +71,7 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
         setBookmarks((prev) => prev.filter((b) => b.destinationSlug !== slug));
         
         // Server delete
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/bookmarks/${existing._id}`, {
+        await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/bookmarks/${existing._id}`, {
           method: "DELETE",
         });
       } else {
@@ -83,7 +83,7 @@ export function BookmarksProvider({ children }: { children: ReactNode }) {
         };
 
         // Server add
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/bookmarks`, {
+        const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/bookmarks`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newBookmark),

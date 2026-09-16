@@ -91,9 +91,9 @@ export default function DashboardHeader({ onMenuClick }: DashboardHeaderProps) {
               </span>
             )}
           </Link>
-          <button className="flex h-10 w-10 items-center justify-center rounded-full text-[#17211D] transition-colors hover:bg-black/5">
+          <Link href="/dashboard/saved" className="flex h-10 w-10 items-center justify-center rounded-full text-[#17211D] transition-colors hover:bg-black/5">
             <Heart size={20} />
-          </button>
+          </Link>
         </div>
 
         {/* User Avatar Pill */}

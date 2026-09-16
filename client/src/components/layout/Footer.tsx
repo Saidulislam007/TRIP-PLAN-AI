@@ -189,15 +189,15 @@ export default function Footer() {
           <FooterColumn title="Product">
             <li><Link href="/destinations" className={linkClass}>Explore Destinations</Link></li>
             <li><Link href="/plan-trip" className={linkClass}>Plan My Trip</Link></li>
-            <li><Link href="/my-trips" className={linkClass}>My Trips</Link></li>
+            <li><Link href="/dashboard/trips" className={linkClass}>My Trips</Link></li>
             <li><Link href="/reviews" className={linkClass}>Reviews</Link></li>
-            <li><Link href="/wishlist" className={linkClass}>Wishlist</Link></li>
+            <li><Link href="/dashboard/trips" className={linkClass}>Wishlist</Link></li>
           </FooterColumn>
 
           <FooterColumn title="Resources">
-            <li><Link href="#" className={linkClass}>Travel Guides</Link></li>
+            <li><Link href="/inspiration/guides" className={linkClass}>Travel Guides</Link></li>
             <li><Link href="#" className={linkClass}>Travel Tips</Link></li>
-            <li><Link href="#" className={linkClass}>Travel Stories</Link></li>
+            <li><Link href="/inspiration/stories" className={linkClass}>Travel Stories</Link></li>
             <li><Link href="#" className={linkClass}>Budget Travel</Link></li>
             <li><Link href="#" className={linkClass}>Help Center</Link></li>
           </FooterColumn>

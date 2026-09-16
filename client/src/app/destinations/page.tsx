@@ -24,9 +24,7 @@ function DestinationsPage() {
     const loadDestinations = async () => {
       try {
         setIsLoading(true);
-        // console.log("Fetching destinations...");
         const data = await fetchDestinations();
-        // console.log("Fetched data:", data);
         setDestinationsData(data || []);
         setError(null);
       } catch (err) {
@@ -41,10 +39,7 @@ function DestinationsPage() {
     loadDestinations();
   }, []);
 
-  // Log whenever destinationsData changes
-  // useEffect(() => {
-  //   console.log("Destinations data updated:", destinationsData);
-  // }, [destinationsData]);
+
 
   return (
     <div className="bg-[#F7F7F2] min-h-screen">

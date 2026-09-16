@@ -79,12 +79,10 @@ const navigation: NavigationGroup[] = [
   },
 ];
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({ onMobileClose }: { onMobileClose?: () => void }) {
   const pathname = usePathname();
   const userdata = useSession();
-  console.log(userdata);
   const user = userdata?.data?.user as SessionUser | undefined;
-  console.log(user);
 
   return (
     <div className="flex h-full w-full flex-col bg-[#04271C] text-white">
@@ -109,6 +107,7 @@ export default function DashboardSidebar() {
       <div className="px-5 mb-6">
         <Link
           href="/plan-trip"
+          onClick={onMobileClose}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#F4A934] to-[#F19305] py-3 text-[14px] font-bold text-[#14151a] shadow-md transition-all hover:scale-[1.02] hover:shadow-[0_4px_14px_rgba(244,169,52,0.3)] active:scale-[0.98]"
         >
           <Plus size={18} strokeWidth={2.5} className="text-[#14151a]" />
@@ -130,6 +129,7 @@ export default function DashboardSidebar() {
                   <Link
                     key={item.name}
                     href={item.href}
+                    onClick={onMobileClose}
                     className={`group flex items-center justify-between rounded-xl px-3 py-2.5 text-[13px] font-medium transition-colors ${isActive
                       ? "bg-[#0B3D2E] text-white"
                       : "text-white/70 hover:bg-[#0A382A]/50 hover:text-white"

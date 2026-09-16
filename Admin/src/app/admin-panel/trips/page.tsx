@@ -199,8 +199,7 @@ export default function TripsPage() {
     const fetchTrips = async () => {
       try {
         const baseUrl =
-          process.env.NEXT_PUBLIC_API_URL ||
-          "http://localhost:5000";
+          (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
         const response = await fetch(
           `${baseUrl}/api/trips`
@@ -346,8 +345,7 @@ export default function TripsPage() {
   ) => {
     try {
       const baseUrl =
-        process.env.NEXT_PUBLIC_API_URL ||
-        "http://localhost:5000";
+        (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
       const response = await fetch(
         `${baseUrl}/api/trips/${id}`,
@@ -396,8 +394,7 @@ export default function TripsPage() {
 
     try {
       const baseUrl =
-        process.env.NEXT_PUBLIC_API_URL ||
-        "http://localhost:5000";
+        (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
       const response = await fetch(
         `${baseUrl}/api/trips/${deleteTrip.id}`,
@@ -1378,3 +1375,4 @@ function ModalOverlay({
     </motion.div>
   );
 }
+

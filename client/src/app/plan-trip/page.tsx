@@ -73,7 +73,7 @@ export default function PlanTripPage() {
     if (tripId) {
       const loadTrip = async () => {
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/trips/${tripId}`);
+          const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/trips/${tripId}`);
           const data = await res.json();
           if (data.success && data.data?.formState) {
             setFormState(data.data.formState);

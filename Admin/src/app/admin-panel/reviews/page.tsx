@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
@@ -15,96 +15,7 @@ import {
   User,
 } from "lucide-react";
 
-const initialReviews = [
-  {
-    id: 1,
-    user: "Sarah Ahmed",
-    email: "sarah@example.com",
-    destination: "Cox's Bazar",
-    rating: 5,
-    comment:
-      "Amazing experience! The beach was beautiful and the trip was perfectly planned.",
-    date: "Aug 20, 2026",
-    status: "Published",
-  },
-  {
-    id: 2,
-    user: "Tanvir Hasan",
-    email: "tanvir@example.com",
-    destination: "Sajek Valley",
-    rating: 4,
-    comment:
-      "Really beautiful place. The mountains and weather were amazing.",
-    date: "Aug 19, 2026",
-    status: "Published",
-  },
-  {
-    id: 3,
-    user: "Nusrat Jahan",
-    email: "nusrat@example.com",
-    destination: "Sylhet",
-    rating: 5,
-    comment:
-      "Loved the green environment and peaceful atmosphere. Highly recommended!",
-    date: "Aug 18, 2026",
-    status: "Published",
-  },
-  {
-    id: 4,
-    user: "Rakib Hossain",
-    email: "rakib@example.com",
-    destination: "Bandarban",
-    rating: 3,
-    comment:
-      "The destination was good but transportation could have been better.",
-    date: "Aug 17, 2026",
-    status: "Pending",
-  },
-  {
-    id: 5,
-    user: "Mim Akter",
-    email: "mim@example.com",
-    destination: "Saint Martin",
-    rating: 5,
-    comment:
-      "One of the best trips I have ever had. Everything was wonderful.",
-    date: "Aug 16, 2026",
-    status: "Published",
-  },
-  {
-    id: 6,
-    user: "Fahim Rahman",
-    email: "fahim@example.com",
-    destination: "Rangamati",
-    rating: 4,
-    comment:
-      "Beautiful lake and hills. A great place for a relaxing vacation.",
-    date: "Aug 15, 2026",
-    status: "Pending",
-  },
-  {
-    id: 7,
-    user: "Sadia Islam",
-    email: "sadia@example.com",
-    destination: "Kuakata",
-    rating: 5,
-    comment:
-      "The sunset view was absolutely amazing. Would definitely visit again.",
-    date: "Aug 14, 2026",
-    status: "Published",
-  },
-  {
-    id: 8,
-    user: "Arif Chowdhury",
-    email: "arif@example.com",
-    destination: "Jaflong",
-    rating: 2,
-    comment:
-      "The place was crowded and the overall experience was average.",
-    date: "Aug 13, 2026",
-    status: "Pending",
-  },
-];
+
 
 const containerVariants = {
   hidden: {},
@@ -143,7 +54,7 @@ export default function ReviewsPage() {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/reviews`);
+        const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/reviews`);
         if (response.ok) {
           const result = await response.json();
           if (result.success && result.data) {
@@ -217,7 +128,7 @@ export default function ReviewsPage() {
 
   const handleApprove = async (id) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/reviews/${id}/status`, {
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/reviews/${id}/status`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "Published" })
@@ -238,7 +149,7 @@ export default function ReviewsPage() {
     if (!deleteReview) return;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/reviews/${deleteReview.id}`, {
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/reviews/${deleteReview.id}`, {
         method: "DELETE"
       });
       if (response.ok) {

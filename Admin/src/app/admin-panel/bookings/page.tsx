@@ -15,7 +15,7 @@ export default function AdminBookingsPage() {
   const fetchBookings = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000"}/api/tour-bookings/all/admin`);
+      const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/tour-bookings/all/admin`);
       const data = await res.json();
       if (data.success) {
         setBookings(data.data);
@@ -193,3 +193,4 @@ export default function AdminBookingsPage() {
     </div>
   );
 }
+

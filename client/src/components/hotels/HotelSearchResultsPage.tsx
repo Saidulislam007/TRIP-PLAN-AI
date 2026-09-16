@@ -53,7 +53,7 @@ export function HotelSearchResultsPage() {
   useEffect(() => {
     const fetchHotels = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/hotels`);
+        const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/hotels`);
         const data = await res.json();
         if (data.success && data.data) {
           setHotels(data.data.hotels);

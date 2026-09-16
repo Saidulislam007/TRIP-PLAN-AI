@@ -8,7 +8,7 @@ export default function AdminStoriesPage() {
 
   const fetchStories = async () => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/stories`);
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/stories`);
       const data = await response.json();
       if (data.success) {
         setStories(data.data);
@@ -26,7 +26,7 @@ export default function AdminStoriesPage() {
 
   const handleUpdateStatus = async (id, status) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/stories/${id}`, {
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/stories/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status })
@@ -43,7 +43,7 @@ export default function AdminStoriesPage() {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this story?")) return;
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/stories/${id}`, {
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/stories/${id}`, {
         method: "DELETE"
       });
       const data = await response.json();
@@ -105,3 +105,4 @@ export default function AdminStoriesPage() {
     </div>
   );
 }
+

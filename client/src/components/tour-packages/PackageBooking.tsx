@@ -117,7 +117,7 @@ export default function PackageBooking({
       setLoading(true);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/tour-bookings`,
+        `${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/tour-bookings`,
         {
           method: "POST",
 

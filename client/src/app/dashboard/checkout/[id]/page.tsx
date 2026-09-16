@@ -39,7 +39,7 @@ export default function CheckoutPage() {
   const fetchBookingDetails = async (bookingId: string) => {
     try {
       setLoading(true);
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/tour-bookings/${bookingId}`);
+      const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/tour-bookings/${bookingId}`);
       const data = await res.json();
       if (data.success) {
         setBooking(data.data);
@@ -91,7 +91,7 @@ export default function CheckoutPage() {
     // Simulate gateway delay
     setTimeout(async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/tour-bookings/confirm-payment/${id}`, {
+        const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/tour-bookings/confirm-payment/${id}`, {
           method: "POST"
         });
         const data = await res.json();

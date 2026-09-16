@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/lib/auth-client";
 import { BookOpen, Plus, Send } from "lucide-react";
 
 export default function StoriesPage() {
   const [stories, setStories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isWriting, setIsWriting] = useState(false);
-  const [session, setSession] = useState<any>(null);
+  const { data: session } = useSession();
 
   // Form state
   const [title, setTitle] = useState("");
@@ -17,7 +17,7 @@ export default function StoriesPage() {
 
   const fetchStories = async (userId: string) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/stories/user/${userId}`);
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/stories/user/${userId}`);
       const data = await response.json();
       if (data.success) setStories(data.data);
     } catch (error) {
@@ -28,22 +28,17 @@ export default function StoriesPage() {
   };
 
   useEffect(() => {
-    const init = async () => {
-      const { data } = await authClient.getSession();
-      if (data?.user) {
-        setSession(data);
-        fetchStories(data.user.id);
-      }
-    };
-    init();
-  }, []);
+    if (session?.user?.id) {
+      fetchStories(session.user.id);
+    }
+  }, [session]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !content || !session?.user?.id) return;
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/stories`, {
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/stories`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

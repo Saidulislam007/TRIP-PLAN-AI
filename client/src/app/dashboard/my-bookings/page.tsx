@@ -24,7 +24,7 @@ export default function MyBookingsPage() {
     }
   }, [user?.email, isPending, user?.id]);
 
-  const fetchBookings = async (email: string, userId: string = "mockId") => {
+  const fetchBookings = async (email: string, userId: string) => {
     try {
       setLoading(true);
       const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/tour-bookings/user/${userId}?email=${email}`);

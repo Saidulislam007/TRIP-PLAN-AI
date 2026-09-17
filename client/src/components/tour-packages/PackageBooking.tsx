@@ -142,8 +142,8 @@ export default function PackageBooking({
             totalPrice,
 
             customer: {
-              name: form.name,
-              email: form.email,
+              name: session?.user?.name || form.name,
+              email: session?.user?.email || form.email,
               phone: form.phone,
             },
 
@@ -206,9 +206,18 @@ export default function PackageBooking({
 
       <button
         type="button"
-        onClick={() =>
-          setOpen(true)
-        }
+        onClick={() => {
+          if (!session?.user) {
+            router.push(`/login?redirect=/tour-packages/${packageSlug}`);
+            return;
+          }
+          setForm((prev) => ({
+            ...prev,
+            name: session.user.name || prev.name,
+            email: session.user.email || prev.email,
+          }));
+          setOpen(true);
+        }}
         className="
           mt-7
           w-full

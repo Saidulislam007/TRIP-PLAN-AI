@@ -12,7 +12,7 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
@@ -43,6 +43,8 @@ export default function RegisterForm({
   prefersReducedMotion,
 }: RegisterFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
   const [formData, setFormData] =
     useState<RegisterFormData>(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
@@ -98,7 +100,7 @@ export default function RegisterForm({
 
       showSignupToast(data?.user?.name ?? name);
       window.setTimeout(() => {
-        router.replace("/");
+        router.replace(redirectTo);
         router.refresh();
       }, 1800);
     } catch (error) {
@@ -118,7 +120,7 @@ export default function RegisterForm({
     try {
       const { error } = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: redirectTo,
       });
       if (error) {
         const message = error.message ?? "Unable to continue with Google.";

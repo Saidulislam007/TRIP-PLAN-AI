@@ -11,7 +11,7 @@ import {
   Plane,
 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 import { showLoginToast } from "@/components/TripPlanToast";
@@ -35,6 +35,8 @@ export default function LoginForm({
   prefersReducedMotion,
 }: LoginFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
   const [formData, setFormData] = useState<LoginFormData>(initialFormData);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -77,7 +79,7 @@ export default function LoginForm({
       }
 
       showLoginToast(data.user.name ?? "Traveler");
-      router.replace("/");
+      router.replace(redirectTo);
       router.refresh();
     } catch (error) {
       setErrorMessage(
@@ -96,7 +98,7 @@ export default function LoginForm({
     try {
       const { error } = await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/",
+        callbackURL: redirectTo,
       });
       if (error) {
         const message = error.message ?? "Unable to continue with Google.";

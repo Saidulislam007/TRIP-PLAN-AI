@@ -11,197 +11,10 @@ import {
 } from "lucide-react";
 
 import PackageBooking from "@/components/tour-packages/PackageBooking";
-
-/* ============================================================
-   TOUR PACKAGES DATA
-============================================================ */
-
-const packages = [
-  {
-    id: 1,
-    slug: "coxs-bazar-family-escape",
-    title: "Cox’s Bazar Family Escape",
-    destination: "Cox’s Bazar",
-    subtitle: "Beach days, seafood nights & family comfort",
-
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1400&auto=format&fit=crop",
-
-    duration: "3 Days · 2 Nights",
-    people: "2–5 People",
-
-    price: 12500,
-    oldPrice: 15000,
-
-    company: "Travel Bangladesh",
-
-    description:
-      "Enjoy a relaxing Cox’s Bazar getaway with a comfortable hotel stay, beach time, local food and carefully planned sightseeing.",
-
-    includes: [
-      "Hotel accommodation",
-      "Breakfast",
-      "Local transport",
-      "Beach sightseeing",
-      "Tour assistance",
-    ],
-  },
-
-  {
-    id: 2,
-    slug: "sajek-cloud-adventure",
-    title: "Sajek Cloud Adventure",
-    destination: "Sajek Valley",
-    subtitle: "Clouds, sunrise & hillside stays",
-
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop",
-
-    duration: "2 Days · 1 Night",
-    people: "2–6 People",
-
-    price: 8500,
-    oldPrice: 10500,
-
-    company: "Hill Track Tours",
-
-    description:
-      "A short Sajek escape designed for travellers who want hill views, sunrise, cloud-covered roads and a peaceful resort stay.",
-
-    includes: [
-      "Resort accommodation",
-      "Transport",
-      "Sajek sightseeing",
-      "Sunrise experience",
-      "Tour coordinator",
-    ],
-  },
-
-  {
-    id: 3,
-    slug: "sylhet-tea-garden-journey",
-    title: "Sylhet Tea Garden Journey",
-    destination: "Sylhet",
-
-    subtitle:
-      "Tea estates, waterfalls & green valleys",
-
-    image:
-      "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1400&auto=format&fit=crop",
-
-    duration: "3 Days · 2 Nights",
-    people: "2–4 People",
-
-    price: 11000,
-
-    company: "Green Valley Travel",
-
-    description:
-      "Discover the green landscapes of Sylhet with tea gardens, peaceful countryside, local food and selected attractions.",
-
-    includes: [
-      "Hotel stay",
-      "Breakfast",
-      "Transport",
-      "Tea garden visit",
-      "Selected sightseeing",
-    ],
-  },
-
-  {
-    id: 4,
-    slug: "saint-martin-island-retreat",
-    title: "Saint Martin Island Retreat",
-    destination: "Saint Martin",
-
-    subtitle:
-      "Blue water, island evenings & fresh seafood",
-
-    image:
-      "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1400&auto=format&fit=crop",
-
-    duration: "4 Days · 3 Nights",
-    people: "2–4 People",
-
-    price: 17500,
-    oldPrice: 20000,
-
-    company: "Ocean Trip BD",
-
-    description:
-      "Spend a few peaceful days beside the sea with island exploration, comfortable accommodation and relaxed evenings.",
-
-    includes: [
-      "Hotel / resort stay",
-      "Ship tickets",
-      "Island sightseeing",
-      "Selected meals",
-      "Travel assistance",
-    ],
-  },
-
-  {
-    id: 5,
-    slug: "bandarban-hill-journey",
-    title: "Bandarban Hill Journey",
-    destination: "Bandarban",
-
-    subtitle:
-      "Hill roads, viewpoints & local culture",
-
-    image:
-      "https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=1400&auto=format&fit=crop",
-
-    duration: "3 Days · 2 Nights",
-    people: "3–6 People",
-
-    price: 13500,
-
-    company: "Explore Bangladesh",
-
-    description:
-      "Explore Bandarban’s hills, scenic roads and viewpoints through a carefully planned adventure package.",
-
-    includes: [
-      "Hotel accommodation",
-      "Local transportation",
-      "Hill sightseeing",
-      "Guide assistance",
-      "Selected meals",
-    ],
-  },
-
-  {
-    id: 6,
-    slug: "sundarbans-wildlife-tour",
-    title: "Sundarbans Wildlife Tour",
-    destination: "Sundarbans",
-
-    subtitle:
-      "River cruise, forest trails & wildlife",
-
-    image:
-      "https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1400&auto=format&fit=crop",
-
-    duration: "3 Days · 2 Nights",
-    people: "4–8 People",
-
-    price: 14500,
-
-    company: "Nature Explorer BD",
-
-    description:
-      "Experience the Sundarbans with river journeys, mangrove landscapes and guided wildlife exploration.",
-
-    includes: [
-      "Boat accommodation",
-      "Meals",
-      "Forest permits",
-      "Guide",
-      "River sightseeing",
-    ],
-  },
-];
+import TourPackageExperience, {
+  PackageTrustPills,
+} from "@/components/tour-packages/TourPackageExperience";
+import { fetchTourPackageBySlug } from "@/lib/api/tour-packages";
 
 /* ============================================================
    PRICE FORMATTER
@@ -230,11 +43,16 @@ export default async function TourPackageDetailsPage({
 }: PageProps) {
   const { slug } = await params;
 
-  const tour = packages.find(
-    (item) => item.slug === slug
-  );
+  const tour = await fetchTourPackageBySlug(slug);
 
-  if (!tour) {
+  if (
+    !tour ||
+    !tour.experience ||
+    !tour.subtitle ||
+    !tour.people ||
+    !tour.description ||
+    !tour.includes
+  ) {
     notFound();
   }
 
@@ -270,6 +88,13 @@ export default async function TourPackageDetailsPage({
               <MapPin size={16} />
 
               {tour.destination}
+            </div>
+
+            <div className="mt-4">
+              <PackageTrustPills
+                experience={tour.experience}
+                duration={tour.duration}
+              />
             </div>
 
             <h1 className="mt-3 max-w-3xl font-serif text-4xl font-semibold tracking-[-0.03em] text-white sm:text-5xl md:text-6xl">
@@ -401,6 +226,20 @@ export default async function TourPackageDetailsPage({
                 )}
               </div>
             </div>
+
+            {/* ==================================================
+                COMPLETE PACKAGE EXPERIENCE
+
+                The booking component and its API/payment flow remain
+                separate and unchanged in the sticky price card.
+            ================================================== */}
+
+            <TourPackageExperience
+              destination={tour.destination}
+              duration={tour.duration}
+              price={tour.price}
+              experience={tour.experience}
+            />
           </div>
 
           {/* ====================================================

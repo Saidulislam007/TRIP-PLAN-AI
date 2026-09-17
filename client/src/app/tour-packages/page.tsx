@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   CalendarDays,
@@ -9,6 +10,9 @@ import {
   Clock3,
   Headphones,
   MapPin,
+  MessageCircle,
+  PhoneCall,
+  Quote,
   ShieldCheck,
   Sparkles,
   Star,
@@ -27,6 +31,9 @@ import {
   useRef,
   useState,
 } from "react";
+
+import { fetchTourPackages } from "@/lib/api/tour-packages";
+import type { TourPackage } from "@/types/tour-package";
 
 /* ============================================================
    TYPES
@@ -60,165 +67,6 @@ type UpcomingPackage = {
   price: number;
   company: string;
 };
-
-/* ============================================================
-   FEATURED PACKAGES
-============================================================ */
-
-const featuredPackages: Package[] = [
-  {
-    id: 1,
-    slug: "coxs-bazar-family-escape",
-    title: "Cox’s Bazar Family Escape",
-    destination: "Cox’s Bazar",
-    subtitle:
-      "Beach days, seafood nights & family comfort",
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-    duration: "3 Days · 2 Nights",
-    people: "2–5 People",
-    price: 12500,
-    oldPrice: 15000,
-    rating: 4.9,
-    reviews: 124,
-    tag: "Family favourite",
-  },
-
-  {
-    id: 2,
-    slug: "sajek-cloud-adventure",
-    title: "Sajek Cloud Adventure",
-    destination: "Sajek Valley",
-    subtitle:
-      "Clouds, sunrise & hillside stays",
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop",
-    duration: "2 Days · 1 Night",
-    people: "2–6 People",
-    price: 8500,
-    oldPrice: 10500,
-    rating: 4.8,
-    reviews: 91,
-    tag: "Weekend escape",
-  },
-
-  {
-    id: 3,
-    slug: "sylhet-tea-garden-journey",
-    title: "Sylhet Tea Garden Journey",
-    destination: "Sylhet",
-    subtitle:
-      "Tea estates, waterfalls & green valleys",
-    image:
-      "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1200&auto=format&fit=crop",
-    duration: "3 Days · 2 Nights",
-    people: "2–4 People",
-    price: 11000,
-    rating: 4.9,
-    reviews: 77,
-    tag: "Nature break",
-  },
-
-  {
-    id: 4,
-    slug: "saint-martin-island-retreat",
-    title: "Saint Martin Island Retreat",
-    destination: "Saint Martin",
-    subtitle:
-      "Blue water, island evenings & fresh seafood",
-    image:
-      "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200&auto=format&fit=crop",
-    duration: "4 Days · 3 Nights",
-    people: "2–4 People",
-    price: 17500,
-    oldPrice: 20000,
-    rating: 4.9,
-    reviews: 106,
-    tag: "Island escape",
-  },
-
-  {
-    id: 5,
-    slug: "bandarban-hill-journey",
-    title: "Bandarban Hill Journey",
-    destination: "Bandarban",
-    subtitle:
-      "Hill roads, viewpoints & local culture",
-    image:
-      "https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=1200&auto=format&fit=crop",
-    duration: "3 Days · 2 Nights",
-    people: "3–6 People",
-    price: 13500,
-    rating: 4.8,
-    reviews: 68,
-    tag: "Adventure",
-  },
-
-  {
-    id: 6,
-    slug: "sundarbans-wildlife-tour",
-    title: "Sundarbans Wildlife Tour",
-    destination: "Sundarbans",
-    subtitle:
-      "River cruise, forest trails & wildlife",
-    image:
-      "https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1200&auto=format&fit=crop",
-    duration: "3 Days · 2 Nights",
-    people: "4–8 People",
-    price: 14500,
-    rating: 4.7,
-    reviews: 59,
-    tag: "Wildlife",
-  },
-];
-
-/* ============================================================
-   UPCOMING PACKAGES
-============================================================ */
-
-const upcomingPackages: UpcomingPackage[] = [
-  {
-    id: 1,
-    slug: "sajek-autumn-group-tour",
-    title: "Sajek Autumn Group Tour",
-    destination: "Sajek Valley",
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1000&auto=format&fit=crop",
-    startDate: "18 Oct 2026",
-    duration: "2 Days · 1 Night",
-    seatsLeft: 6,
-    price: 7200,
-    company: "Hill Track Tours",
-  },
-
-  {
-    id: 2,
-    slug: "coxs-bazar-weekend-tour",
-    title: "Cox’s Bazar Weekend Tour",
-    destination: "Cox’s Bazar",
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop",
-    startDate: "24 Oct 2026",
-    duration: "3 Days · 2 Nights",
-    seatsLeft: 9,
-    price: 9800,
-    company: "Travel Bangladesh",
-  },
-
-  {
-    id: 3,
-    slug: "sylhet-green-escape",
-    title: "Sylhet Green Escape",
-    destination: "Sylhet",
-    image:
-      "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?q=80&w=1000&auto=format&fit=crop",
-    startDate: "02 Nov 2026",
-    duration: "3 Days · 2 Nights",
-    seatsLeft: 4,
-    price: 10500,
-    company: "Green Valley Travel",
-  },
-];
 
 /* ============================================================
    PRICE FORMAT
@@ -394,7 +242,11 @@ function FeaturedPackageCard({
    VIDEO STYLE CONTINUOUS ROLLING SLIDER
 ============================================================ */
 
-function FeaturedPackagesSlider() {
+function FeaturedPackagesSlider({
+  packages,
+}: {
+  packages: Package[];
+}) {
   const x = useMotionValue(0);
 
   const firstTrackRef =
@@ -511,7 +363,7 @@ function FeaturedPackagesSlider() {
             sm:pr-5
           "
         >
-          {featuredPackages.map(
+          {packages.map(
             (tour) => (
               <FeaturedPackageCard
                 key={tour.id}
@@ -534,7 +386,7 @@ function FeaturedPackagesSlider() {
             sm:pr-5
           "
         >
-          {featuredPackages.map(
+          {packages.map(
             (tour) => (
               <FeaturedPackageCard
                 key={`duplicate-${tour.id}`}
@@ -554,6 +406,61 @@ function FeaturedPackagesSlider() {
 ============================================================ */
 
 export default function TourPackagesPage() {
+  const [tourPackages, setTourPackages] = useState<TourPackage[]>([]);
+
+  useEffect(() => {
+    let active = true;
+
+    fetchTourPackages()
+      .then((packages) => {
+        if (active) setTourPackages(packages);
+      })
+      .catch((error) => {
+        console.error("Failed to load tour packages:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const featuredPackages: Package[] = tourPackages
+    .filter((tour) => tour.featured)
+    .map((tour) => ({
+      id: tour.id,
+      slug: tour.slug,
+      title: tour.title,
+      destination: tour.destination,
+      subtitle: tour.subtitle || "",
+      image: tour.image,
+      duration: tour.duration,
+      people: tour.people || "",
+      price: tour.price,
+      oldPrice: tour.oldPrice,
+      rating: tour.rating || 0,
+      reviews: tour.reviews || 0,
+      tag: tour.tag || "Tour package",
+    }));
+
+  const upcomingPackages: UpcomingPackage[] = tourPackages
+    .filter((tour) => tour.upcoming)
+    .map((tour) => ({
+      id: tour.id,
+      slug: tour.slug,
+      title: tour.title,
+      destination: tour.destination,
+      image: tour.image,
+      startDate: tour.startDate || "Date coming soon",
+      duration: tour.duration,
+      seatsLeft: tour.seatsLeft || 0,
+      price: tour.price,
+      company: tour.company,
+    }));
+
+  const travelerReviews = tourPackages.flatMap((tour) =>
+    tour.travelerReview ? [tour.travelerReview] : []
+  );
+
   return (
     <main className="overflow-hidden bg-[#f7f4ef] text-[#171719]">
       {/* ========================================================
@@ -644,7 +551,7 @@ export default function TourPackagesPage() {
             </p>
           </div>
 
-          <FeaturedPackagesSlider />
+          <FeaturedPackagesSlider packages={featuredPackages} />
         </div>
       </section>
 
@@ -1116,6 +1023,147 @@ export default function TourPackagesPage() {
               <ArrowRight size={16} />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* ========================================================
+          TRAVELLER REVIEWS & SUPPORT
+      ======================================================== */}
+
+      <section className="px-4 pb-20 sm:px-6 md:pb-24 lg:px-8">
+        <div className="mx-auto max-w-7xl">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+          >
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#96713a]">
+                Traveller stories
+              </p>
+
+              <h2 className="mt-3 max-w-2xl font-serif text-3xl font-semibold text-[#23372f] sm:text-4xl">
+                Trips remembered, stories shared
+              </h2>
+            </div>
+
+            <p className="max-w-md text-sm leading-7 text-[#69736e]">
+              See how other travellers experienced their journey before choosing the package that feels right for you.
+            </p>
+          </motion.div>
+
+          <div className="grid gap-5 md:grid-cols-3">
+            {travelerReviews.map((item, index) => (
+              <motion.article
+                key={item.name}
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{
+                  duration: 0.55,
+                  delay: index * 0.08,
+                  ease: "easeOut",
+                }}
+                whileHover={{ y: -5 }}
+                className="group overflow-hidden rounded-[28px] border border-[#dfe4df] bg-white shadow-[0_18px_55px_rgba(31,55,46,0.07)]"
+              >
+                <div className="relative h-52 overflow-hidden">
+                  <Image
+                    src={item.image}
+                    alt={`${item.destination} traveller experience`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#102a22]/70 via-transparent to-transparent" />
+
+                  <div className="absolute bottom-4 left-4 flex items-center gap-1.5 rounded-full bg-white/92 px-3 py-1.5 text-xs font-semibold text-[#29463c] backdrop-blur">
+                    <Star size={13} className="fill-[#e3ae4e] text-[#e3ae4e]" />
+                    {item.rating}
+                  </div>
+                </div>
+
+                <div className="p-6">
+                  <Quote size={23} className="text-[#c89a4e]" />
+
+                  <p className="mt-4 text-sm leading-7 text-[#58665f]">
+                    “{item.review}”
+                  </p>
+
+                  <div className="mt-6 flex items-center gap-3 border-t border-[#e8ebe8] pt-5">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#e5efe9] text-xs font-bold text-[#23483b]">
+                      {item.initials}
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-semibold text-[#253a32]">
+                        {item.name}
+                      </p>
+
+                      <p className="mt-0.5 text-xs text-[#7a8680]">
+                        {item.destination}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 26 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="relative mt-8 overflow-hidden rounded-[30px] bg-[#173e33] px-6 py-8 text-white sm:px-9 lg:px-12 lg:py-10"
+          >
+            <div className="absolute -right-16 -top-20 h-56 w-56 rounded-full border-[38px] border-white/[0.04]" />
+
+            <div className="relative grid gap-7 lg:grid-cols-[1fr_auto] lg:items-center">
+              <div className="flex gap-4">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#f1bf62] text-[#183b31]">
+                  <Headphones size={22} />
+                </div>
+
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.17em] text-[#f1c774]">
+                    Talk before you book
+                  </p>
+
+                  <h3 className="mt-2 font-serif text-2xl font-semibold sm:text-3xl">
+                    Need help choosing your tour?
+                  </h3>
+
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-white/65">
+                    Ask about dates, pickup, room sharing or package inclusions. Our support team will help you decide with confidence.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <a
+                  href="tel:+8801738803106"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border border-white/20 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                >
+                  <PhoneCall size={17} />
+                  Call helpline
+                </a>
+
+                <a
+                  href="https://wa.me/8801738803106?text=I%20need%20help%20choosing%20a%20TripPlan%20AI%20tour%20package."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[#f1bf62] px-5 py-3.5 text-sm font-semibold text-[#173b31] transition-transform hover:scale-[1.02]"
+                >
+                  <MessageCircle size={17} />
+                  Chat on WhatsApp
+                </a>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </section>
     </main>

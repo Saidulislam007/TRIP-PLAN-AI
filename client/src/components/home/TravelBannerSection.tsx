@@ -4,93 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { animate, motion, useMotionValue } from "framer-motion";
 import { ArrowUpRight, CalendarDays, MapPin } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-type TourPackage = {
-  id: string;
-  title: string;
-  slug: string;
-  destination: string;
-  duration: string;
-  price: number;
-  image: string;
-  company: string;
-};
+import { fetchTourPackages } from "@/lib/api/tour-packages";
+import type { TourPackage } from "@/types/tour-package";
 
-const packages: TourPackage[] = [
-  {
-    id: "1",
-    title: "Cox’s Bazar Beach Holiday",
-    slug: "coxs-bazar-beach-holiday",
-    destination: "Cox’s Bazar",
-    duration: "3 Days · 2 Nights",
-    price: 12500,
-    company: "Travel Bangladesh",
-    image:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: "2",
-    title: "Sajek Valley Adventure",
-    slug: "sajek-valley-adventure",
-    destination: "Sajek Valley",
-    duration: "2 Days · 1 Night",
-    price: 8500,
-    company: "Hill Track Tours",
-    image:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: "3",
-    title: "Explore Beautiful Sylhet",
-    slug: "explore-beautiful-sylhet",
-    destination: "Sylhet",
-    duration: "3 Days · 2 Nights",
-    price: 11000,
-    company: "Green Valley",
-    image:
-      "https://images.unsplash.com/photo-1599394022918-6c277a4c0049?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: "4",
-    title: "Saint Martin Island Escape",
-    slug: "saint-martin-island-escape",
-    destination: "Saint Martin",
-    duration: "4 Days · 3 Nights",
-    price: 17500,
-    company: "Ocean Trip BD",
-    image:
-      "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: "5",
-    title: "Bandarban Hill Journey",
-    slug: "bandarban-hill-journey",
-    destination: "Bandarban",
-    duration: "3 Days · 2 Nights",
-    price: 13500,
-    company: "Explore Bangladesh",
-    image:
-      "https://images.unsplash.com/photo-1500534623283-312aade485b7?q=80&w=1200&auto=format&fit=crop",
-  },
-  {
-    id: "6",
-    title: "Sundarbans Nature Tour",
-    slug: "sundarbans-nature-tour",
-    destination: "Sundarbans",
-    duration: "3 Days · 2 Nights",
-    price: 14500,
-    company: "Nature Explorer",
-    image:
-      "https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=1200&auto=format&fit=crop",
-  },
-];
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("en-BD").format(price);
 }
 
-function PackageCards() {
+function PackageCards({ packages }: { packages: TourPackage[] }) {
   return (
     <div className="flex shrink-0 gap-3 pr-3 sm:gap-4 sm:pr-4">
       {packages.map((item) => (
@@ -226,10 +150,27 @@ function PackageCards() {
 }
 
 export default function TourPackageSection() {
+  const [packages, setPackages] = useState<TourPackage[]>([]);
   const x = useMotionValue("0%");
 
   const animationRef =
     useRef<ReturnType<typeof animate> | null>(null);
+
+  useEffect(() => {
+    let active = true;
+
+    fetchTourPackages({ featured: true })
+      .then((items) => {
+        if (active) setPackages(items);
+      })
+      .catch((error) => {
+        console.error("Failed to load home tour packages:", error);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     animationRef.current = animate(x, ["0%", "-50%"], {
@@ -307,10 +248,10 @@ export default function TourPackageSection() {
           className="flex w-max"
         >
           {/* TRACK 01 */}
-          <PackageCards />
+          <PackageCards packages={packages} />
 
           {/* DUPLICATE TRACK FOR SEAMLESS LOOP */}
-          <PackageCards />
+          <PackageCards packages={packages} />
         </motion.div>
       </div>
 

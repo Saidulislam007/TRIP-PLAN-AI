@@ -220,7 +220,7 @@ export default function Footer() {
 
           <div className="flex w-full items-center justify-center gap-3 sm:w-auto">
             <motion.a
-              href="#"
+              href="https://www.facebook.com/login/?utm_source=chatgpt.com"
               aria-label="Facebook"
               whileHover={{ y: -3, scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
@@ -229,7 +229,7 @@ export default function Footer() {
               <Facebook size={14} />
             </motion.a>
             <motion.a
-              href="#"
+              href="https://www.instagram.com/accounts/login/?utm_source=chatgpt.com"
               aria-label="Instagram"
               whileHover={{ y: -3, scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
@@ -238,7 +238,7 @@ export default function Footer() {
               <Instagram size={14} />
             </motion.a>
             <motion.a
-              href="#"
+              href="https://www.youtube.com/login?utm_source=chatgpt.com"
               aria-label="YouTube"
               whileHover={{ y: -3, scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
@@ -247,7 +247,7 @@ export default function Footer() {
               <Youtube size={14} />
             </motion.a>
             <motion.a
-              href="#"
+              href="https://www.linkedin.com/login?utm_source=chatgpt.com"
               aria-label="LinkedIn"
               whileHover={{ y: -3, scale: 1.08 }}
               whileTap={{ scale: 0.95 }}

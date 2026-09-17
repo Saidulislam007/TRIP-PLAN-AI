@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowDown, ArrowRight, Backpack, Bookmark, Check, CheckCheck, Clock3, Compass, Heart, Search, Sparkles, Users, Wallet, X } from "lucide-react";
-import { travelGuides, type TravelGuide } from "@/data/travelGuides";
+import { fetchTravelGuides } from "@/lib/api/travel-guides";
+import type { TravelGuide } from "@/types/travelGuide";
 
 const filters = ["All guides", "Getting there", "Budget", "Family & solo", "Seasonal"];
 const heroFilters = ["First trip", "Budget travel", "Family & solo", "Hills", "Beaches", "Weekend"];
@@ -44,6 +45,9 @@ export default function TravelGuidesPage() {
   const [filter, setFilter] = useState("All guides");
   const [savedOnly, setSavedOnly] = useState(false);
   const [limit, setLimit] = useState(6);
+  const [travelGuides, setTravelGuides] = useState<TravelGuide[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const stored = useSyncExternalStore(subscribe, readStorage, () => "{}");
   const ready = useSyncExternalStore(subscribe, () => true, () => false);
   const parsed = useMemo((): { saved: string[]; checked: string[] } => {
@@ -54,7 +58,7 @@ export default function TravelGuidesPage() {
         checked: Array.isArray(raw?.checked) ? raw.checked.filter((item: unknown) => typeof item === "string" && [...essentials, ...extraEssentials].includes(item)) : [],
       };
     } catch { return { saved: [], checked: [] }; }
-  }, [stored]);
+  }, [stored, travelGuides]);
   const [fallback, setFallback] = useState<{ saved: string[]; checked: string[] } | null>(null);
   const { saved, checked } = fallback ?? parsed;
   const [storageWarning, setStorageWarning] = useState(false);
@@ -72,6 +76,34 @@ export default function TravelGuidesPage() {
       setFallback(null);
     } catch { setFallback(value); setStorageWarning(true); }
   };
+
+
+  useEffect(() => {
+    let active = true;
+
+    async function loadTravelGuides() {
+      try {
+        setIsLoading(true);
+        setLoadError("");
+        const guides = await fetchTravelGuides();
+        if (active) setTravelGuides(guides);
+      } catch (error) {
+        console.error("Failed to load travel guides:", error);
+        if (active) {
+          setTravelGuides([]);
+          setLoadError("We could not load the travel guides right now. Please try again.");
+        }
+      } finally {
+        if (active) setIsLoading(false);
+      }
+    }
+
+    void loadTravelGuides();
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!activeGuide) return;
@@ -136,18 +168,27 @@ export default function TravelGuidesPage() {
 
         <section aria-labelledby="featured-heading" className="mt-14 sm:mt-20">
           <Reveal className="mb-6 flex flex-wrap items-end justify-between gap-3"><div><p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-[#087F5B]">The editor’s bookshelf</p><h2 id="featured-heading" className={heading}>A little guidance. A better journey.</h2></div><p className="max-w-xs text-xs leading-5 text-[#66736D]">Small details that make a meaningful difference.</p></Reveal>
-          <div className="grid gap-4 lg:grid-cols-[1.08fr_1fr]">
-            <Reveal><button onClick={() => openGuide(featured)} className="group relative flex min-h-[340px] w-full items-end overflow-hidden rounded-[22px] bg-[#073D31] text-left sm:min-h-[390px] lg:h-full"><Photo src={featured.image} alt="Cox’s Bazar coastline" sizes="(max-width: 1024px) 100vw, 50vw" /><span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" /><span className="relative w-full p-6 sm:p-8"><span className="rounded-md bg-white/90 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-[#234137]">Essential guide</span><span className="mt-4 block max-w-md font-serif text-3xl leading-tight tracking-tight text-white sm:text-[36px]">{featured.title}</span><span className="mt-5 flex items-center justify-between text-xs text-white/90"><span className="flex items-center gap-1.5"><Clock3 size={13} /> {featured.minutes} min read</span><span className="flex items-center gap-2">Read guide <ArrowRight size={15} /></span></span></span></button></Reveal>
-            <div className="grid gap-4">{travelGuides.slice(1, 3).map((guide, index) => <Reveal key={guide.id} delay={index * 0.07}><button onClick={() => openGuide(guide)} className="group grid h-full w-full grid-cols-[0.8fr_1fr] overflow-hidden rounded-[22px] border border-[#DCE6E1] bg-white/80 text-left transition hover:shadow-lg"><span className="relative min-h-[190px]"><Photo src={guide.image} alt={guide.title} /></span><span className="flex flex-col items-start justify-center p-4 sm:p-6"><span className="text-[9px] font-bold uppercase tracking-wider text-[#087F5B]">{guide.category === "Budget" ? "Group travel" : "Family travel"}</span><span className="mt-2 font-serif text-xl leading-tight tracking-tight sm:text-2xl">{guide.title}</span><span className="mt-2 hidden text-xs leading-5 text-[#66736D] sm:block">{guide.description}</span><span className="mt-5 flex w-full flex-wrap items-center justify-between gap-2 text-[10px]"><span className="flex items-center gap-1 text-[#66736D]"><Clock3 size={12} /> {guide.minutes} min read</span><span className="flex items-center gap-1 font-semibold text-[#087F5B]">Read guide <ArrowRight size={13} /></span></span></span></button></Reveal>)}</div>
-          </div>
+          {isLoading ? (
+            <div className="grid gap-4 lg:grid-cols-[1.08fr_1fr]">
+              <div className="min-h-[340px] animate-pulse rounded-[22px] bg-[#E3EAE6] sm:min-h-[390px]" />
+              <div className="grid gap-4"><div className="min-h-[190px] animate-pulse rounded-[22px] bg-[#E3EAE6]" /><div className="min-h-[190px] animate-pulse rounded-[22px] bg-[#E3EAE6]" /></div>
+            </div>
+          ) : featured ? (
+            <div className="grid gap-4 lg:grid-cols-[1.08fr_1fr]">
+              <Reveal><button onClick={() => openGuide(featured)} className="group relative flex min-h-[340px] w-full items-end overflow-hidden rounded-[22px] bg-[#073D31] text-left sm:min-h-[390px] lg:h-full"><Photo src={featured.image} alt={featured.title} sizes="(max-width: 1024px) 100vw, 50vw" /><span className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" /><span className="relative w-full p-6 sm:p-8"><span className="rounded-md bg-white/90 px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-[#234137]">Essential guide</span><span className="mt-4 block max-w-md font-serif text-3xl leading-tight tracking-tight text-white sm:text-[36px]">{featured.title}</span><span className="mt-5 flex items-center justify-between text-xs text-white/90"><span className="flex items-center gap-1.5"><Clock3 size={13} /> {featured.minutes} min read</span><span className="flex items-center gap-2">Read guide <ArrowRight size={15} /></span></span></span></button></Reveal>
+              <div className="grid gap-4">{travelGuides.slice(1, 3).map((guide, index) => <Reveal key={guide.id} delay={index * 0.07}><button onClick={() => openGuide(guide)} className="group grid h-full w-full grid-cols-[0.8fr_1fr] overflow-hidden rounded-[22px] border border-[#DCE6E1] bg-white/80 text-left transition hover:shadow-lg"><span className="relative min-h-[190px]"><Photo src={guide.image} alt={guide.title} /></span><span className="flex flex-col items-start justify-center p-4 sm:p-6"><span className="text-[9px] font-bold uppercase tracking-wider text-[#087F5B]">{guide.category === "Budget" ? "Group travel" : "Family travel"}</span><span className="mt-2 font-serif text-xl leading-tight tracking-tight sm:text-2xl">{guide.title}</span><span className="mt-2 hidden text-xs leading-5 text-[#66736D] sm:block">{guide.description}</span><span className="mt-5 flex w-full flex-wrap items-center justify-between gap-2 text-[10px]"><span className="flex items-center gap-1 text-[#66736D]"><Clock3 size={12} /> {guide.minutes} min read</span><span className="flex items-center gap-1 font-semibold text-[#087F5B]">Read guide <ArrowRight size={13} /></span></span></span></button></Reveal>)}</div>
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-[#B9CEC5] bg-white/60 px-6 py-12 text-center text-sm text-[#66736D]">{loadError || "No travel guides are available yet."}</div>
+          )}
         </section>
 
         <section ref={results} id="all-guides" aria-labelledby="all-guides-heading" className="mt-14 scroll-mt-28 sm:mt-20">
           <Reveal><div className="flex flex-wrap items-end justify-between gap-4"><div><h2 id="all-guides-heading" className={heading}>Good reads for your next getaway</h2><p className="mt-3 text-sm text-[#66736D]">Helpful guides for the questions that come before the journey.</p></div><button aria-pressed={savedOnly} onClick={() => { setSavedOnly(!savedOnly); setLimit(6); }} className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs transition ${savedOnly ? "border-[#087F5B] bg-[#087F5B] text-white" : "border-[#DCE6E1] bg-white text-[#30483F] hover:border-[#087F5B]"}`}><Bookmark size={14} fill={savedOnly ? "currentColor" : "none"} /> Saved ({saved.length})</button></div>
           <div className="mt-6 flex flex-wrap gap-2">{[...filters, ...(!filters.includes(filter) ? [filter] : [])].map(item => <button key={item} aria-pressed={filter === item} onClick={() => chooseFilter(item)} className={`rounded-full border px-4 py-2 text-xs transition ${filter === item ? "border-[#087F5B] bg-[#087F5B] text-white" : "border-[#DCE6E1] bg-white/60 text-[#426257] hover:border-[#087F5B]/50"}`}>{item}</button>)}</div></Reveal>
-          <p aria-live="polite" className="mb-4 mt-5 text-xs text-[#66736D]">{matching.length} {matching.length === 1 ? "guide" : "guides"}{query.trim() ? ` for “${query.trim()}”` : " to explore"}{savedOnly ? " · Saved on this device" : ""}</p>
+          <p aria-live="polite" className="mb-4 mt-5 text-xs text-[#66736D]">{isLoading ? "Loading guides..." : `${matching.length} ${matching.length === 1 ? "guide" : "guides"}${query.trim() ? ` for “${query.trim()}”` : " to explore"}${savedOnly ? " · Saved on this device" : ""}`}</p>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{matching.slice(0, limit).map((guide, index) => <Reveal key={guide.id} delay={(index % 3) * 0.045}><article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#DCE6E1] bg-white/75 transition duration-300 hover:border-[#087F5B]/30 hover:shadow-[0_12px_30px_rgba(7,61,49,0.08)] motion-safe:hover:-translate-y-1"><button onClick={() => openGuide(guide)} aria-label={`Read ${guide.title}`} className="relative block aspect-[1.9] w-full overflow-hidden"><Photo src={guide.image} alt={guide.title} /><span className="absolute inset-0 bg-black/0 transition group-hover:bg-black/5" /></button><div className="flex flex-1 flex-col p-5"><p className="text-[9px] font-bold uppercase tracking-[0.13em] text-[#087F5B]">{guide.category}</p><h3 className="mt-2 font-serif text-[22px] leading-tight tracking-[-0.025em]"><button onClick={() => openGuide(guide)} className="text-left transition hover:text-[#087F5B]">{guide.title}</button></h3><p className="mb-4 mt-2 text-xs leading-5 text-[#66736D]">{guide.description}</p><div className="mt-auto flex items-center justify-between"><span className="flex items-center gap-1.5 text-[11px] text-[#66736D]"><Clock3 size={13} /> {guide.minutes} min read</span><button disabled={!ready} aria-label={`${saved.includes(guide.id) ? "Unsave" : "Save"} ${guide.title}`} aria-pressed={saved.includes(guide.id)} onClick={() => toggleSaved(guide.id)} className="flex h-9 w-9 items-center justify-center rounded-full text-[#087F5B] transition hover:bg-[#EEF5F1] disabled:opacity-40"><Bookmark size={17} fill={saved.includes(guide.id) ? "currentColor" : "none"} /></button></div></div></article></Reveal>)}</div>
-          {!matching.length && <div className="rounded-2xl border border-dashed border-[#B9CEC5] bg-white/60 px-6 py-14 text-center"><Search size={26} className="mx-auto mb-3 text-[#087F5B]" /><h3 className="font-serif text-2xl">{savedOnly && !saved.length ? "Your reading list starts here" : "No guides match just yet"}</h3><p className="mt-2 text-sm text-[#66736D]">{savedOnly && !saved.length ? "Tap the bookmark on a guide to keep it for later." : "Try another search or explore all our guides."}</p><button onClick={() => { setQuery(""); setFilter("All guides"); setSavedOnly(false); }} className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#087F5B]">Explore all guides <ArrowRight size={15} /></button></div>}
+          {!isLoading && !matching.length && <div className="rounded-2xl border border-dashed border-[#B9CEC5] bg-white/60 px-6 py-14 text-center"><Search size={26} className="mx-auto mb-3 text-[#087F5B]" /><h3 className="font-serif text-2xl">{loadError ? "Travel guides could not be loaded" : savedOnly && !saved.length ? "Your reading list starts here" : travelGuides.length === 0 ? "No travel guides are available yet" : "No guides match just yet"}</h3><p className="mt-2 text-sm text-[#66736D]">{loadError || (savedOnly && !saved.length ? "Tap the bookmark on a guide to keep it for later." : travelGuides.length === 0 ? "Add guide documents to the MongoDB travelGuides collection." : "Try another search or explore all our guides.")}</p>{travelGuides.length > 0 && !loadError && <button onClick={() => { setQuery(""); setFilter("All guides"); setSavedOnly(false); }} className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#087F5B]">Explore all guides <ArrowRight size={15} /></button>}</div>}
           {matching.length > limit && <div className="mt-8 text-center"><button onClick={() => setLimit(current => current + 6)} className="inline-flex items-center gap-3 rounded-xl bg-[#087F5B] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#065F46]">View more guides <ArrowDown size={16} /></button></div>}
           {storageWarning && <p role="status" className="mt-4 text-xs text-[#8A5A19]">Browser storage is unavailable. Your bookmarks and checklist will stay only while this page is open.</p>}
         </section>

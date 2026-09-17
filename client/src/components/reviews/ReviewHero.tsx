@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Search, Sparkles, PenLine, MapPin } from "lucide-react";
+import { ArrowRight, Sparkles, PenLine, MapPin } from "lucide-react";
 
 const destinations = [
   "Cox's Bazar",
@@ -198,52 +198,10 @@ export default function ReviewHero() {
               </div>
 
               {/* =================================================
-                  SEARCH CARD
+                  POPULAR DESTINATION CHIPS
               ================================================== */}
 
               <div className="absolute left-1/2 top-[27%] z-20 w-[92%] -translate-x-1/2 lg:w-[78%]">
-                <div className="rounded-2xl border border-black/5 bg-white p-2 shadow-[0_25px_70px_rgba(0,0,0,0.25)]">
-                  <div className="flex items-center gap-2">
-                    {/* Search Input */}
-
-                    <div className="flex min-w-0 flex-1 items-center gap-3 px-3">
-                      <Search
-                        size={19}
-                        className="shrink-0 text-[#087F5B]"
-                        strokeWidth={2}
-                      />
-
-                      <input
-                        type="text"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleSearch();
-                          }
-                        }}
-                        placeholder="Search destinations, experiences or traveler reviews..."
-                        className="h-12 w-full min-w-0 bg-transparent text-[12px] text-[#17211D] outline-none placeholder:text-[#7A8580] sm:text-[13px]"
-                      />
-                    </div>
-
-                    {/* Search Button */}
-
-                    <button
-                      type="button"
-                      onClick={() => handleSearch()}
-                      aria-label="Search reviews"
-                      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#0B2522] text-white transition-all duration-300 hover:bg-[#087F5B]"
-                    >
-                      <Search size={17} strokeWidth={2.2} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* =================================================
-                    POPULAR DESTINATION CHIPS
-                ================================================== */}
-
                 <div className="mt-3 flex flex-wrap justify-center gap-2">
                   {destinations.map((destination) => (
                     <button

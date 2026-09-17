@@ -1,0 +1,23 @@
+export type PublishedStory = {
+  _id?: string;
+  slug: string;
+  title: string;
+  destination: string;
+  category: "People & culture" | "Adventure" | "Slow travel" | "River life";
+  kind: "First-person account" | "Travel feature";
+  author: string | null;
+  publisher: string;
+  published: string;
+  sourceCheckedAt: string;
+  sourceTitle: string;
+  sourceUrl: string;
+  excerpt: string;
+  paragraphs: string[];
+  takeaway: string;
+  moment: string;
+  image?: string;
+  imageNote: string;
+  motif: "hills" | "waterfall" | "river" | "heritage" | "train";
+  sortOrder?: number;
+  isActive?: boolean;
+};

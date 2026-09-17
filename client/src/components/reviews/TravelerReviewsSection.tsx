@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowRight,
   Bookmark,
@@ -20,7 +21,6 @@ import {
   MapPin,
   MessageCircle,
   MoreHorizontal,
-  Search,
   Send,
   Share2,
   ShieldCheck,
@@ -36,13 +36,21 @@ import {
 } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Variants } from "framer-motion";
+import {
+  getMyReviews,
+  getReviews,
+  getReviewStats,
+  type ExperienceRatingItem,
+  type ReviewItem,
+} from "@/lib/api/reviews";
+import { useSession } from "@/lib/auth-client";
 
 /* ============================================================
-   TYPES
+   TYPES + DATA ICON MAP
 ============================================================ */
 
 type Review = {
-  id: number;
+  id: string | number;
   name: string;
   avatar: string;
   location: string;
@@ -53,224 +61,35 @@ type Review = {
   tripType: string;
   date: string;
   helpful: number;
-  photos: string[];
   verified: boolean;
 };
 
-type ExperienceRating = {
-  label: string;
-  rating: number;
-  icon: React.ReactNode;
+const experienceIconMap = {
+  Sparkles,
+  Utensils,
+  UsersRound,
+  Car,
+  Hotel,
+  CircleDollarSign,
+  ShieldCheck,
 };
 
-/* ============================================================
-   REVIEW DATA
-============================================================ */
-
-const reviews: Review[] = [
-  {
-    id: 1,
-    name: "Tahmid Hasan",
-    avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=85",
-    location: "Dhaka, Bangladesh",
-    rating: 5,
-    title: "An unforgettable coastal escape",
-    text: "The beach is simply beautiful — especially during sunset. Marine Drive was one of the highlights of our trip. The seafood was delicious and the locals were very friendly.",
-    destination: "Cox's Bazar",
-    tripType: "Family Trip",
-    date: "Feb 2026",
-    helpful: 24,
-    verified: true,
-    photos: [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=85",
-      "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=400&q=85",
-      "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=400&q=85",
-      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=400&q=85",
-    ],
-  },
-
-  {
-    id: 2,
-    name: "Nusrat Jahan",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=85",
-    location: "Chattogram, Bangladesh",
-    rating: 4.5,
-    title: "Peaceful, relaxing and refreshing",
-    text: "Saint Martin is a paradise for nature lovers. Crystal clear water, amazing beaches and a peaceful environment. Perfect getaway for anyone looking to disconnect.",
-    destination: "Saint Martin",
-    tripType: "Couple Trip",
-    date: "Jan 2026",
-    helpful: 18,
-    verified: true,
-    photos: [
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=85",
-      "https://images.unsplash.com/photo-1544550285-f813152fb2fd?auto=format&fit=crop&w=400&q=85",
-      "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?auto=format&fit=crop&w=400&q=85",
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=400&q=85",
-    ],
-  },
-
-  {
-    id: 3,
-    name: "Rifat Ahmed",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=85",
-    location: "Sylhet, Bangladesh",
-    rating: 4,
-    title: "Great experience with minor issues",
-    text: "The hills, clouds and viewpoints are amazing. But weekend traffic and hotel prices were a bit high. Still, we had a great time and would definitely visit again.",
-    destination: "Bandarban",
-    tripType: "Friends Trip",
-    date: "Dec 2025",
-    helpful: 15,
-    verified: true,
-    photos: [
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=400&q=85",
-      "https://images.unsplash.com/photo-1464278533981-50106e6176b1?auto=format&fit=crop&w=400&q=85",
-      "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=400&q=85",
-      "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=400&q=85",
-    ],
-  },
-];
-
-/* ============================================================
-   EXPERIENCE RATINGS
-============================================================ */
-
-const experienceRatings: ExperienceRating[] = [
-  {
-    label: "Overall Experience",
-    rating: 4.9,
-    icon: <Sparkles size={12} />,
-  },
-  {
-    label: "Food & Dining",
-    rating: 4.7,
-    icon: <Utensils size={12} />,
-  },
-  {
-    label: "Family Experience",
-    rating: 4.8,
-    icon: <UsersRound size={12} />,
-  },
-  {
-    label: "Transportation",
-    rating: 4.8,
-    icon: <Car size={12} />,
-  },
-  {
-    label: "Accommodation",
-    rating: 4.8,
-    icon: <Hotel size={12} />,
-  },
-  {
-    label: "Cleanliness",
-    rating: 4.5,
-    icon: <Sparkles size={12} />,
-  },
-  {
-    label: "Value for Money",
-    rating: 4.6,
-    icon: <CircleDollarSign size={12} />,
-  },
-  {
-    label: "Safety & Security",
-    rating: 4.8,
-    icon: <ShieldCheck size={12} />,
-  },
-];
-
-/* ============================================================
-   FILTER STATE
-============================================================ */
-
-const ratingFilters = [
-  {
-    label: "5 stars",
-    count: "7,254",
-    stars: 5,
-  },
-  {
-    label: "4 stars",
-    count: "3,152",
-    stars: 4,
-  },
-  {
-    label: "3 stars",
-    count: "1,256",
-    stars: 3,
-  },
-  {
-    label: "2 stars",
-    count: "512",
-    stars: 2,
-  },
-  {
-    label: "1 star",
-    count: "326",
-    stars: 1,
-  },
-];
-
-const travelerTypes = [
-  {
-    label: "Family",
-    count: "4,256",
-  },
-  {
-    label: "Couple",
-    count: "3,125",
-  },
-  {
-    label: "Solo Travelers",
-    count: "2,145",
-  },
-  {
-    label: "Friends",
-    count: "3,385",
-  },
-  {
-    label: "Adventure Travelers",
-    count: "1,254",
-  },
-];
-
-const experiences = [
-  {
-    label: "Beach",
-    count: "6,524",
-  },
-  {
-    label: "Food",
-    count: "4,215",
-  },
-  {
-    label: "Nature",
-    count: "3,862",
-  },
-  {
-    label: "Adventure",
-    count: "2,541",
-  },
-  {
-    label: "Culture",
-    count: "1,254",
-  },
-  {
-    label: "Hotels",
-    count: "2,145",
-  },
-  {
-    label: "Activities",
-    count: "2,358",
-  },
-  {
-    label: "Shopping",
-    count: "952",
-  },
-];
+function normalizeReview(review: ReviewItem, index: number): Review {
+  return {
+    id: review._id ?? review.id ?? index + 1,
+    name: review.name ?? "Traveler",
+    avatar: review.avatar ?? "https://ui-avatars.com/api/?name=Traveler",
+    location: review.location ?? "Bangladesh",
+    rating: Number(review.rating ?? 0),
+    title: review.title ?? "Travel experience",
+    text: review.text ?? review.reviewText ?? "",
+    destination: review.destination ?? "Bangladesh",
+    tripType: review.tripType ?? "Traveler",
+    date: review.date ?? "",
+    helpful: Number(review.helpful ?? 0),
+    verified: review.verified ?? false,
+  };
+}
 
 /* ============================================================
    ANIMATION
@@ -318,330 +137,10 @@ function Stars({ rating, size = 13 }: { rating: number; size?: number }) {
 }
 
 /* ============================================================
-   FILTER SIDEBAR
-============================================================ */
-
-function ReviewFilters({
-  selectedRating,
-  setSelectedRating,
-}: {
-  selectedRating: number | null;
-  setSelectedRating: (value: number | null) => void;
-}) {
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <aside
-      className="
-        rounded-[14px]
-        border
-        border-[#DCE5E1]
-        bg-white
-        p-4
-        shadow-[0_4px_18px_rgba(11,37,34,0.045)]
-      "
-    >
-      {/* Header */}
-
-      <div className="flex items-center justify-between">
-        <h3 className="text-[12px] font-bold text-[#17211D]">Filter Reviews</h3>
-
-        <button
-          type="button"
-          onClick={() => setSelectedRating(null)}
-          className="
-            text-[9px]
-            font-semibold
-            text-[#087F5B]
-            transition-colors
-            hover:text-[#F4A62A]
-          "
-        >
-          Clear All
-        </button>
-      </div>
-
-      {/* Destination */}
-
-      <FilterGroup title="Destination">
-        <button
-          type="button"
-          className="
-            flex
-            h-8
-            w-full
-            items-center
-            justify-between
-            rounded-lg
-            border
-            border-[#DCE5E1]
-            bg-white
-            px-2.5
-            text-left
-            text-[9px]
-            text-[#46534D]
-            transition-all
-            hover:border-[#087F5B]
-            hover:bg-[#F7FAF8]
-          "
-        >
-          <span>All Destinations</span>
-          <ChevronDown size={12} />
-        </button>
-      </FilterGroup>
-
-      {/* Rating */}
-
-      <FilterGroup title="Rating">
-        <div className="space-y-2">
-          {ratingFilters.map((item) => {
-            const active = selectedRating === item.stars;
-
-            return (
-              <label
-                key={item.label}
-                className="
-                  group
-                  flex
-                  cursor-pointer
-                  items-center
-                  gap-2
-                  rounded-md
-                  px-1
-                  py-0.5
-                  transition-colors
-                  hover:bg-[#F7FAF8]
-                "
-              >
-                <input
-                  type="checkbox"
-                  checked={active}
-                  onChange={() => setSelectedRating(active ? null : item.stars)}
-                  className="
-                    h-3
-                    w-3
-                    cursor-pointer
-                    accent-[#087F5B]
-                  "
-                />
-
-                <Stars rating={item.stars} size={10} />
-
-                <span className="ml-auto text-[8px] text-[#87928D]">
-                  ({item.count})
-                </span>
-              </label>
-            );
-          })}
-        </div>
-      </FilterGroup>
-
-      {/* Traveler Type */}
-
-      <FilterGroup title="Traveler Type">
-        <div className="space-y-2">
-          {travelerTypes.map((item) => (
-            <CheckboxRow
-              key={item.label}
-              label={item.label}
-              count={item.count}
-            />
-          ))}
-        </div>
-      </FilterGroup>
-
-      {/* Experience */}
-
-      <FilterGroup title="Experience">
-        <div className="space-y-2">
-          {experiences.map((item) => (
-            <motion.label
-              key={item.label}
-              whileHover={
-                shouldReduceMotion
-                  ? undefined
-                  : {
-                      x: 3,
-                    }
-              }
-              className="
-                flex
-                cursor-pointer
-                items-center
-                gap-2
-                rounded-md
-                px-1
-                py-0.5
-                transition-colors
-                hover:bg-[#F7FAF8]
-              "
-            >
-              <input
-                type="checkbox"
-                className="
-                  h-3
-                  w-3
-                  accent-[#087F5B]
-                "
-              />
-
-              <span className="text-[9px] text-[#53615A]">{item.label}</span>
-
-              <span className="ml-auto text-[8px] text-[#8B9691]">
-                ({item.count})
-              </span>
-            </motion.label>
-          ))}
-        </div>
-      </FilterGroup>
-
-      {/* More Filters */}
-
-      <FilterGroup title="More Filters">
-        <div className="space-y-2">
-          <CheckboxRow label="Verified Travelers Only" />
-          <CheckboxRow label="With Photos" />
-          <CheckboxRow label="AI Summarized" />
-          <CheckboxRow label="Recommended" />
-        </div>
-      </FilterGroup>
-
-      {/* Buttons */}
-
-      <motion.button
-        whileHover={
-          shouldReduceMotion
-            ? undefined
-            : {
-                y: -2,
-              }
-        }
-        whileTap={
-          shouldReduceMotion
-            ? undefined
-            : {
-                scale: 0.98,
-              }
-        }
-        className="
-          mt-4
-          flex
-          h-9
-          w-full
-          items-center
-          justify-center
-          rounded-lg
-          bg-[#063A2F]
-          text-[9px]
-          font-bold
-          text-white
-          shadow-[0_5px_14px_rgba(6,58,47,0.18)]
-          transition-colors
-          hover:bg-[#087F5B]
-        "
-      >
-        Apply Filters
-      </motion.button>
-
-      <button
-        type="button"
-        onClick={() => setSelectedRating(null)}
-        className="
-          mt-2
-          flex
-          h-9
-          w-full
-          items-center
-          justify-center
-          rounded-lg
-          border
-          border-[#BCD1C9]
-          bg-white
-          text-[9px]
-          font-semibold
-          text-[#087F5B]
-          transition-all
-          hover:border-[#087F5B]
-          hover:bg-[#F5FAF7]
-        "
-      >
-        Clear All
-      </button>
-    </aside>
-  );
-}
-
-/* ============================================================
-   FILTER GROUP
-============================================================ */
-
-function FilterGroup({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="mt-5 border-t border-[#EEF2F0] pt-4">
-      <h4 className="mb-3 text-[9px] font-bold text-[#39453F]">{title}</h4>
-
-      {children}
-    </div>
-  );
-}
-
-/* ============================================================
-   CHECKBOX ROW
-============================================================ */
-
-function CheckboxRow({ label, count }: { label: string; count?: string }) {
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <motion.label
-      whileHover={
-        shouldReduceMotion
-          ? undefined
-          : {
-              x: 3,
-            }
-      }
-      className="
-        flex
-        cursor-pointer
-        items-center
-        gap-2
-        rounded-md
-        px-1
-        py-0.5
-        transition-colors
-        hover:bg-[#F7FAF8]
-      "
-    >
-      <input
-        type="checkbox"
-        className="
-          h-3
-          w-3
-          accent-[#087F5B]
-        "
-      />
-
-      <span className="text-[9px] text-[#53615A]">{label}</span>
-
-      {count && (
-        <span className="ml-auto text-[8px] text-[#8B9691]">({count})</span>
-      )}
-    </motion.label>
-  );
-}
-
-/* ============================================================
    REVIEW TOOLBAR
 ============================================================ */
 
-function ReviewToolbar() {
+function ReviewToolbar({ totalReviews, title = "Traveler Reviews" }: { totalReviews: number; title?: string }) {
   const [view, setView] = useState<"grid" | "list">("list");
 
   return (
@@ -658,49 +157,13 @@ function ReviewToolbar() {
     >
       <div>
         <h2 className="text-[16px] font-bold text-[#17211D]">
-          Traveler Reviews
+          {title}
         </h2>
 
-        <p className="mt-1 text-[9px] text-[#89938F]">12,500 reviews found</p>
+        <p className="mt-1 text-[9px] text-[#89938F]">{totalReviews.toLocaleString()} reviews found</p>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        {/* Search */}
-
-        <div
-          className="
-            flex
-            h-8
-            w-[180px]
-            items-center
-            gap-2
-            rounded-lg
-            border
-            border-[#DCE5E1]
-            bg-white
-            px-2.5
-            transition-all
-            focus-within:border-[#087F5B]
-            focus-within:shadow-[0_0_0_3px_rgba(8,127,91,0.07)]
-          "
-        >
-          <Search size={12} className="text-[#89938F]" />
-
-          <input
-            type="text"
-            placeholder="Search reviews..."
-            className="
-              min-w-0
-              flex-1
-              bg-transparent
-              text-[9px]
-              text-[#17211D]
-              outline-none
-              placeholder:text-[#A3ADA8]
-            "
-          />
-        </div>
-
         {/* Sort */}
 
         <button
@@ -920,64 +383,6 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
             {review.text}
           </p>
 
-          {/* Photos */}
-
-          <div className="mt-3 flex gap-1.5 overflow-hidden">
-            {review.photos.map((photo, photoIndex) => (
-              <motion.div
-                key={photo}
-                whileHover={
-                  shouldReduceMotion
-                    ? undefined
-                    : {
-                        y: -3,
-                        scale: 1.03,
-                      }
-                }
-                className="
-                  relative
-                  h-[55px]
-                  w-[68px]
-                  shrink-0
-                  overflow-hidden
-                  rounded-lg
-                  bg-[#EDF2EF]
-                "
-              >
-                <Image
-                  src={photo}
-                  alt=""
-                  fill
-                  sizes="68px"
-                  className="
-                    object-cover
-                    transition-transform
-                    duration-500
-                    group-hover:scale-[1.01]
-                  "
-                />
-
-                {photoIndex === 3 && (
-                  <div
-                    className="
-                      absolute
-                      inset-0
-                      flex
-                      items-center
-                      justify-center
-                      bg-black/45
-                      text-[10px]
-                      font-bold
-                      text-white
-                    "
-                  >
-                    +5
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </div>
-
           {/* Actions */}
 
           <div className="mt-3 flex items-center gap-4">
@@ -1069,31 +474,16 @@ function ReviewCard({ review, index }: { review: Review; index: number }) {
    TRAVELER RATING CARD
 ============================================================ */
 
-function TravelerRatingCard() {
+function TravelerRatingCard({
+  average,
+  totalLabel,
+  ratingBars,
+}: {
+  average: number;
+  totalLabel: string;
+  ratingBars: Array<{ stars: number; percentage: number }>;
+}) {
   const shouldReduceMotion = useReducedMotion();
-
-  const ratingBars = [
-    {
-      stars: 5,
-      percentage: 82,
-    },
-    {
-      stars: 4,
-      percentage: 12,
-    },
-    {
-      stars: 3,
-      percentage: 3,
-    },
-    {
-      stars: 2,
-      percentage: 2,
-    },
-    {
-      stars: 1,
-      percentage: 1,
-    },
-  ];
 
   return (
     <motion.div
@@ -1129,15 +519,15 @@ function TravelerRatingCard() {
           }
         >
           <div className="text-[27px] font-bold tracking-[-0.04em] text-[#17211D]">
-            4.8
+            {average}
             <span className="text-[11px] font-medium text-[#7D8983]"> / 5</span>
           </div>
         </motion.div>
 
         <div>
-          <Stars rating={4.8} size={12} />
+          <Stars rating={average} size={12} />
 
-          <p className="mt-1 text-[8px] text-[#8B9691]">1,200 reviews</p>
+          <p className="mt-1 text-[8px] text-[#8B9691]">{totalLabel}</p>
         </div>
       </div>
 
@@ -1186,7 +576,7 @@ function TravelerRatingCard() {
    EXPERIENCE RATINGS CARD
 ============================================================ */
 
-function ExperienceRatingsCard() {
+function ExperienceRatingsCard({ ratings }: { ratings: ExperienceRatingItem[] }) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -1215,7 +605,10 @@ function ExperienceRatingsCard() {
       </h3>
 
       <div className="mt-4 space-y-3">
-        {experienceRatings.map((item, index) => (
+        {ratings.map((item, index) => {
+          const Icon = experienceIconMap[item.icon] ?? Sparkles;
+
+          return (
           <motion.div
             key={item.label}
             whileHover={
@@ -1228,7 +621,7 @@ function ExperienceRatingsCard() {
             className="flex items-center gap-2"
           >
             <div className="flex w-[86px] items-center gap-1.5 text-[8px] text-[#68756F]">
-              <span className="text-[#087F5B]">{item.icon}</span>
+              <span className="text-[#087F5B]"><Icon size={12} /></span>
 
               <span className="truncate">{item.label}</span>
             </div>
@@ -1261,7 +654,8 @@ function ExperienceRatingsCard() {
               {item.rating}
             </span>
           </motion.div>
-        ))}
+          );
+        })}
       </div>
 
       <Link
@@ -1501,100 +895,79 @@ function AskAIReviewsCard() {
    PAGINATION
 ============================================================ */
 
-function Pagination() {
+function Pagination({
+  currentPage,
+  totalPages,
+  onPageChange,
+}: {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+}) {
+  if (totalPages <= 1) return null;
+
+  const pageItems: Array<number | "ellipsis-left" | "ellipsis-right"> = [];
+
+  if (totalPages <= 7) {
+    for (let page = 1; page <= totalPages; page += 1) pageItems.push(page);
+  } else {
+    pageItems.push(1);
+
+    if (currentPage > 4) pageItems.push("ellipsis-left");
+
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+
+    for (let page = start; page <= end; page += 1) pageItems.push(page);
+
+    if (currentPage < totalPages - 3) pageItems.push("ellipsis-right");
+
+    pageItems.push(totalPages);
+  }
+
   return (
-    <div
-      className="
-        mt-5
-        flex
-        items-center
-        justify-center
-        gap-1.5
-      "
-    >
+    <div className="mt-5 flex items-center justify-center gap-1.5">
       <button
         type="button"
-        className="
-          flex
-          h-7
-          w-7
-          items-center
-          justify-center
-          rounded-md
-          text-[#89938F]
-          transition-colors
-          hover:bg-[#EAF3EF]
-          hover:text-[#087F5B]
-        "
+        disabled={currentPage === 1}
+        onClick={() => onPageChange(currentPage - 1)}
+        className="flex h-7 w-7 items-center justify-center rounded-md text-[#89938F] transition-colors hover:bg-[#EAF3EF] hover:text-[#087F5B] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-transparent disabled:hover:text-[#89938F]"
+        aria-label="Previous page"
       >
         <ChevronLeft size={13} />
       </button>
 
-      {[1, 2, 3, 4, 5].map((page) => (
-        <button
-          key={page}
-          type="button"
-          className={`
-            flex
-            h-7
-            min-w-7
-            items-center
-            justify-center
-            rounded-md
-            px-1.5
-            text-[9px]
-            font-semibold
-            transition-all
-            ${
-              page === 1
-                ? "bg-[#063A2F] text-white shadow-[0_4px_10px_rgba(6,58,47,0.15)]"
-                : "text-[#68756F] hover:bg-[#EAF3EF] hover:text-[#087F5B]"
-            }
-          `}
-        >
-          {page}
-        </button>
-      ))}
-
-      <span className="px-1 text-[9px] text-[#9AA39F]">...</span>
+      {pageItems.map((item) =>
+        typeof item === "number" ? (
+          <button
+            key={item}
+            type="button"
+            onClick={() => onPageChange(item)}
+            className={`
+              flex h-7 min-w-7 items-center justify-center rounded-md px-1.5
+              text-[9px] font-semibold transition-all
+              ${
+                item === currentPage
+                  ? "bg-[#063A2F] text-white shadow-[0_4px_10px_rgba(6,58,47,0.15)]"
+                  : "text-[#68756F] hover:bg-[#EAF3EF] hover:text-[#087F5B]"
+              }
+            `}
+            aria-current={item === currentPage ? "page" : undefined}
+          >
+            {item}
+          </button>
+        ) : (
+          <span key={item} className="px-1 text-[9px] text-[#9AA39F]">
+            ...
+          </span>
+        ),
+      )}
 
       <button
         type="button"
-        className="
-          flex
-          h-7
-          min-w-7
-          items-center
-          justify-center
-          rounded-md
-          px-1.5
-          text-[9px]
-          font-semibold
-          text-[#68756F]
-          transition-colors
-          hover:bg-[#EAF3EF]
-          hover:text-[#087F5B]
-        "
-      >
-        417
-      </button>
-
-      <button
-        type="button"
-        className="
-          ml-1
-          flex
-          h-7
-          items-center
-          gap-1
-          rounded-md
-          px-2
-          text-[9px]
-          font-semibold
-          text-[#087F5B]
-          transition-colors
-          hover:bg-[#EAF3EF]
-        "
+        disabled={currentPage === totalPages}
+        onClick={() => onPageChange(currentPage + 1)}
+        className="ml-1 flex h-7 items-center gap-1 rounded-md px-2 text-[9px] font-semibold text-[#087F5B] transition-colors hover:bg-[#EAF3EF] disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-transparent"
       >
         Next
         <ChevronRight size={13} />
@@ -1608,7 +981,98 @@ function Pagination() {
 ============================================================ */
 
 export default function TravelerReviewsSection() {
-  const [selectedRating, setSelectedRating] = useState<number | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: session, isPending: isSessionPending } = useSession();
+  const showMyReviews = searchParams.get("mine") === "1";
+  const sessionUserId = session?.user?.id;
+
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [experienceRatings, setExperienceRatings] = useState<ExperienceRatingItem[]>([]);
+  const [ratingOverview, setRatingOverview] = useState({
+    average: 0,
+    totalLabel: "0 reviews",
+    ratingBars: [] as Array<{ stars: number; percentage: number }>,
+  });
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(true);
+
+  useEffect(() => {
+    if (showMyReviews && isSessionPending) return;
+
+    if (showMyReviews && !sessionUserId) {
+      const myReviewsPath = "/reviews?mine=1#traveler-reviews";
+      router.replace(`/login?redirect=${encodeURIComponent(myReviewsPath)}`);
+      return;
+    }
+
+    let active = true;
+    setIsLoadingReviews(true);
+
+    if (showMyReviews) {
+      getMyReviews()
+        .then((reviewData) => {
+          if (!active) return;
+          setReviews(reviewData.map(normalizeReview));
+          setTotalReviews(reviewData.length);
+        })
+        .catch((error) => {
+          if (!active) return;
+          console.error("Failed to load your reviews:", error);
+          setReviews([]);
+          setTotalReviews(0);
+        })
+        .finally(() => {
+          if (active) setIsLoadingReviews(false);
+        });
+
+      return () => {
+        active = false;
+      };
+    }
+
+    Promise.all([getReviews(currentPage, 10), getReviewStats()])
+      .then(([reviewData, statsData]) => {
+        if (!active) return;
+
+        setReviews(reviewData.reviews.map(normalizeReview));
+        setExperienceRatings(statsData.experienceRatings ?? []);
+        setRatingOverview(statsData.ratingOverview);
+        setTotalReviews(reviewData.total);
+        setTotalPages(reviewData.totalPages);
+
+        if (reviewData.page !== currentPage) {
+          setCurrentPage(reviewData.page);
+        }
+      })
+      .catch((error) => {
+        if (!active) return;
+        console.error("Failed to load traveler reviews:", error);
+        setReviews([]);
+        setTotalReviews(0);
+      })
+      .finally(() => {
+        if (active) setIsLoadingReviews(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [showMyReviews, isSessionPending, sessionUserId, router, currentPage]);
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages || page === currentPage) return;
+    setCurrentPage(page);
+
+    requestAnimationFrame(() => {
+      document.getElementById("traveler-reviews")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  };
 
   return (
     <section
@@ -1630,62 +1094,86 @@ export default function TravelerReviewsSection() {
         "
       >
         {/* ==================================================
-            MAIN 3 COLUMN LAYOUT
+            MAIN 2 COLUMN LAYOUT
         =================================================== */}
 
         <div
-          className="
+          className={`
             grid
             grid-cols-1
             gap-5
-            lg:grid-cols-[180px_minmax(0,1fr)_220px]
-            xl:grid-cols-[190px_minmax(0,1fr)_235px]
-          "
+            ${
+              showMyReviews
+                ? "lg:grid-cols-1"
+                : "lg:grid-cols-[minmax(0,1fr)_235px] xl:grid-cols-[minmax(0,1fr)_250px]"
+            }
+          `}
         >
-          {/* ================================================
-              LEFT FILTER
-          ================================================= */}
-
-          <div className="lg:sticky lg:top-5 lg:self-start">
-            <ReviewFilters
-              selectedRating={selectedRating}
-              setSelectedRating={setSelectedRating}
-            />
-          </div>
-
           {/* ================================================
               CENTER REVIEWS
           ================================================= */}
 
           <main className="min-w-0">
-            <ReviewToolbar />
+            <ReviewToolbar
+              totalReviews={totalReviews}
+              title={showMyReviews ? "My Reviews" : "Traveler Reviews"}
+            />
 
-            <div className="space-y-3">
-              {reviews
-                .filter((review) =>
-                  selectedRating
-                    ? Math.round(review.rating) === selectedRating
-                    : true,
-                )
-                .map((review, index) => (
-                  <ReviewCard key={review.id} review={review} index={index} />
-                ))}
-            </div>
+            {isLoadingReviews ? (
+              <div className="rounded-xl border border-[#DCE5E1] bg-white px-5 py-10 text-center text-[11px] text-[#6B7772]">
+                Loading reviews...
+              </div>
+            ) : reviews.length > 0 ? (
+              <>
+                <div className="space-y-3">
+                  {reviews.map((review, index) => (
+                    <ReviewCard key={review.id} review={review} index={index} />
+                  ))}
+                </div>
 
-            <Pagination />
+                {!showMyReviews && (
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                )}
+              </>
+            ) : (
+              <div className="rounded-xl border border-[#DCE5E1] bg-white px-5 py-10 text-center">
+                <p className="text-[13px] font-semibold text-[#17211D]">
+                  {showMyReviews ? "You have not submitted any reviews yet." : "No reviews found."}
+                </p>
+                {showMyReviews && (
+                  <Link
+                    href="/reviews/write-review"
+                    className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-semibold text-[#087F5B] hover:underline"
+                  >
+                    Write a Review
+                    <ArrowRight size={12} />
+                  </Link>
+                )}
+              </div>
+            )}
           </main>
 
           {/* ================================================
               RIGHT SIDEBAR
           ================================================= */}
 
-          <aside className="space-y-4 lg:sticky lg:top-5 lg:self-start">
-            <TravelerRatingCard />
+          {!showMyReviews && (
+            <aside className="space-y-4 lg:sticky lg:top-5 lg:self-start">
+              <TravelerRatingCard
+                average={ratingOverview.average}
+                totalLabel={ratingOverview.totalLabel}
+                ratingBars={ratingOverview.ratingBars}
+              />
 
-            <ExperienceRatingsCard />
+              <ExperienceRatingsCard ratings={experienceRatings} />
 
-            <AskAIReviewsCard />
-          </aside>
+              <AskAIReviewsCard />
+            </aside>
+          )}
         </div>
       </div>
     </section>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { useMemo, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Bookmark, Check } from "lucide-react";
-import { publishedStories, type PublishedStory } from "@/data/researchedTravelStories";
+import type { PublishedStory } from "@/types/publishedStory";
 
 export const storyShell = "mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-14 xl:px-20";
 export const storyHeading = "font-serif text-[30px] leading-[1.15] tracking-[-0.035em] text-[#17211D] sm:text-[38px]";
@@ -60,7 +60,7 @@ export function useSavedStories() {
   const [fallback, setFallback] = useState<string[] | null>(null);
   const [warning, setWarning] = useState("");
   const stored = useMemo(() => {
-    try { const value = JSON.parse(raw); return Array.isArray(value) ? value.filter((slug): slug is string => typeof slug === "string" && publishedStories.some(story => story.slug === slug)) : []; }
+    try { const value = JSON.parse(raw); return Array.isArray(value) ? value.filter((slug): slug is string => typeof slug === "string") : []; }
     catch { return []; }
   }, [raw]);
   const saved = fallback ?? stored;

@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const cookieHeader = request.headers.get("cookie") || "";
   
   // Use environment variables for the API URL, default to localhost for dev

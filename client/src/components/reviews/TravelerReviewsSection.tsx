@@ -18,6 +18,7 @@ import {
   Heart,
   Hotel,
   List,
+  LoaderCircle,
   MapPin,
   MessageCircle,
   MoreHorizontal,
@@ -697,7 +698,74 @@ function ExperienceRatingsCard({ ratings }: { ratings: ExperienceRatingItem[] })
 
 function AskAIReviewsCard() {
   const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [error, setError] = useState("");
+  const [isAsking, setIsAsking] = useState(false);
+  const [conversation, setConversation] = useState<
+    Array<{ role: "user" | "assistant"; content: string }>
+  >([]);
   const shouldReduceMotion = useReducedMotion();
+
+  const handleAsk = async () => {
+    const userQuestion = question.trim();
+    if (!userQuestion || isAsking) return;
+
+    const nextConversation = [
+      ...conversation,
+      { role: "user" as const, content: userQuestion },
+    ];
+
+    setQuestion("");
+    setAnswer("");
+    setError("");
+    setIsAsking(true);
+
+    try {
+      const apiUrl = (
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+      ).replace(/\/+$/, "");
+
+      const response = await fetch(`${apiUrl}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: nextConversation.slice(-20) }),
+        signal: AbortSignal.timeout(65_000),
+      });
+
+      const data = (await response.json().catch(() => ({}))) as {
+        reply?: string;
+        error?: string;
+        message?: string;
+      };
+
+      if (!response.ok || !data.reply?.trim()) {
+        throw new Error(
+          data.error || data.message || "AI could not answer. Please try again."
+        );
+      }
+
+      const assistantAnswer = data.reply.trim();
+      setAnswer(assistantAnswer);
+      setConversation([
+        ...nextConversation,
+        { role: "assistant", content: assistantAnswer },
+      ]);
+    } catch (cause) {
+      if (cause instanceof Error && cause.name === "TimeoutError") {
+        setError("The answer is taking too long. Please try again.");
+      } else if (cause instanceof TypeError) {
+        setError("Could not connect to the server.");
+      } else {
+        setError(
+          cause instanceof Error
+            ? cause.message
+            : "AI could not answer. Please try again."
+        );
+      }
+    } finally {
+      setIsAsking(false);
+    }
+  };
 
   const suggestions = [
     "Is Cox's Bazar good for families?",
@@ -820,9 +888,31 @@ function AskAIReviewsCard() {
           ))}
         </div>
 
+        {(answer || error || isAsking) && (
+          <div
+            aria-live="polite"
+            className="mt-3 max-h-36 overflow-y-auto rounded-lg border border-white/10 bg-black/10 px-2.5 py-2 text-[8px] leading-[1.6] text-white/75 [scrollbar-width:thin]"
+          >
+            {isAsking ? (
+              <span className="flex items-center gap-1.5 text-white/60">
+                <LoaderCircle size={10} className="animate-spin text-[#F4B942]" />
+                AI is finding an answer...
+              </span>
+            ) : error ? (
+              <span className="text-red-200">{error}</span>
+            ) : (
+              <p className="whitespace-pre-wrap">{answer}</p>
+            )}
+          </div>
+        )}
+
         {/* Input */}
 
-        <div
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            void handleAsk();
+          }}
           className="
             mt-4
             flex
@@ -840,6 +930,7 @@ function AskAIReviewsCard() {
           <input
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
+            disabled={isAsking}
             placeholder="Ask anything..."
             className="
               min-w-0
@@ -853,7 +944,8 @@ function AskAIReviewsCard() {
           />
 
           <motion.button
-            type="button"
+            type="submit"
+            disabled={isAsking || !question.trim()}
             whileHover={
               shouldReduceMotion
                 ? undefined
@@ -881,11 +973,18 @@ function AskAIReviewsCard() {
               text-[#063A2F]
               transition-colors
               hover:bg-[#F8B94C]
+              disabled:cursor-not-allowed
+              disabled:opacity-50
             "
+            aria-label="Ask AI about reviews"
           >
-            <Send size={11} />
+            {isAsking ? (
+              <LoaderCircle size={11} className="animate-spin" />
+            ) : (
+              <Send size={11} />
+            )}
           </motion.button>
-        </div>
+        </form>
       </div>
     </motion.div>
   );

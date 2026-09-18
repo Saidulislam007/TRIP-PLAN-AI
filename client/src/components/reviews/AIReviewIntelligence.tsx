@@ -2,15 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import type { Variants } from "framer-motion";
-import {
-  getReviewInsights,
-  type ReviewInsightsData,
-  type ReviewInsightListItem,
-  type ReviewRecommendation,
-} from "@/lib/api/reviews";
 
 import {
   ArrowRight,
@@ -35,26 +28,119 @@ import {
 } from "lucide-react";
 
 /* ============================================================
-   DATA ICON MAP
+   TYPES
 ============================================================ */
 
-const iconMap = {
-  Waves,
-  Sun,
-  Utensils,
-  Mountain,
-  Baby,
-  Users,
-  Car,
-  CloudSun,
-  CalendarDays,
-  Wallet,
-  Camera,
+type Recommendation = {
+  id: number;
+  title: string;
+  location: string;
+  match: number;
+  rating: number;
+  description: string;
+  type: string;
+  date: string;
+  image: string;
 };
 
-function getDataIcon(name: string) {
-  return iconMap[name as keyof typeof iconMap] ?? Sparkles;
-}
+/* ============================================================
+   DATA
+============================================================ */
+
+const lovedThings = [
+  {
+    icon: Waves,
+    label: "Beautiful Beaches",
+    percentage: 96,
+  },
+  {
+    icon: Sun,
+    label: "Stunning Sunsets",
+    percentage: 89,
+  },
+  {
+    icon: Utensils,
+    label: "Fresh Seafood",
+    percentage: 91,
+  },
+  {
+    icon: Mountain,
+    label: "Scenic Marine Drive",
+    percentage: 87,
+  },
+  {
+    icon: Baby,
+    label: "Family Friendly",
+    percentage: 84,
+  },
+];
+
+const concerns = [
+  {
+    icon: Users,
+    label: "Peak-season Crowds",
+    percentage: 32,
+  },
+  {
+    icon: Car,
+    label: "Weekend Traffic",
+    percentage: 28,
+  },
+  {
+    icon: CloudSun,
+    label: "Weather Changes",
+    percentage: 16,
+  },
+  {
+    icon: CalendarDays,
+    label: "Holiday Availability",
+    percentage: 12,
+  },
+  {
+    icon: Wallet,
+    label: "Seasonal Price Changes",
+    percentage: 10,
+  },
+];
+
+const recommendations: Recommendation[] = [
+  {
+    id: 1,
+    title: "Cox's Bazar",
+    location: "Cox's Bazar, Bangladesh",
+    match: 96,
+    rating: 4.8,
+    description: "Perfect family beach getaway",
+    type: "Family Trip",
+    date: "Feb 2026",
+    image:
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=700&q=85",
+  },
+  {
+    id: 2,
+    title: "Sajek Valley",
+    location: "Rangamati, Bangladesh",
+    match: 94,
+    rating: 4.9,
+    description: "Peaceful mountain escape",
+    type: "Couple Trip",
+    date: "Jan 2026",
+    image:
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=700&q=85",
+  },
+  {
+    id: 3,
+    title: "Bandarban",
+    location: "Bandarban, Bangladesh",
+    match: 91,
+    rating: 4.8,
+    description: "An amazing adventure",
+    type: "Friends Trip",
+    date: "Dec 2025",
+    image:
+      "https://images.unsplash.com/photo-1464278533981-50106e6176b1?auto=format&fit=crop&w=700&q=85",
+  },
+];
 
 /* ============================================================
    MOTION
@@ -278,7 +364,7 @@ function IntelligenceCard({
    AI REVIEW INSIGHTS
 ============================================================ */
 
-function AIInsightsCard({ data }: { data: ReviewInsightsData }) {
+function AIInsightsCard() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -505,7 +591,7 @@ function AIInsightsCard({ data }: { data: ReviewInsightsData }) {
           <span className="text-[9px] text-white/45">Reviews Analyzed</span>
 
           <span className="mt-0.5 text-[13px] font-bold text-white">
-            {data.reviewsAnalyzed}
+            1,200+
           </span>
         </motion.div>
 
@@ -549,7 +635,9 @@ function AIInsightsCard({ data }: { data: ReviewInsightsData }) {
               text-white/70
             "
           >
-            {data.summary}
+            Travelers consistently praise Cox&apos;s Bazar for its long beaches,
+            stunning sunsets, fresh seafood and scenic Marine Drive. Peak-season
+            crowds and weekend traffic are the most common concerns.
           </p>
         </motion.div>
 
@@ -579,7 +667,7 @@ function AIInsightsCard({ data }: { data: ReviewInsightsData }) {
                 repeat: Infinity,
               }}
             >
-              {data.confidence}
+              High
             </motion.span>
           </div>
 
@@ -618,7 +706,7 @@ function AIInsightsCard({ data }: { data: ReviewInsightsData }) {
    SENTIMENT ANALYSIS
 ============================================================ */
 
-function SentimentAnalysisCard({ sentiment }: { sentiment: ReviewInsightsData["sentiment"] }) {
+function SentimentAnalysisCard() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -697,9 +785,9 @@ function SentimentAnalysisCard({ sentiment }: { sentiment: ReviewInsightsData["s
               style={{
                 background: `
                   conic-gradient(
-                    #087F5B 0% ${sentiment.positive}%,
-                    #F4A62A ${sentiment.positive}% ${sentiment.positive + sentiment.neutral}%,
-                    #EF5B52 ${sentiment.positive + sentiment.neutral}% 100%
+                    #087F5B 0% 88%,
+                    #F4A62A 88% 96%,
+                    #EF5B52 96% 100%
                   )
                 `,
               }}
@@ -737,7 +825,7 @@ function SentimentAnalysisCard({ sentiment }: { sentiment: ReviewInsightsData["s
                   text-[#17211D]
                 "
               >
-                {sentiment.positive}%
+                88%
               </span>
 
               <span className="mt-0.5 text-[10px] font-medium text-[#087F5B]">
@@ -752,19 +840,19 @@ function SentimentAnalysisCard({ sentiment }: { sentiment: ReviewInsightsData["s
         <div className="mt-5 grid grid-cols-3 gap-2">
           <SentimentLegend
             color="bg-[#087F5B]"
-            percentage={`${sentiment.positive}%`}
+            percentage="88%"
             label="Positive"
           />
 
           <SentimentLegend
             color="bg-[#F4A62A]"
-            percentage={`${sentiment.neutral}%`}
+            percentage="8%"
             label="Neutral"
           />
 
           <SentimentLegend
             color="bg-[#EF5B52]"
-            percentage={`${sentiment.negative}%`}
+            percentage="4%"
             label="Negative"
           />
         </div>
@@ -851,13 +939,7 @@ function SentimentLegend({
    LOVE + CONCERNS
 ============================================================ */
 
-function LoveAndConcernsCard({
-  lovedThings,
-  concerns,
-}: {
-  lovedThings: ReviewInsightListItem[];
-  concerns: ReviewInsightListItem[];
-}) {
+function LoveAndConcernsCard() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -913,7 +995,7 @@ function LoveAndConcernsCard({
 
         <div className="mt-4 space-y-1">
           {lovedThings.map((item, index) => {
-            const Icon = getDataIcon(item.icon);
+            const Icon = item.icon;
 
             return (
               <motion.div
@@ -1001,7 +1083,7 @@ function LoveAndConcernsCard({
 
         <div className="mt-2 space-y-1">
           {concerns.map((item, index) => {
-            const Icon = getDataIcon(item.icon);
+            const Icon = item.icon;
 
             return (
               <motion.div
@@ -1088,13 +1170,7 @@ function LoveAndConcernsCard({
    REVIEWS PICKED FOR YOU
 ============================================================ */
 
-function ReviewsPickedForYouCard({
-  recommendations,
-  tags,
-}: {
-  recommendations: ReviewRecommendation[];
-  tags: ReviewInsightsData["recommendationTags"];
-}) {
+function ReviewsPickedForYouCard() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -1187,8 +1263,25 @@ function ReviewsPickedForYouCard({
         {/* Tags */}
 
         <div className="mt-3 flex flex-wrap gap-1.5">
-          {tags.map((item) => {
-            const Icon = getDataIcon(item.icon);
+          {[
+            {
+              label: "Beach",
+              icon: Waves,
+            },
+            {
+              label: "Family",
+              icon: Users,
+            },
+            {
+              label: "Food",
+              icon: Utensils,
+            },
+            {
+              label: "Photography",
+              icon: Camera,
+            },
+          ].map((item) => {
+            const Icon = item.icon;
 
             return (
               <motion.span
@@ -1297,7 +1390,7 @@ function RecommendationItem({
   recommendation,
   index,
 }: {
-  recommendation: ReviewRecommendation;
+  recommendation: Recommendation;
   index: number;
 }) {
   const shouldReduceMotion = useReducedMotion();
@@ -1459,26 +1552,6 @@ function RecommendationItem({
 ============================================================ */
 
 export default function AIReviewIntelligence() {
-  const [data, setData] = useState<ReviewInsightsData | null>(null);
-
-  useEffect(() => {
-    let active = true;
-
-    getReviewInsights()
-      .then((result) => {
-        if (active) setData(result);
-      })
-      .catch((error) => {
-        console.error("Failed to load review insights:", error);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  if (!data) return null;
-
   return (
     <section
       aria-labelledby="ai-review-intelligence-title"
@@ -1514,19 +1587,13 @@ export default function AIReviewIntelligence() {
             xl:grid-cols-4
           "
         >
-          <AIInsightsCard data={data} />
+          <AIInsightsCard />
 
-          <SentimentAnalysisCard sentiment={data.sentiment} />
+          <SentimentAnalysisCard />
 
-          <LoveAndConcernsCard
-            lovedThings={data.lovedThings}
-            concerns={data.concerns}
-          />
+          <LoveAndConcernsCard />
 
-          <ReviewsPickedForYouCard
-            recommendations={data.recommendations}
-            tags={data.recommendationTags}
-          />
+          <ReviewsPickedForYouCard />
         </div>
       </div>
     </section>

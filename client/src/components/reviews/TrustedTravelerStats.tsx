@@ -2,14 +2,57 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, MapPin, Star, Users, BadgeCheck } from "lucide-react";
-import { getReviewStats, type ReviewStat } from "@/lib/api/reviews";
 
-const iconMap = {
-  Star,
-  Users,
-  MapPin,
-  BadgeCheck,
+type Stat = {
+  id: number;
+  value: number;
+  suffix: string;
+  decimals?: number;
+  label: string;
+  description: string;
+  icon: React.ElementType;
+  accent: "gold" | "emerald";
 };
+
+const stats: Stat[] = [
+  {
+    id: 1,
+    value: 4.8,
+    suffix: "/5",
+    decimals: 1,
+    label: "Overall Rating",
+    description: "Average rating from verified travelers",
+    icon: Star,
+    accent: "gold",
+  },
+  {
+    id: 2,
+    value: 12500,
+    suffix: "+",
+    label: "Traveler Reviews",
+    description: "Authentic experiences shared by travelers",
+    icon: Users,
+    accent: "emerald",
+  },
+  {
+    id: 3,
+    value: 850,
+    suffix: "+",
+    label: "Destinations Reviewed",
+    description: "Places explored and reviewed by our community",
+    icon: MapPin,
+    accent: "emerald",
+  },
+  {
+    id: 4,
+    value: 96,
+    suffix: "%",
+    label: "Would Recommend",
+    description: "Travelers who would recommend their experience",
+    icon: BadgeCheck,
+    accent: "gold",
+  },
+];
 
 /* ============================================================
    Animated Number
@@ -96,8 +139,8 @@ function AnimatedNumber({
    Stat Card
 ============================================================ */
 
-function StatCard({ stat }: { stat: ReviewStat }) {
-  const Icon = iconMap[stat.icon] ?? Star;
+function StatCard({ stat }: { stat: Stat }) {
+  const Icon = stat.icon;
 
   const isGold = stat.accent === "gold";
 
@@ -298,24 +341,6 @@ function StatCard({ stat }: { stat: ReviewStat }) {
 ============================================================ */
 
 export default function TrustedTravelerStats() {
-  const [stats, setStats] = useState<ReviewStat[]>([]);
-
-  useEffect(() => {
-    let active = true;
-
-    getReviewStats()
-      .then((data) => {
-        if (active) setStats(data.stats ?? []);
-      })
-      .catch((error) => {
-        console.error("Failed to load review stats:", error);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
   return (
     <section
       aria-labelledby="traveler-stats-heading"

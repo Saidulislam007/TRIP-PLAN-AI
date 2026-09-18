@@ -17,6 +17,8 @@ import {
   Clock,
   MessageSquare,
   MapPin,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 /* =========================
@@ -70,6 +72,7 @@ interface ActionButtonProps {
   icon: ReactNode;
   onClick: () => void;
   type: "green" | "blue" | "red";
+  label: string;
 }
 
 interface ModalOverlayProps {
@@ -105,6 +108,23 @@ const itemVariants: Variants = {
   },
 };
 
+const cardScrollVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 35,
+    scale: 0.98,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.55,
+      ease: "easeOut",
+    },
+  },
+};
+
 /* =========================
    Main Page
 ========================= */
@@ -123,6 +143,14 @@ export default function ReviewsPage() {
     useState<Review | null>(null);
 
   /* =========================
+     Pagination
+  ========================= */
+
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const REVIEWS_PER_PAGE = 6;
+
+  /* =========================
      Fetch Reviews
   ========================= */
 
@@ -134,7 +162,9 @@ export default function ReviewsPage() {
           "http://localhost:5000"
         ).replace(/\/+$/, "");
 
-        const response = await fetch(`${baseUrl}/api/reviews`);
+        const response = await fetch(
+          `${baseUrl}/api/reviews`
+        );
 
         if (!response.ok) {
           throw new Error(
@@ -144,61 +174,68 @@ export default function ReviewsPage() {
 
         const result = await response.json();
 
-        if (result.success && Array.isArray(result.data)) {
-          const mappedData: Review[] = result.data.map(
-            (item: ApiReview): Review => {
-              const userName =
-                item.name ||
-                item.user ||
-                "Anonymous User";
+        if (
+          result.success &&
+          Array.isArray(result.data)
+        ) {
+          const mappedData: Review[] =
+            result.data.map(
+              (item: ApiReview): Review => {
+                const userName =
+                  item.name ||
+                  item.user ||
+                  "Anonymous User";
 
-              const reviewDate =
-                item.date ||
-                item.createdAt ||
-                new Date().toISOString();
+                const reviewDate =
+                  item.date ||
+                  item.createdAt ||
+                  new Date().toISOString();
 
-              return {
-                id:
-                  item._id ||
-                  crypto.randomUUID(),
+                return {
+                  id:
+                    item._id ||
+                    crypto.randomUUID(),
 
-                user: userName,
+                  user: userName,
 
-                email: item.email || "",
+                  email: item.email || "",
 
-                destination:
-                  item.destination ||
-                  "Unknown Destination",
+                  destination:
+                    item.destination ||
+                    "Unknown Destination",
 
-                rating:
-                  Number(item.rating) || 5,
+                  rating:
+                    Number(item.rating) || 5,
 
-                date: new Date(
-                  reviewDate
-                ).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                }),
+                  date: new Date(
+                    reviewDate
+                  ).toLocaleDateString(
+                    "en-US",
+                    {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }
+                  ),
 
-                comment:
-                  item.reviewText ||
-                  item.comment ||
-                  "No comment provided.",
+                  comment:
+                    item.reviewText ||
+                    item.comment ||
+                    "No comment provided.",
 
-                status:
-                  item.status === "Published"
-                    ? "Published"
-                    : "Pending",
+                  status:
+                    item.status === "Published"
+                      ? "Published"
+                      : "Pending",
 
-                avatar:
-                  item.avatar ||
-                  `https://ui-avatars.com/api/?name=${encodeURIComponent(
-                    userName
-                  )}&background=random`,
-              };
-            }
-          );
+                  avatar:
+                    item.avatar ||
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      userName
+                    )}&background=random`,
+                };
+              }
+            );
 
           setReviews(mappedData);
         } else {
@@ -251,6 +288,49 @@ export default function ReviewsPage() {
       }
     );
   }, [reviews, search, filter]);
+
+  /* =========================
+     Reset Pagination
+  ========================= */
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, filter]);
+
+  /* =========================
+     Pagination Calculation
+  ========================= */
+
+  const totalPages = Math.ceil(
+    filteredReviews.length /
+      REVIEWS_PER_PAGE
+  );
+
+  const startIndex =
+    (currentPage - 1) *
+    REVIEWS_PER_PAGE;
+
+  const endIndex =
+    startIndex + REVIEWS_PER_PAGE;
+
+  const currentReviews =
+    filteredReviews.slice(
+      startIndex,
+      endIndex
+    );
+
+  /* =========================
+     Keep Page Valid After Delete
+  ========================= */
+
+  useEffect(() => {
+    if (
+      totalPages > 0 &&
+      currentPage > totalPages
+    ) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   /* =========================
      Statistics
@@ -387,9 +467,10 @@ export default function ReviewsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center ">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-4 border-gray-200 border-t-green-600 rounded-full animate-spin" />
+
           <p className="text-gray-500 text-sm">
             Loading reviews...
           </p>
@@ -408,9 +489,17 @@ export default function ReviewsPage() {
 
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: -15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          initial={{
+            opacity: 0,
+            y: -15,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
           className="mb-8"
         >
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -434,9 +523,7 @@ export default function ReviewsPage() {
               title="Total Reviews"
               value={totalReviews}
               icon={
-                <MessageSquare
-                  size={22}
-                />
+                <MessageSquare size={22} />
               }
             />
           </motion.div>
@@ -445,9 +532,7 @@ export default function ReviewsPage() {
             <StatCard
               title="Published"
               value={publishedReviews}
-              icon={
-                <Check size={22} />
-              }
+              icon={<Check size={22} />}
             />
           </motion.div>
 
@@ -455,9 +540,7 @@ export default function ReviewsPage() {
             <StatCard
               title="Pending"
               value={pendingReviews}
-              icon={
-                <Clock size={22} />
-              }
+              icon={<Clock size={22} />}
             />
           </motion.div>
 
@@ -465,19 +548,25 @@ export default function ReviewsPage() {
             <StatCard
               title="Average Rating"
               value={averageRating}
-              icon={
-                <Star size={22} />
-              }
+              icon={<Star size={22} />}
             />
           </motion.div>
         </motion.div>
 
         {/* Search & Filter */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="bg-white rounded-2xl border border-gray-100 p-4 mb-6"
+          initial={{
+            opacity: 0,
+            y: 15,
+          }}
+          animate={{
+            opacity: 1,
+            y: 0,
+          }}
+          transition={{
+            duration: 0.4,
+          }}
+          className="bg-white rounded-2xl border border-gray-100 p-4 mb-6 shadow-sm"
         >
           <div className="flex flex-col md:flex-row gap-4 justify-between">
 
@@ -522,9 +611,9 @@ export default function ReviewsPage() {
                     onClick={() =>
                       setFilter(option)
                     }
-                    className={`px-4 py-2.5 rounded-xl text-sm font-medium transition ${
+                    className={`cursor-pointer px-4 py-2.5 rounded-xl text-sm font-medium transition ${
                       filter === option
-                        ? "bg-green-600 text-white"
+                        ? "bg-green-600 text-white shadow-md shadow-green-100"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                   >
@@ -536,12 +625,12 @@ export default function ReviewsPage() {
           </div>
         </motion.div>
 
-        {/* Reviews Table */}
+        {/* Reviews Table / Cards */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="show"
-          className="bg-white rounded-2xl border border-gray-100 overflow-hidden"
+          className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm"
         >
           {/* Desktop Table */}
           <div className="hidden lg:block overflow-x-auto">
@@ -579,13 +668,31 @@ export default function ReviewsPage() {
               </thead>
 
               <tbody className="divide-y divide-gray-100">
-                {filteredReviews.length > 0 ? (
-                  filteredReviews.map(
+                {currentReviews.length > 0 ? (
+                  currentReviews.map(
                     (review: Review) => (
                       <motion.tr
                         key={review.id}
-                        variants={itemVariants}
-                        className="hover:bg-gray-50/70 transition"
+                         variants={cardScrollVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{
+        once: true,
+        amount: 0.25,
+      }}
+      whileHover={{
+        scale: 1.005,
+        y: -1,
+      }}
+      transition={{
+        duration: 0.25,
+      }}
+      className="
+        border-b border-slate-200/70
+        transition-all duration-300
+        hover:bg-emerald-50/30
+        hover:shadow-sm
+      "
                       >
                         {/* User */}
                         <td className="px-6 py-5">
@@ -662,10 +769,9 @@ export default function ReviewsPage() {
                           <div className="flex justify-end gap-2">
                             <ActionButton
                               type="blue"
+                              label="View review"
                               icon={
-                                <Eye
-                                  size={16}
-                                />
+                                <Eye size={16} />
                               }
                               onClick={() =>
                                 setSelectedReview(
@@ -678,10 +784,9 @@ export default function ReviewsPage() {
                               "Pending" && (
                               <ActionButton
                                 type="green"
+                                label="Approve review"
                                 icon={
-                                  <Check
-                                    size={16}
-                                  />
+                                  <Check size={16} />
                                 }
                                 onClick={() =>
                                   handleApprove(
@@ -693,6 +798,7 @@ export default function ReviewsPage() {
 
                             <ActionButton
                               type="red"
+                              label="Delete review"
                               icon={
                                 <Trash2
                                   size={16}
@@ -715,20 +821,7 @@ export default function ReviewsPage() {
                       colSpan={7}
                       className="px-6 py-16 text-center"
                     >
-                      <div className="flex flex-col items-center">
-                        <MessageSquare
-                          size={40}
-                          className="text-gray-300 mb-3"
-                        />
-
-                        <p className="text-gray-500 font-medium">
-                          No reviews found
-                        </p>
-
-                        <p className="text-sm text-gray-400 mt-1">
-                          Try changing your search or filter.
-                        </p>
-                      </div>
+                      <EmptyReviews />
                     </td>
                   </tr>
                 )}
@@ -738,150 +831,282 @@ export default function ReviewsPage() {
 
           {/* Mobile / Tablet Cards */}
           <div className="lg:hidden p-4 space-y-4">
-            {filteredReviews.length > 0 ? (
-              filteredReviews.map(
+            {currentReviews.length > 0 ? (
+              currentReviews.map(
                 (review: Review) => (
                   <motion.div
-                    key={review.id}
-                    variants={itemVariants}
-                    className="border border-gray-100 rounded-xl p-4"
-                  >
-                    {/* User */}
-                    <div className="flex items-center justify-between gap-3 mb-4">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={review.avatar}
-                          alt={review.user}
-                          className="w-11 h-11 rounded-full object-cover"
-                        />
+  key={review.id}
+  variants={cardScrollVariants}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{
+    once: true,
+    amount: 0.2,
+  }}
+  whileHover={{
+    y: -6,
+    scale: 1.01,
+  }}
+  transition={{
+    duration: 0.25,
+  }}
+  className="relative rounded-2xl p-[1px] overflow-hidden group"
+>
+                    {/* Animated colorful border */}
+                    <div className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,#10b981,#3b82f6,#8b5cf6,#ec4899,#f59e0b,#10b981)] animate-[spin_4s_linear_infinite]" />
 
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            {review.user}
-                          </p>
+                    {/* Card content */}
+                    <div className="relative bg-white rounded-2xl p-4 shadow-sm group-hover:shadow-xl transition-shadow duration-300">
 
-                          <p className="text-xs text-gray-500">
-                            {review.email ||
-                              "No email"}
-                          </p>
+                      {/* User */}
+                      <div className="flex items-center justify-between gap-3 mb-4">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={review.avatar}
+                            alt={review.user}
+                            className="w-11 h-11 rounded-full object-cover ring-2 ring-gray-100"
+                          />
+
+                          <div>
+                            <p className="font-semibold text-gray-900">
+                              {review.user}
+                            </p>
+
+                            <p className="text-xs text-gray-500">
+                              {review.email ||
+                                "No email"}
+                            </p>
+                          </div>
                         </div>
+
+                        <StatusBadge
+                          status={
+                            review.status
+                          }
+                        />
                       </div>
 
-                      <StatusBadge
-                        status={
-                          review.status
-                        }
-                      />
-                    </div>
+                      {/* Destination */}
+                      <div className="flex items-center gap-2 mb-3">
+                        <MapPin
+                          size={16}
+                          className="text-green-500"
+                        />
 
-                    {/* Destination */}
-                    <div className="flex items-center gap-2 mb-3">
-                      <MapPin
-                        size={16}
-                        className="text-gray-400"
-                      />
+                        <span className="text-sm text-gray-700">
+                          {
+                            review.destination
+                          }
+                        </span>
+                      </div>
 
-                      <span className="text-sm text-gray-700">
-                        {
-                          review.destination
-                        }
-                      </span>
-                    </div>
+                      {/* Rating */}
+                      <div className="mb-3">
+                        <RatingStars
+                          rating={
+                            review.rating
+                          }
+                        />
+                      </div>
 
-                    {/* Rating */}
-                    <div className="mb-3">
-                      <RatingStars
-                        rating={
-                          review.rating
-                        }
-                      />
-                    </div>
+                      {/* Comment */}
+                      <p className="text-sm text-gray-600 leading-6 mb-3">
+                        {review.comment}
+                      </p>
 
-                    {/* Comment */}
-                    <p className="text-sm text-gray-600 leading-6 mb-3">
-                      {review.comment}
-                    </p>
+                      {/* Date */}
+                      <p className="text-xs text-gray-400 mb-4">
+                        {review.date}
+                      </p>
 
-                    {/* Date */}
-                    <p className="text-xs text-gray-400 mb-4">
-                      {review.date}
-                    </p>
-
-                    {/* Actions */}
-                    <div className="flex gap-2">
-                      <ActionButton
-                        type="blue"
-                        icon={
-                          <Eye size={16} />
-                        }
-                        onClick={() =>
-                          setSelectedReview(
-                            review
-                          )
-                        }
-                      />
-
-                      {review.status ===
-                        "Pending" && (
+                      {/* Actions */}
+                      <div className="flex gap-2">
                         <ActionButton
-                          type="green"
+                          type="blue"
+                          label="View review"
                           icon={
-                            <Check
+                            <Eye size={16} />
+                          }
+                          onClick={() =>
+                            setSelectedReview(
+                              review
+                            )
+                          }
+                        />
+
+                        {review.status ===
+                          "Pending" && (
+                          <ActionButton
+                            type="green"
+                            label="Approve review"
+                            icon={
+                              <Check
+                                size={16}
+                              />
+                            }
+                            onClick={() =>
+                              handleApprove(
+                                review.id
+                              )
+                            }
+                          />
+                        )}
+
+                        <ActionButton
+                          type="red"
+                          label="Delete review"
+                          icon={
+                            <Trash2
                               size={16}
                             />
                           }
                           onClick={() =>
-                            handleApprove(
-                              review.id
+                            setDeleteReview(
+                              review
                             )
                           }
                         />
-                      )}
-
-                      <ActionButton
-                        type="red"
-                        icon={
-                          <Trash2
-                            size={16}
-                          />
-                        }
-                        onClick={() =>
-                          setDeleteReview(
-                            review
-                          )
-                        }
-                      />
+                      </div>
                     </div>
                   </motion.div>
                 )
               )
             ) : (
-              <div className="py-12 text-center">
-                <MessageSquare
-                  size={40}
-                  className="text-gray-300 mx-auto mb-3"
-                />
-
-                <p className="text-gray-500 font-medium">
-                  No reviews found
-                </p>
-              </div>
+              <EmptyReviews />
             )}
           </div>
         </motion.div>
 
-        {/* Result Count */}
-        <div className="mt-4 text-sm text-gray-400">
-          Showing{" "}
-          <span className="font-medium text-gray-600">
-            {filteredReviews.length}
-          </span>{" "}
-          of{" "}
-          <span className="font-medium text-gray-600">
-            {reviews.length}
-          </span>{" "}
-          reviews
-        </div>
+        {/* Pagination */}
+        {filteredReviews.length > 0 &&
+          totalPages > 1 && (
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: 10,
+              }}
+              animate={{
+                opacity: 1,
+                y: 0,
+              }}
+              transition={{
+                duration: 0.3,
+              }}
+              className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6"
+            >
+              {/* Result Count */}
+              <p className="text-sm text-gray-500">
+                Showing{" "}
+                <span className="font-semibold text-gray-700">
+                  {startIndex + 1}
+                </span>{" "}
+                -{" "}
+                <span className="font-semibold text-gray-700">
+                  {Math.min(
+                    endIndex,
+                    filteredReviews.length
+                  )}
+                </span>{" "}
+                of{" "}
+                <span className="font-semibold text-gray-700">
+                  {filteredReviews.length}
+                </span>{" "}
+                reviews
+              </p>
+
+              {/* Pagination Buttons */}
+              <div className="flex items-center gap-2">
+
+                {/* Previous */}
+                <button
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() =>
+                    setCurrentPage(
+                      (page) =>
+                        Math.max(
+                          1,
+                          page - 1
+                        )
+                    )
+                  }
+                  className="cursor-pointer w-9 h-9 rounded-lg border border-gray-200 bg-white flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:border-green-300 transition disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Previous page"
+                >
+                  <ChevronLeft size={17} />
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex items-center gap-1">
+                  {Array.from(
+                    {
+                      length: totalPages,
+                    },
+                    (_, index) =>
+                      index + 1
+                  ).map(
+                    (page: number) => (
+                      <button
+                        key={page}
+                        type="button"
+                        onClick={() =>
+                          setCurrentPage(
+                            page
+                          )
+                        }
+                        className={`cursor-pointer w-9 h-9 rounded-lg text-sm font-medium transition ${
+                          currentPage ===
+                          page
+                            ? "bg-green-600 text-white shadow-md shadow-green-100"
+                            : "bg-white text-gray-600 border border-gray-200 hover:bg-green-50 hover:border-green-300"
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    )
+                  )}
+                </div>
+
+                {/* Next */}
+                <button
+                  type="button"
+                  disabled={
+                    currentPage ===
+                    totalPages
+                  }
+                  onClick={() =>
+                    setCurrentPage(
+                      (page) =>
+                        Math.min(
+                          totalPages,
+                          page + 1
+                        )
+                    )
+                  }
+                  className="cursor-pointer w-9 h-9 rounded-lg border border-gray-200 bg-white flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:border-green-300 transition disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Next page"
+                >
+                  <ChevronRight size={17} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+
+        {/* Result Count when only one page */}
+        {filteredReviews.length > 0 &&
+          totalPages <= 1 && (
+            <div className="mt-4 text-sm text-gray-400">
+              Showing{" "}
+              <span className="font-medium text-gray-600">
+                {filteredReviews.length}
+              </span>{" "}
+              of{" "}
+              <span className="font-medium text-gray-600">
+                {reviews.length}
+              </span>{" "}
+              reviews
+            </div>
+          )}
       </div>
 
       {/* =========================
@@ -926,12 +1151,11 @@ export default function ReviewsPage() {
                 </h2>
 
                 <button
+                  type="button"
                   onClick={() =>
-                    setSelectedReview(
-                      null
-                    )
+                    setSelectedReview(null)
                   }
-                  className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-500 transition"
+                  className="cursor-pointer w-9 h-9 rounded-full flex items-center justify-center hover:bg-gray-100 text-gray-500 transition"
                 >
                   <X size={19} />
                 </button>
@@ -1037,6 +1261,7 @@ export default function ReviewsPage() {
                 {selectedReview.status ===
                   "Pending" && (
                   <button
+                    type="button"
                     onClick={() => {
                       handleApprove(
                         selectedReview.id
@@ -1045,19 +1270,18 @@ export default function ReviewsPage() {
                         null
                       );
                     }}
-                    className="px-4 py-2.5 rounded-xl bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition"
+                    className="cursor-pointer px-4 py-2.5 rounded-xl bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition"
                   >
                     Approve Review
                   </button>
                 )}
 
                 <button
+                  type="button"
                   onClick={() =>
-                    setSelectedReview(
-                      null
-                    )
+                    setSelectedReview(null)
                   }
-                  className="px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition"
+                  className="cursor-pointer px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition"
                 >
                   Close
                 </button>
@@ -1121,17 +1345,19 @@ export default function ReviewsPage() {
 
               <div className="flex justify-end gap-3 mt-6">
                 <button
+                  type="button"
                   onClick={() =>
                     setDeleteReview(null)
                   }
-                  className="px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition"
+                  className="cursor-pointer px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 transition"
                 >
                   Cancel
                 </button>
 
                 <button
+                  type="button"
                   onClick={handleDelete}
-                  className="px-4 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition"
+                  className="cursor-pointer px-4 py-2.5 rounded-xl bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition"
                 >
                   Delete
                 </button>
@@ -1140,6 +1366,29 @@ export default function ReviewsPage() {
           </ModalOverlay>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+/* =========================
+   Empty Reviews
+========================= */
+
+function EmptyReviews() {
+  return (
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <MessageSquare
+        size={40}
+        className="text-gray-300 mb-3"
+      />
+
+      <p className="text-gray-500 font-medium">
+        No reviews found
+      </p>
+
+      <p className="text-sm text-gray-400 mt-1">
+        Try changing your search or filter.
+      </p>
     </div>
   );
 }
@@ -1154,7 +1403,16 @@ function StatCard({
   icon,
 }: StatCardProps) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 p-5">
+    <motion.div
+      whileHover={{
+        y: -5,
+        scale: 1.015,
+      }}
+      transition={{
+        duration: 0.25,
+      }}
+      className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-lg hover:border-green-200 transition-all duration-300 cursor-default"
+    >
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-gray-500">
@@ -1166,11 +1424,17 @@ function StatCard({
           </p>
         </div>
 
-        <div className="w-11 h-11 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
+        <motion.div
+          whileHover={{
+            rotate: 8,
+            scale: 1.1,
+          }}
+          className="w-11 h-11 rounded-xl bg-green-50 text-green-600 flex items-center justify-center"
+        >
           {icon}
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -1248,27 +1512,38 @@ function ActionButton({
   icon,
   onClick,
   type,
+  label,
 }: ActionButtonProps) {
   const colors: Record<
     ActionButtonProps["type"],
     string
   > = {
     green:
-      "hover:bg-green-50 hover:text-green-600",
+      "hover:bg-green-50 hover:text-green-600 hover:border-green-200",
+
     blue:
-      "hover:bg-blue-50 hover:text-blue-600",
+      "hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200",
+
     red:
-      "hover:bg-red-50 hover:text-red-500",
+      "hover:bg-red-50 hover:text-red-500 hover:border-red-200",
   };
 
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onClick}
-      className={`w-9 h-9 rounded-lg flex items-center justify-center text-gray-400 transition ${colors[type]}`}
+      whileHover={{
+        scale: 1.08,
+      }}
+      whileTap={{
+        scale: 0.92,
+      }}
+      title={label}
+      aria-label={label}
+      className={`cursor-pointer w-9 h-9 rounded-lg border border-transparent flex items-center justify-center text-gray-400 transition-all duration-200 ${colors[type]}`}
     >
       {icon}
-    </button>
+    </motion.button>
   );
 }
 
@@ -1282,9 +1557,15 @@ function ModalOverlay({
 }: ModalOverlayProps) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      exit={{
+        opacity: 0,
+      }}
       className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4"
       onClick={onClose}
     >

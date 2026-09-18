@@ -4,26 +4,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, PenLine, Sparkles } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { useSession } from "@/lib/auth-client";
 
 export default function ReviewJourneyCTA() {
   const shouldReduceMotion = useReducedMotion();
-  const router = useRouter();
-  const { data: session, isPending } = useSession();
-
-  const handleViewMyReviews = () => {
-    if (isPending) return;
-
-    const myReviewsPath = "/reviews?mine=1#traveler-reviews";
-
-    if (!session?.user) {
-      router.push(`/login?redirect=${encodeURIComponent(myReviewsPath)}`);
-      return;
-    }
-
-    router.push(myReviewsPath);
-  };
 
   return (
     <section
@@ -31,11 +14,9 @@ export default function ReviewJourneyCTA() {
         relative
         overflow-hidden
         px-5
-        pb-8
+        pb-0
         sm:px-8
-        sm:pb-10
         lg:px-12
-        lg:pb-12
       "
     >
       <div
@@ -361,48 +342,45 @@ export default function ReviewJourneyCTA() {
 
             {/* My Reviews */}
 
-            <motion.button
-              type="button"
-              onClick={handleViewMyReviews}
-              disabled={isPending}
-              whileHover={
-                shouldReduceMotion || isPending
-                  ? undefined
-                  : {
-                      y: -3,
-                      scale: 1.02,
-                      backgroundColor: "rgba(255,255,255,0.08)",
-                    }
-              }
-              whileTap={
-                shouldReduceMotion || isPending
-                  ? undefined
-                  : {
-                      scale: 0.98,
-                    }
-              }
-              className="
-                flex
-                h-10
-                items-center
-                justify-center
-                gap-2
-                rounded-lg
-                border
-                border-white/35
-                bg-transparent
-                px-5
-                text-[9px]
-                font-semibold
-                text-white
-                transition-colors
-                hover:border-white/60
-                disabled:cursor-wait
-                disabled:opacity-70
-              "
-            >
-              View My Reviews
-            </motion.button>
+            <Link href="/reviews">
+              <motion.div
+                whileHover={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        y: -3,
+                        scale: 1.02,
+                        backgroundColor: "rgba(255,255,255,0.08)",
+                      }
+                }
+                whileTap={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        scale: 0.98,
+                      }
+                }
+                className="
+                  flex
+                  h-10
+                  items-center
+                  justify-center
+                  gap-2
+                  rounded-lg
+                  border
+                  border-white/35
+                  bg-transparent
+                  px-5
+                  text-[9px]
+                  font-semibold
+                  text-white
+                  transition-colors
+                  hover:border-white/60
+                "
+              >
+                View My Reviews
+              </motion.div>
+            </Link>
           </motion.div>
         </div>
       </div>

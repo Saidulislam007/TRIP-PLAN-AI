@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import type { Variants } from "framer-motion";
-import { useSession } from "@/lib/auth-client";
-import { submitReview } from "@/lib/api/reviews";
 
 import {
   ArrowLeft,
@@ -44,7 +42,6 @@ type UploadedImage = {
   id: number;
   url: string;
   name: string;
-  file: File;
 };
 
 /* ============================================================
@@ -67,9 +64,6 @@ const tripTypes: TripType[] = [
   "Solo",
   "Business",
 ];
-
-const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
-const MAX_IMAGES = 5;
 
 const months = [
   "January",
@@ -296,7 +290,6 @@ const inputClass = `
 
 export default function WriteReviewPage() {
   const shouldReduceMotion = useReducedMotion();
-  const { data: session } = useSession();
 
   const [destination, setDestination] = useState("");
   const [tripType, setTripType] = useState<TripType | "">("");
@@ -315,8 +308,6 @@ export default function WriteReviewPage() {
   const [recommend, setRecommend] = useState<boolean | null>(null);
 
   const [images, setImages] = useState<UploadedImage[]>([]);
-  const [imageError, setImageError] = useState("");
-  const [submitError, setSubmitError] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
 
   /* ==========================================================
@@ -345,52 +336,27 @@ export default function WriteReviewPage() {
 
     if (!files) return;
 
-    setImageError("");
-
-    const remainingSlots = MAX_IMAGES - images.length;
-    const selectedFiles = Array.from(files);
-
-    if (selectedFiles.length > remainingSlots) {
-      setImageError(`You can upload up to ${MAX_IMAGES} photos.`);
-    }
-
     const newImages: UploadedImage[] = [];
 
-    selectedFiles.slice(0, remainingSlots).forEach((file, index) => {
-      if (!file.type.startsWith("image/")) {
-        setImageError("Only image files are allowed.");
-        return;
-      }
+    Array.from(files)
+      .slice(0, 5 - images.length)
+      .forEach((file, index) => {
+        const url = URL.createObjectURL(file);
 
-      if (file.size > MAX_IMAGE_SIZE) {
-        setImageError("Each image must be 2 MB or smaller.");
-        return;
-      }
-
-      const url = URL.createObjectURL(file);
-
-      newImages.push({
-        id: Date.now() + index,
-        url,
-        name: file.name,
-        file,
+        newImages.push({
+          id: Date.now() + index,
+          url,
+          name: file.name,
+        });
       });
-    });
 
-    if (newImages.length > 0) {
-      setImages((current) => [...current, ...newImages]);
-    }
+    setImages((current) => [...current, ...newImages]);
 
     event.target.value = "";
   };
 
   const removeImage = (id: number) => {
-    setImages((current) => {
-      const removedImage = current.find((image) => image.id === id);
-      if (removedImage) URL.revokeObjectURL(removedImage.url);
-      return current.filter((image) => image.id !== id);
-    });
-    setImageError("");
+    setImages((current) => current.filter((image) => image.id !== id));
   };
 
   /* ==========================================================
@@ -412,46 +378,26 @@ export default function WriteReviewPage() {
       return;
     }
 
-    setSubmitError("");
     setIsSubmitting(true);
-
     try {
-      const categoryRatings = Object.fromEntries(
-        categories.map((category) => [category.id, category.value]),
-      );
-
-      const formData = new FormData();
-      formData.append("destination", destination);
-      formData.append("tripType", tripType);
-      formData.append("travelMonth", travelMonth);
-      formData.append("rating", String(overallRating));
-      formData.append("title", title.trim());
-      formData.append("reviewText", review.trim());
-      formData.append("loved", loved.trim());
-      formData.append("concernsText", concerns.trim());
-      formData.append(
-        "wouldRecommend",
-        recommend === null ? "" : String(recommend),
-      );
-      formData.append("categoryRatings", JSON.stringify(categoryRatings));
-
-      if (session?.user?.id) formData.append("userId", session.user.id);
-      if (session?.user?.name) formData.append("name", session.user.name);
-      if (session?.user?.email) formData.append("userEmail", session.user.email);
-      if (session?.user?.image) formData.append("avatar", session.user.image);
-
-      images.forEach((image) => {
-        formData.append("images", image.file);
+      const response = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "")}/api/reviews`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          destination,
+          tripType,
+          rating: overallRating,
+          title,
+          reviewText: review
+        })
       });
 
-      await submitReview(formData);
-      setShowSuccess(true);
+      if (response.ok) {
+        setShowSuccess(true);
+      } else {
+        console.error("Failed to submit review");
+      }
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Failed to submit review. Please try again.";
-      setSubmitError(message);
       console.error("Failed to submit review:", error);
     } finally {
       setIsSubmitting(false);
@@ -1506,15 +1452,9 @@ export default function WriteReviewPage() {
                   </p>
 
                   <p className="mt-1 text-[9px] text-[#8A9590]">
-                    Any image format · Max 2 MB each · Up to 5 photos
+                    JPG, PNG or WEBP · Up to 5 photos
                   </p>
                 </label>
-
-                {imageError && (
-                  <p className="mt-3 text-[9px] font-medium text-[#C7372F]">
-                    {imageError}
-                  </p>
-                )}
 
                 {images.length > 0 && (
                   <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-5">
@@ -1642,7 +1582,6 @@ export default function WriteReviewPage() {
               <motion.button
                 type="submit"
                 disabled={
-                  isSubmitting ||
                   !destination ||
                   !tripType ||
                   !overallRating ||
@@ -1704,14 +1643,8 @@ export default function WriteReviewPage() {
                 >
                   <Send size={15} />
                 </motion.span>
-                {isSubmitting ? "Submitting..." : "Submit Your Review"}
+                Submit Your Review
               </motion.button>
-
-              {submitError && (
-                <p className="mt-3 text-center text-[9px] font-medium text-[#C7372F]">
-                  {submitError}
-                </p>
-              )}
 
               <p className="mt-3 text-center text-[8px] text-[#8A9590]">
                 By submitting, you agree that your review may be displayed

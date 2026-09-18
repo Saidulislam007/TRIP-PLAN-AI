@@ -91,44 +91,43 @@ export default function AdminSidebar({
   // FETCH NOTIFICATION COUNT
   // =========================
   useEffect(() => {
-    const fetchNotificationCount = async () => {
-      try {
-        const apiUrl =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const fetchNotificationCount = async () => {
+    try {
+      const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
-        const response = await fetch(
-          `${apiUrl}/api/notifications/unread-count`,
-          {
-            credentials: "include",
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch notification count");
+      const response = await fetch(
+        `${apiUrl.replace(/\/$/, "")}/api/notifications/unread-count`,
+        {
+          credentials: "include",
         }
+      );
 
-        const data = await response.json();
-
-        setNotificationCount(
-          data.count ?? data.unreadCount ?? data.total ?? 0
+      if (!response.ok) {
+        console.warn(
+          `Notification API returned ${response.status}`
         );
-      } catch (error) {
-        console.error(
-          "Failed to fetch notification count:",
-          error
-        );
-
         setNotificationCount(0);
+        return;
       }
-    };
 
-    fetchNotificationCount();
+      const data = await response.json();
 
-    // Refresh count every 30 seconds
-    const interval = setInterval(fetchNotificationCount, 30000);
+      setNotificationCount(
+        data.count ?? data.unreadCount ?? data.total ?? 0
+      );
+    } catch (error) {
+      console.warn("Notification count unavailable:", error);
+      setNotificationCount(0);
+    }
+  };
 
-    return () => clearInterval(interval);
-  }, []);
+  fetchNotificationCount();
+
+  const interval = setInterval(fetchNotificationCount, 30000);
+
+  return () => clearInterval(interval);
+}, []);
 
   const isActive = (href: string) => {
     if (href === "/admin-panel") {
